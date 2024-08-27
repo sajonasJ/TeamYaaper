@@ -1,1 +1,32 @@
-<p>content works!</p>
+<div class="content-container">
+    <p class="group-name">Group Name</p>
+    
+    <div class="post-container">
+      <div class="main-post">
+        <div class="post-header">
+          <img [src]="poster.profileIcon" alt="Profile Icon" class="profile-icon"> <!-- Poster Profile Icon -->
+          <p class="post-name">{{ poster.name }}</p> <!-- Poster Name -->
+        </div>
+        <div class="post-body">
+          <div *ngIf="postImageUrl" class="post-image">
+            <img [src]="postImageUrl" alt="Post Image">
+          </div>
+          <div class="post-text">{{ poster.postText }}</div> <!-- Poster Text -->
+        </div>
+        <div class="post-footer">
+          <button (click)="toggleComments()" class="comments-button">Comments ({{ comments.length }})</button>
+        </div>
+      </div>
+  
+      <div class="post-comments" *ngIf="commentsVisible">
+        <div *ngFor="let comment of comments" class="comment-item">
+          <div class="comment-header">
+            <img [src]="comment.profileIcon" alt="Profile Icon" class="profile-icon"> <!-- Commenter Profile Icon -->
+            <p class="comment-name">{{ comment.name }}</p> <!-- Commenter Name -->
+          </div>
+          <div class="comment-text">{{ comment.text }}</div> <!-- Comment Text -->
+        </div>
+      </div>
+    </div>
+  </div>
+  

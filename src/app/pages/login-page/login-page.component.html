@@ -1,1 +1,14 @@
-<p>login-page works!</p>
+<app-header></app-header>
+<a class="nav-link" routerLink="/home">home</a>
+
+<div class="login-container">
+<div *ngIf="isSignIn; else signUpTemplate">
+  <app-login></app-login>
+  <p>Create an Account? <a class="login-link" (click)="switchToSignUp()">Sign up</a></p>
+</div>
+
+<ng-template #signUpTemplate>
+  <app-sign-up></app-sign-up>
+  <p>Already have an account? <a class="login-link" (click)="switchToSignIn()">Sign in</a></p>
+</ng-template>
+</div>

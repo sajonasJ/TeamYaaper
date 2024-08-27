@@ -1,0 +1,14 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #dee2e6;
+    padding: 10px 30px;
+  
+  }
+  
+  .logo img {
+    height: 100px;
+    background-color: rgb(215, 218, 218);
+  }
+  
