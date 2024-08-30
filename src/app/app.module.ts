@@ -5,7 +5,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './components/header/header.component';
 import { ContentComponent } from './components/content/content.component';
-import { NavigationComponent } from './components/navigation/navigation.component';
 import { SideNavComponent } from './components/side-nav/side-nav.component';
 import { LoginComponent } from './components/login/login.component';
 import { SignUpComponent } from './components/sign-up/sign-up.component';
@@ -20,7 +19,6 @@ import { WelcomeComponent } from './pages/welcome/welcome.component';
     AppComponent,
     HeaderComponent,
     ContentComponent,
-    NavigationComponent,
     SideNavComponent,
     LoginComponent,
     SignUpComponent,

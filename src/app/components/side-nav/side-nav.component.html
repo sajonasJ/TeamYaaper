@@ -1,14 +1,12 @@
 <nav class="side-nav">
-    <!-- List the groups and include a button to add more -->
-    <ul>
-      <li *ngFor="let group of groups" class="group-item">
-        <button (click)="onGroupClick(group)" class="btn-group">
-          {{ group.name }}
-        </button>
-      </li>
-      <li class="group-item">
-        <button (click)="createGroup()" class="btn-group">+</button>
-      </li>
-    </ul>
-  </nav>
-  
+  <ul>
+    <li *ngFor="let group of groups" class="group-item">
+      <button (click)="onGroupClick(group)" class="btn-group">
+        {{ group.name }}
+      </button>
+    </li>
+    <li class="group-item">
+      <button (click)="createGroup()" class="btn-group">+</button>
+    </li>
+  </ul>
+</nav>

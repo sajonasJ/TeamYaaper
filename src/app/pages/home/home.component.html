@@ -1,7 +1,8 @@
 <div class="home-container">
     <app-header></app-header>
     <main class="main-container">
-        <app-side-nav></app-side-nav>
-        <app-content></app-content>
+      <app-side-nav [groups]="groups" (groupSelected)="onGroupSelected($event)"></app-side-nav>
+      <app-content [selectedGroup]="selectedGroup"></app-content>
     </main>
-</div>
+  </div>
+  
