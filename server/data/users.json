@@ -1,0 +1,30 @@
+[
+    {
+      "id": "1",
+      "username": "user1",
+      "email": "user1@example.com",
+      "groupRoles": {
+        "general": ["user"],
+        "support": ["user"]
+      }
+    },
+    {
+      "id": "2",
+      "username": "admin_user",
+      "email": "admin_user@example.com",
+      "groupRoles": {
+        "general": ["admin"],
+        "admin": ["admin"]
+      }
+    },
+    {
+      "id": "3",
+      "username": "chat_user",
+      "email": "chat_user@example.com",
+      "groupRoles": {
+        "general": ["user"],
+        "chat": ["user", "moderator"]
+      }
+    }
+  ]
+  
