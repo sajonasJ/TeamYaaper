@@ -1,0 +1,43 @@
+:host {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+}
+
+.welcome-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin: 0;
+}
+
+.welcome-message {
+    margin-bottom: 2rem;
+}
+
+.quotes-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 600px;
+}
+
+.quote-card {
+    width: 100%;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.quote-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.blockquote-footer {
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    color: #6c757d;
+}
