@@ -38,8 +38,21 @@
 
         <!-- Comment Input Section -->
         <div *ngIf="postCommentingOn === post" class="mt-3">
-          <textarea class="form-control" [(ngModel)]="newCommentText" placeholder="Write a comment..." rows="2"></textarea>
-          <button class="btn btn-primary mt-2 me-2" (click)="addComment(post)">Add Comment</button>
+          <textarea 
+            class="form-control" 
+            [(ngModel)]="newCommentText" 
+            placeholder="Write a comment..." 
+            rows="2"
+            maxlength="500"
+          ></textarea>
+          <small class="text-muted">{{ newCommentText.length }}/500 characters</small>
+          <button 
+            class="btn btn-primary mt-2 me-2" 
+            [disabled]="newCommentText.length > 500" 
+            (click)="saveComment(post)"
+          >
+            {{ commentToEdit ? 'Save Comment' : 'Add Comment' }}
+          </button>
           <button class="btn btn-secondary mt-2" (click)="cancelComment()">Cancel</button>
         </div>
 
@@ -60,7 +73,7 @@
                 <p class="mb-0">{{ comment.text }}</p>
               </div>
               <!-- Edit Comment Button -->
-              <button type="button" class="btn btn-sm btn-outline-primary me-2" aria-label="Edit Comment" (click)="editComment(post, comment)">Edit</button>
+              <button type="button" class="btn btn-sm btn-outline-primary me-2" aria-label="Edit Comment" (click)="showCommentInput(post, comment)">Edit</button>
               <!-- Delete Comment Button -->
               <button type="button" class="btn btn-sm btn-outline-danger" aria-label="Delete Comment" (click)="deleteComment(post, comment)">Delete</button>
             </div>

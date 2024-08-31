@@ -1,4 +1,3 @@
-<!-- Add/Edit Post Modal -->
 <div class="modal fade" id="addPostModal" tabindex="-1" aria-labelledby="addPostModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -7,16 +6,39 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
+        <!-- Post Title Input -->
         <div class="mb-3">
-          <input type="text" class="form-control" [(ngModel)]="newPostTitle" placeholder="Post Title">
+          <input 
+            type="text" 
+            class="form-control" 
+            [(ngModel)]="newPostTitle" 
+            placeholder="Post Title" 
+            [maxlength]="postTitleCharacterLimit"
+          >
+          <small class="text-muted">{{ newPostTitle.length }}/{{ postTitleCharacterLimit }} characters</small>
         </div>
+        <!-- Post Text Input -->
         <div class="mb-3">
-          <textarea class="form-control" [(ngModel)]="newPostText" placeholder="What's on your mind?" rows="3"></textarea>
+          <textarea 
+            class="form-control" 
+            [(ngModel)]="newPostText" 
+            placeholder="What's on your mind?" 
+            rows="3"
+            [maxlength]="postTextCharacterLimit"
+          ></textarea>
+          <small class="text-muted">{{ newPostText.length }}/{{ postTextCharacterLimit }} characters</small>
         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" (click)="savePost()">{{ postToEdit ? 'Save Changes' : 'Add Post' }}</button>
+        <button 
+          type="button" 
+          class="btn btn-primary" 
+          [disabled]="isPostTitleExceedingLimit() || isPostTextExceedingLimit()"
+          (click)="savePost()"
+        >
+          {{ postToEdit ? 'Save Changes' : 'Add Post' }}
+        </button>
       </div>
     </div>
   </div>

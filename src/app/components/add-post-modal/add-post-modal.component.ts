@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, Input } from '@angular/core';
+import { Component, Output, EventEmitter, Input, OnChanges } from '@angular/core';
 import { Modal } from 'bootstrap';
 import { Post } from '../../models/dataInterfaces'; // Import necessary interfaces
 
@@ -7,16 +7,18 @@ import { Post } from '../../models/dataInterfaces'; // Import necessary interfac
   templateUrl: './add-post-modal.component.html',
   styleUrl: './add-post-modal.component.css'
 })
-export class AddPostModalComponent {
+export class AddPostModalComponent implements OnChanges {
   @Input() postToEdit: Post | null = null;  // Holds the post being edited, if any
   @Output() postAdded = new EventEmitter<Post>();
   @Output() postEdited = new EventEmitter<Post>();
+
+  postTitleCharacterLimit: number = 100;
+  postTextCharacterLimit: number = 1000;
 
   newPostTitle: string = '';
   newPostText: string = '';
 
   ngOnChanges(): void {
-    // Set initial values if editing a post
     if (this.postToEdit) {
       this.newPostTitle = this.postToEdit.name;
       this.newPostText = this.postToEdit.postText;
@@ -27,14 +29,12 @@ export class AddPostModalComponent {
   }
 
   savePost(): void {
-    if (this.newPostTitle && this.newPostText) {
+    if (this.newPostTitle.trim() && this.newPostText.trim()) {
       if (this.postToEdit) {
-        // Editing an existing post
         this.postToEdit.name = this.newPostTitle;
         this.postToEdit.postText = this.newPostText;
         this.postEdited.emit(this.postToEdit);
       } else {
-        // Adding a new post
         const newPost: Post = {
           id: this.generateUniqueId(),
           name: this.newPostTitle,
@@ -45,11 +45,8 @@ export class AddPostModalComponent {
         this.postAdded.emit(newPost);
       }
 
-      this.newPostTitle = '';
-      this.newPostText = '';
-      this.postToEdit = null;
+      this.resetForm();
 
-      // Close the modal after saving
       const modalElement = document.getElementById('addPostModal');
       if (modalElement) {
         const modalInstance = Modal.getInstance(modalElement);
@@ -58,7 +55,21 @@ export class AddPostModalComponent {
     }
   }
 
+  resetForm(): void {
+    this.newPostTitle = '';
+    this.newPostText = '';
+    this.postToEdit = null;
+  }
+
   private generateUniqueId(): string {
     return Math.random().toString(36).substr(2, 9);
+  }
+
+  isPostTitleExceedingLimit(): boolean {
+    return this.newPostTitle.length > this.postTitleCharacterLimit;
+  }
+
+  isPostTextExceedingLimit(): boolean {
+    return this.newPostText.length > this.postTextCharacterLimit;
   }
 }

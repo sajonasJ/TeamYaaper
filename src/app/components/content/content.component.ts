@@ -11,22 +11,26 @@ export class ContentComponent {
   @Input() selectedGroup: Group | null = null;
 
   newCommentText: string = '';
+  postCommentingOn: Post | null = null;
+  commentToEdit: Comment | null = null;
   postToEdit: Post | null = null;
-  postCommentingOn: Post | null = null; // To manage visibility of comment input
 
-  // Method to handle post addition from the modal component
   handlePostAdded(newPost: Post): void {
     if (this.selectedGroup) {
       this.selectedGroup.posts.push(newPost);
     }
   }
 
-  // Method to handle post editing from the modal component
   handlePostEdited(editedPost: Post): void {
-    this.postToEdit = null;  // Clear the editing state
+    if (this.selectedGroup) {
+      const index = this.selectedGroup.posts.findIndex(post => post.id === editedPost.id);
+      if (index !== -1) {
+        this.selectedGroup.posts[index] = editedPost;
+      }
+    }
+    this.postToEdit = null; // Clear the editing state
   }
 
-  // Method to initiate editing a post
   editPost(post: Post): void {
     this.postToEdit = post;
     const modalElement = document.getElementById('addPostModal');
@@ -36,49 +40,46 @@ export class ContentComponent {
     }
   }
 
-  // Method to edit a comment
-  editComment(post: Post, comment: Comment): void {
-    const newCommentText = prompt('Edit comment', comment.text);
-    if (newCommentText) {
-      comment.text = newCommentText;
-    }
-  }
-
-  // Method to show comment input
-  showCommentInput(post: Post): void {
+  showCommentInput(post: Post, comment: Comment | null = null): void {
     this.postCommentingOn = post;
+    this.commentToEdit = comment;
+    this.newCommentText = comment ? comment.text : '';
   }
 
-  // Method to add a new comment to a specific post
-  addComment(post: Post): void {
+  saveComment(post: Post): void {
     if (this.newCommentText.trim()) {
-      const newComment: Comment = {
-        profileIcon: 'path/to/default/icon.png', // Replace with actual path or logic to set the profile icon
-        name: 'Anonymous', // Replace with actual logic to set the commenter's name
-        text: this.newCommentText
-      };
-      post.comments.push(newComment);
-      this.newCommentText = ''; // Clear the input field after adding the comment
-      this.postCommentingOn = null; // Hide the comment input
+      if (this.commentToEdit) {
+        this.commentToEdit.text = this.newCommentText;
+      } else {
+        const newComment: Comment = {
+          profileIcon: 'path/to/default/icon.png',
+          name: 'Anonymous',
+          text: this.newCommentText
+        };
+        post.comments.push(newComment);
+      }
+      this.resetCommentInput();
     } else {
       alert("Comment text cannot be empty.");
     }
   }
 
-  // Method to cancel adding a comment
   cancelComment(): void {
-    this.newCommentText = ''; // Clear the input field
-    this.postCommentingOn = null; // Hide the comment input
+    this.resetCommentInput();
   }
 
-  // Method to delete a post
+  resetCommentInput(): void {
+    this.newCommentText = '';
+    this.postCommentingOn = null;
+    this.commentToEdit = null;
+  }
+
   deletePost(post: Post): void {
     if (this.selectedGroup) {
       this.selectedGroup.posts = this.selectedGroup.posts.filter(p => p.id !== post.id);
     }
   }
 
-  // Method to delete a comment
   deleteComment(post: Post, comment: Comment): void {
     post.comments = post.comments.filter(c => c !== comment);
   }
