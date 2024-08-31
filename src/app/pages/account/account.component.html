@@ -1,2 +1,85 @@
-<app-header></app-header>
-<p>account works!</p>
+<div class="account-container">
+  <!-- Header Component -->
+  <app-header></app-header>
+
+  <!-- Account Information Section -->
+  <div class="account-info bg-light p-4 rounded shadow-sm">
+    <h3 class="mb-4 text-primary">User Account Details</h3>
+
+    <!-- Editable form for updating user details -->
+    <div *ngIf="isEditMode; else displayMode">
+      <!-- Username Input -->
+      <div class="d-flex align-items-center mb-3">
+        <label for="username" class="me-3 fw-bold">Username:</label>
+        <input type="text" id="username" [(ngModel)]="editUsername" class="form-control" />
+      </div>
+
+      <!-- First Name Input -->
+      <div class="d-flex align-items-center mb-3">
+        <label for="firstname" class="me-3 fw-bold">First Name:</label>
+        <input type="text" id="firstname" [(ngModel)]="editFirstName" class="form-control" />
+      </div>
+
+      <!-- Last Name Input -->
+      <div class="d-flex align-items-center mb-3">
+        <label for="lastname" class="me-3 fw-bold">Last Name:</label>
+        <input type="text" id="lastname" [(ngModel)]="editLastName" class="form-control" />
+      </div>
+
+      <!-- Email Input -->
+      <div class="d-flex align-items-center mb-3">
+        <label for="email" class="me-3 fw-bold">Email:</label>
+        <input type="email" id="email" [(ngModel)]="editEmail" class="form-control" />
+      </div>
+
+      <!-- Groups Display -->
+      <div class="d-flex align-items-center mb-3">
+        <label class="me-3 fw-bold">Groups:</label>
+        <div class="d-flex flex-wrap">
+          <span *ngFor="let group of groups" class="badge bg-primary me-2 mb-2">{{ group }}</span>
+        </div>
+      </div>
+
+      <!-- Save and Cancel Buttons -->
+      <div class="d-flex justify-content-center mt-4">
+        <button class="btn btn-primary me-2" (click)="onSave()">Save</button>
+        <button class="btn btn-secondary" (click)="onCancelEdit()">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Display mode for viewing user details -->
+    <ng-template #displayMode>
+      <!-- Username Display -->
+      <div class="d-flex align-items-center mb-3">
+        <label class="me-3 fw-bold">Username:</label>
+        <span class="text-muted">{{ username }}</span>
+      </div>
+
+      <!-- Full Name Display -->
+      <div class="d-flex align-items-center mb-3">
+        <label class="me-3 fw-bold">Name:</label>
+        <span class="text-muted">{{ fullName }}</span>
+      </div>
+
+      <!-- Email Display -->
+      <div class="d-flex align-items-center mb-3">
+        <label class="me-3 fw-bold">Email:</label>
+        <span class="text-muted">{{ email }}</span>
+      </div>
+
+      <!-- Groups Display -->
+      <div class="d-flex align-items-center mb-3">
+        <label class="me-3 fw-bold">Groups:</label>
+        <div class="d-flex flex-wrap">
+          <span *ngFor="let group of groups" class="badge bg-primary me-2 mb-2">{{ group }}</span>
+        </div>
+      </div>
+
+      <!-- Update, Cancel, and Delete Buttons -->
+      <div class="d-flex justify-content-end mt-4">
+        <button class="btn btn-outline-primary me-2" (click)="onUpdate()">Update</button>
+        <button class="btn btn-outline-danger" (click)="onDelete()">Delete</button>
+      </div>
+    </ng-template>
+  </div>
+</div>

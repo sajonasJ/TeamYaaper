@@ -1,0 +1,11 @@
+:host{
+    box-sizing: border-box;
+    margin:0;
+}
+.account-container{
+    box-sizing: border-box;
+    margin:0;
+}
+.account-info{
+    min-height: 88vh;
+}
