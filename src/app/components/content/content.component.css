@@ -4,10 +4,26 @@
     width: 100%;
 }
 
-.content-container{
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    width: 100%;
-    padding: 10px;
-}
+.content-container {
+    border: 1px solid #ddd; /* Optional: Adds a subtle border */
+  }
+  
+  .welcome-message {
+    font-size: 1.25rem; /* Adjusts the font size slightly larger than Bootstrap's default */
+  }
+  
+  .instructions {
+    font-size: 1rem; /* Matches Bootstrap's base font size */
+  }
+  
+
+  .post-image img {
+    max-width: 100%;
+    border-radius: 0.5rem;
+  }
+  
+  .comment-name {
+    margin-right: 10px;
+    font-weight: bold;
+  }
+  
