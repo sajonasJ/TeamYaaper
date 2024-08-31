@@ -1,12 +1,43 @@
-<header class="header dark-theme">
-  <div class="logo">
-    <a hred="#" class="nav-link"> <img src="TY_LOGO.png" alt="Team Yaaper Logo">
+<header class="header navbar navbar-expand-md navbar-dark bg-dark">
+  <div class="container-fluid">
+    <!-- Logo -->
+    <a class="navbar-brand" href="#">
+      <img src="TY_LOGO.png" alt="Team Yaaper Logo" class="rounded-circle">
     </a>
+
+    <!-- Toggle button for mobile view -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Navigation Links -->
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/welcome">
+            <h5>Welcome</h5>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/login">
+            <i class="bi-person-fill"></i>
+            <h5>Login</h5>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/home">
+            <i class="material-icons">home</i>
+            <h5>Home</h5>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/account">
+            <i class="bi-person-circle"></i>
+            <h5>Account</h5>
+          </a>
+        </li>
+      </ul>
+    </div>
   </div>
-  <nav class="nav-links">
-    <a class="nav-link" class="nav-link" routerLink="/welcome">Welcome</a>
-    <a class="nav-link" class="nav-link" routerLink="/login">Login</a>
-    <a class="nav-link" class="nav-link" routerLink="/home">Home</a>
-    <a class="nav-link" class="nav-link" routerLink="/account">Account</a>
-  </nav>
 </header>

@@ -2,28 +2,50 @@
   display: block;
   width: 100%;
 }
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 30px;
-  }
-  
-  .logo img {
-    height: 100px;
-    background-color: rgb(215, 218, 218);
-  }
-  
-  .nav-links {
-    display: flex;
-    gap: 15px;
+
+.nav-link, .nav-item{
+  display: flex;
 }
 
-.nav-link {
-    text-decoration: none;
-    font-weight: 500;
+.container-fluid{
+  padding-left: 30px;
+  padding-right:30px;
 }
 
-.nav-link:hover {
-    color: #00ff62;
+.logo img {
+  height: 100px;
+  background-color: rgb(215, 218, 218);
+  border-radius: 50%;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
 }
+
+.navbar-brand img {
+  height: 50px; /* Logo size for the navbar */
+  width: auto;
+}
+
+.nav-link i {
+  margin-right: 5px; /* Space between icon and text */
+}
+
+@media (max-width: 768px) {
+  .navbar-brand img {
+    height: 40px; /* Reduce logo size for smaller screens */
+  }
+
+  .nav-link {
+    font-size: 16px; /* Adjust font size for better readability on mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-brand img {
+    height: 30px; /* Further reduce logo size */
+  }
+
+  .nav-link {
+    font-size: 14px; /* Adjust font size for smaller screens */
+  }
+}
+
+/* Removed custom flex styles from #navbarNav to ensure Bootstrap's default is applied */

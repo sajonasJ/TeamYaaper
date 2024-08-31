@@ -9,3 +9,30 @@ body, .dark-theme {
     background-color: rgb(76, 77, 79) ;
     color:whitesmoke ;
 }
+
+/* Global font settings */
+body {
+    font-family: 'Exo 2', sans-serif; /* Default font for most elements */
+}
+
+/* Specific font usage for Anton */
+h1, h2, h3, .primary-button, .heading, .title {
+    font-family: 'Anton', sans-serif; /* For headings, titles, and primary action buttons */
+    font-weight: 400; /* Default weight for bold display */
+}
+
+/* Styling for chat messages */
+.chat-message {
+    font-weight: 400; /* Regular weight for readability */
+}
+
+/* Styling for usernames */
+.username {
+    font-weight: 600; /* Semi-bold to differentiate from body text */
+}
+
+/* Styling for notifications and alerts */
+.notification {
+    font-family: 'Anton', sans-serif; /* Using Anton for a bold, standout look */
+    font-weight: 400; /* Regular weight for prominence */
+}
