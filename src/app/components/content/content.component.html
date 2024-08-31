@@ -4,11 +4,15 @@
   </div>
   <p class="instructions text-muted">You can start by posting a message to the group.</p>
 
+<!-- Wrapper for the button with flex utilities -->
+<div class="d-flex justify-content-end">
   <!-- Button to trigger modal for adding a new post -->
-  <button type="button" class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addPostModal"
+  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPostModal"
     (click)="postToEdit = null">
     Add New Post
   </button>
+</div>
+
 
   <!-- Include the Add Post Modal Component -->
   <app-add-post-modal [postToEdit]="postToEdit" (postAdded)="handlePostAdded($event)"
@@ -36,14 +40,15 @@
         <p class="card-text">{{ post.postText }}</p>
 
         <br>
-
+        <div class="d-flex justify-content-end">
         <!-- Toggle Comments Button -->
         <button class="btn btn-link text-primary p-0 mt-2" data-bs-toggle="collapse"
           [attr.data-bs-target]="'#comments-' + post.id" aria-expanded="false" aria-controls="collapseExample"
           [disabled]="!post.comments.length"> <!-- Disable when no comments -->
           Comments ({{ post.comments.length }})
         </button>
-        <br>
+      </div>
+
 
         <!-- Comment Input Section -->
         <div *ngIf="postCommentingOn === post" class="mt-3">
@@ -51,7 +56,7 @@
             maxlength="500"></textarea>
           <small class="text-muted">{{ newCommentText.length }}/500 characters</small>
           <br>
-          <div class="comment-btns">
+          <div class="d-flex justify-content-end">
             <button class="btn btn-primary mt-2 me-2" [disabled]="newCommentText.length > 500"
               (click)="saveComment(post)">
               {{ commentToEdit ? 'Save' : 'Add' }}
@@ -71,7 +76,7 @@
                 </div>
                 <p class="mb-0">{{ comment.text }}</p>
               </div>
-              <div class="card-title-btns">
+              <div class="d-flex justify-content-end">
                 <!-- Edit Comment Button -->
                 <button type="button" class="btn btn-sm btn-outline-primary me-2" aria-label="Edit Comment"
                   (click)="showCommentInput(post, comment)">Edit</button>
