@@ -8,7 +8,6 @@ export interface Post {
   }
   
   export interface Comment {
-    profileIcon: string;
     name: string;
     text: string;
   }

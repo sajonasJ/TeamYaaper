@@ -29,16 +29,22 @@ export class AddPostModalComponent implements OnChanges {
   }
 
   savePost(): void {
-    if (this.newPostTitle.trim() && this.newPostText.trim()) {
+    // Capitalize the post title just before saving
+    const capitalizedTitle = this.newPostTitle.trim().toUpperCase();
+    const capitalizedText = this.newPostText.trim();
+
+    if (capitalizedTitle && capitalizedText) {
       if (this.postToEdit) {
-        this.postToEdit.name = this.newPostTitle;
-        this.postToEdit.postText = this.newPostText;
+        // Editing an existing post
+        this.postToEdit.name = capitalizedTitle;
+        this.postToEdit.postText = capitalizedText;
         this.postEdited.emit(this.postToEdit);
       } else {
+        // Adding a new post
         const newPost: Post = {
           id: this.generateUniqueId(),
-          name: this.newPostTitle,
-          postText: this.newPostText,
+          name: capitalizedTitle,
+          postText: capitalizedText,
           profileIcon: 'path/to/default/icon.png',
           comments: []
         };
@@ -65,6 +71,7 @@ export class AddPostModalComponent implements OnChanges {
     return Math.random().toString(36).substr(2, 9);
   }
 
+  // Helper methods to check character limits
   isPostTitleExceedingLimit(): boolean {
     return this.newPostTitle.length > this.postTitleCharacterLimit;
   }

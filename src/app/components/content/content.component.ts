@@ -52,7 +52,6 @@ export class ContentComponent {
         this.commentToEdit.text = this.newCommentText;
       } else {
         const newComment: Comment = {
-          profileIcon: 'path/to/default/icon.png',
           name: 'Anonymous',
           text: this.newCommentText
         };

@@ -29,3 +29,18 @@
     margin-right: 10px;
     font-weight: bold;
 }
+
+.card-title-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.card-title-btns{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap:5px;
+}
+.comment-btns{
+    display: flex;
+justify-content: flex-end;}
