@@ -4,39 +4,24 @@
   </div>
   <p class="instructions text-muted">You can start by posting a message to the group.</p>
 
-  <!-- Button to trigger modal -->
-  <button type="button" class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addPostModal">
+  <!-- Button to trigger modal for adding a new post -->
+  <button type="button" class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addPostModal" (click)="postToEdit = null">
     Add a New Post
   </button>
 
-  <!-- Add Post Modal -->
-  <div class="modal fade" id="addPostModal" tabindex="-1" aria-labelledby="addPostModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="addPostModalLabel">Add a New Post</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <div class="mb-3">
-            <input type="text" class="form-control" [(ngModel)]="newPostTitle" placeholder="Post Title">
-          </div>
-          <div class="mb-3">
-            <textarea class="form-control" [(ngModel)]="newPostText" placeholder="What's on your mind?" rows="3"></textarea>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary" (click)="addPost()">Add Post</button>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- Include the Add Post Modal Component -->
+  <app-add-post-modal 
+    [postToEdit]="postToEdit" 
+    (postAdded)="handlePostAdded($event)" 
+    (postEdited)="handlePostEdited($event)">
+  </app-add-post-modal>
 
   <!-- Display Posts -->
   <div class="post-container mt-4" *ngFor="let post of selectedGroup.posts">
     <div class="card mb-3">
       <div class="card-body position-relative">
+        <!-- Edit Post Button -->
+        <button type="button" class="btn btn-sm btn-outline-primary position-absolute top-0 end-0 me-5" aria-label="Edit" (click)="editPost(post)">Edit</button>
         <!-- Delete Post Button -->
         <button type="button" class="btn-close position-absolute top-0 end-0" aria-label="Delete" (click)="deletePost(post)"></button>
 
@@ -48,8 +33,18 @@
           <img [src]="post.postImageUrl" class="img-fluid rounded" alt="Post Image">
         </div>
 
+        <!-- Add Comment Button -->
+        <button type="button" class="btn btn-sm btn-outline-secondary mt-2" (click)="showCommentInput(post)">Add Comment</button>
+
+        <!-- Comment Input Section -->
+        <div *ngIf="postCommentingOn === post" class="mt-3">
+          <textarea class="form-control" [(ngModel)]="newCommentText" placeholder="Write a comment..." rows="2"></textarea>
+          <button class="btn btn-primary mt-2 me-2" (click)="addComment(post)">Add Comment</button>
+          <button class="btn btn-secondary mt-2" (click)="cancelComment()">Cancel</button>
+        </div>
+
         <!-- Toggle Comments Button -->
-        <button class="btn btn-link text-primary p-0" data-bs-toggle="collapse" [attr.data-bs-target]="'#comments-' + post.id" aria-expanded="false" aria-controls="collapseExample">
+        <button class="btn btn-link text-primary p-0 mt-2" data-bs-toggle="collapse" [attr.data-bs-target]="'#comments-' + post.id" aria-expanded="false" aria-controls="collapseExample">
           Comments ({{ post.comments.length }})
         </button>
 
@@ -64,15 +59,11 @@
                 </div>
                 <p class="mb-0">{{ comment.text }}</p>
               </div>
+              <!-- Edit Comment Button -->
+              <button type="button" class="btn btn-sm btn-outline-primary me-2" aria-label="Edit Comment" (click)="editComment(post, comment)">Edit</button>
               <!-- Delete Comment Button -->
-              <button type="button" class="btn btn-sm btn-outline-danger ms-2" aria-label="Delete Comment" (click)="deleteComment(post, comment)">Delete</button>
+              <button type="button" class="btn btn-sm btn-outline-danger" aria-label="Delete Comment" (click)="deleteComment(post, comment)">Delete</button>
             </div>
-          </div>
-
-          <!-- Add Comment Form -->
-          <div class="mt-3">
-            <textarea class="form-control" [(ngModel)]="newCommentText" placeholder="Write a comment..." rows="2"></textarea>
-            <button class="btn btn-secondary mt-2" (click)="addComment(post)">Add Comment</button>
           </div>
         </div>
       </div>

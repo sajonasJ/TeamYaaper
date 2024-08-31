@@ -13,6 +13,7 @@ import { GroupInnerPageComponent } from './pages/group-inner-page/group-inner-pa
 import { HomeComponent } from './pages/home/home.component';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { WelcomeComponent } from './pages/welcome/welcome.component';
+import { AddPostModalComponent } from './components/add-post-modal/add-post-modal.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { WelcomeComponent } from './pages/welcome/welcome.component';
     GroupInnerPageComponent,
     HomeComponent,
     LoginPageComponent,
-    WelcomeComponent
+    WelcomeComponent,
+    AddPostModalComponent
   ],
   imports: [
     BrowserModule,

@@ -5,25 +5,27 @@
 }
 
 .content-container {
-    border: 1px solid #ddd; /* Optional: Adds a subtle border */
-  }
-  
-  .welcome-message {
-    font-size: 1.25rem; /* Adjusts the font size slightly larger than Bootstrap's default */
-  }
-  
-  .instructions {
-    font-size: 1rem; /* Matches Bootstrap's base font size */
-  }
-  
+    border: 1px solid #ddd;
+    /* Optional: Adds a subtle border */
+}
 
-  .post-image img {
+.welcome-message {
+    font-size: 1.25rem;
+    /* Adjusts the font size slightly larger than Bootstrap's default */
+}
+
+.instructions {
+    font-size: 1rem;
+    /* Matches Bootstrap's base font size */
+}
+
+
+.post-image img {
     max-width: 100%;
     border-radius: 0.5rem;
-  }
-  
-  .comment-name {
+}
+
+.comment-name {
     margin-right: 10px;
     font-weight: bold;
-  }
-  
+}
