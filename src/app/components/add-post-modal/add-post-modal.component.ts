@@ -12,8 +12,8 @@ export class AddPostModalComponent implements OnChanges {
   @Output() postAdded = new EventEmitter<Post>();
   @Output() postEdited = new EventEmitter<Post>();
 
-  postTitleCharacterLimit: number = 100;
-  postTextCharacterLimit: number = 1000;
+  postTitleLimit: number = 100;
+  postTextLimit: number = 1000;
 
   newPostTitle: string = '';
   newPostText: string = '';
@@ -72,11 +72,11 @@ export class AddPostModalComponent implements OnChanges {
   }
 
   // Helper methods to check character limits
-  isPostTitleExceedingLimit(): boolean {
-    return this.newPostTitle.length > this.postTitleCharacterLimit;
+  isPostTitleLimit(): boolean {
+    return this.newPostTitle.length > this.postTitleLimit;
   }
 
-  isPostTextExceedingLimit(): boolean {
-    return this.newPostText.length > this.postTextCharacterLimit;
+  isPostTextLimit(): boolean {
+    return this.newPostText.length > this.postTextLimit;
   }
 }

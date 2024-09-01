@@ -9,20 +9,20 @@
         <!-- Post Title Input -->
         <div class="mb-3">
           <input type="text" class="form-control" [(ngModel)]="newPostTitle" placeholder="Post Title"
-            [maxlength]="postTitleCharacterLimit">
-          <small class="text-muted">{{ newPostTitle.length }}/{{ postTitleCharacterLimit }} characters</small>
+            [maxlength]="postTitleLimit">
+          <small class="text-muted">{{ newPostTitle.length }}/{{ postTitleLimit }} characters</small>
         </div>
         <!-- Post Text Input -->
         <div class="mb-3">
           <textarea class="form-control" [(ngModel)]="newPostText" placeholder="What's on your mind?" rows="3"
-            [maxlength]="postTextCharacterLimit"></textarea>
-          <small class="text-muted">{{ newPostText.length }}/{{ postTextCharacterLimit }} characters</small>
+            [maxlength]="postTextLimit"></textarea>
+          <small class="text-muted">{{ newPostText.length }}/{{ postTextLimit }} characters</small>
         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
         <button type="button" class="btn btn-primary"
-          [disabled]="isPostTitleExceedingLimit() || isPostTextExceedingLimit()" (click)="savePost()">
+          [disabled]="isPostTitleLimit() || isPostTextLimit()" (click)="savePost()">
           {{ postToEdit ? 'Save Changes' : 'Add Post' }}
         </button>
       </div>

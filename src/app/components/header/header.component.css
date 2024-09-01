@@ -3,20 +3,9 @@
   width: 100%;
 }
 
-.nav-link, .nav-item{
-  display: flex;
-}
-
-.container-fluid{
+.container-fluid {
   padding-left: 30px;
-  padding-right:30px;
-}
-
-.logo img {
-  height: 100px;
-  background-color: rgb(215, 218, 218);
-  border-radius: 50%;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+  padding-right: 30px;
 }
 
 .navbar-brand img {
@@ -24,8 +13,25 @@
   width: auto;
 }
 
+.nav-item {
+  display: flex;
+  align-items: center; /* Center align items vertically */
+}
+
+.nav-link {
+  display: flex; /* Use flexbox to align icon and text horizontally */
+  align-items: center; /* Center align items vertically */
+  gap: 0.5rem; /* Space between icon and text */
+}
+
 .nav-link i {
+  font-size: 20px; /* Set icon size to match h5 text */
   margin-right: 5px; /* Space between icon and text */
+}
+
+.nav-link h5 {
+  margin: 0; /* Remove any default margin */
+  font-size: 20px; /* Ensure h5 text size is consistent */
 }
 
 @media (max-width: 768px) {
@@ -47,5 +53,3 @@
     font-size: 14px; /* Adjust font size for smaller screens */
   }
 }
-
-/* Removed custom flex styles from #navbarNav to ensure Bootstrap's default is applied */

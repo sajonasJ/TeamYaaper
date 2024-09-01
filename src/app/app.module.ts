@@ -14,6 +14,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { WelcomeComponent } from './pages/welcome/welcome.component';
 import { AddPostModalComponent } from './components/add-post-modal/add-post-modal.component';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,9 @@ import { AddPostModalComponent } from './components/add-post-modal/add-post-moda
     AppRoutingModule,
     FormsModule
   ],
-  providers: [],
+  providers: [
+    provideAnimationsAsync()
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
