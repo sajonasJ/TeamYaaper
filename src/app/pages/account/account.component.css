@@ -1,11 +1,49 @@
-:host{
+:host {
     box-sizing: border-box;
-    margin:0;
+    margin: 0;
 }
-.account-container{
+
+.account-container {
     box-sizing: border-box;
-    margin:0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 80vh;
+    background-color: #f4f5f7;
 }
-.account-info{
-    min-height: 88vh;
+
+.card {
+    border-radius: .5rem;
+}
+
+.gradient-custom {
+    background: linear-gradient(to right, #27064a 0%, #4589ff 100%);
+}
+
+.form-group label {
+    display: block;
+}
+
+.form-group input {
+    margin-top: 5px;
+}
+
+.card-body {
+    padding: 2rem;
+}
+.card-ext{
+    border-radius: .5rem
+}
+
+.profile-ext {
+    border-top-left-radius: .5rem;
+    border-bottom-left-radius: .5rem;
+}
+
+.ac-info{
+    background-color: #f4f5f7;
+}
+
+.img-ext{
+    width: 80px;
 }

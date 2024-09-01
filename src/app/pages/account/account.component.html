@@ -3,87 +3,110 @@
   <app-header></app-header>
 
   <!-- Account Information Section -->
-  <div class="account-info bg-light p-4 rounded shadow-sm">
-    <h3 class="mb-4 text-primary">User Account Details</h3>
+  <section class="ac-info">
+    <div class="container py-5 h-100">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col col-lg-6 mb-4 mb-lg-0">
+          <div class="card mb-3 card-ext">
+            <div class="row g-0">
+              <!-- Avatar and User Basic Info -->
+              <div class="col-md-4 gradient-custom text-center text-white profile-ext">
+                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="Avatar"
+                  class="img-fluid my-5 img-ext" />
+                <h5>{{ username }}</h5>
+                <p>Account Details</p>
+                <i class="far fa-edit mb-5"></i>
+              </div>
 
-    <!-- Editable form for updating user details -->
-    <div *ngIf="isEditMode; else displayMode">
-      <!-- Username Input -->
-      <div class="d-flex align-items-center mb-3">
-        <label for="username" class="me-3 fw-bold">Username:</label>
-        <input type="text" id="username" [(ngModel)]="editUsername" class="form-control" />
-      </div>
+              <!-- Account Information Section -->
+              <div class="col-md-8">
+                <div class="card-body p-4">
+                  <h6>User Account Details</h6>
+                  <hr class="mt-0 mb-4">
 
-      <!-- First Name Input -->
-      <div class="d-flex align-items-center mb-3">
-        <label for="firstname" class="me-3 fw-bold">First Name:</label>
-        <input type="text" id="firstname" [(ngModel)]="editFirstName" class="form-control" />
-      </div>
+                  <!-- Editable form for updating user details -->
+                  <div *ngIf="isEditMode; else displayMode">
+                    <!-- Username Input -->
+                    <div class="form-group mb-3">
+                      <label for="username" class="fw-bold">Username:</label>
+                      <input type="text" id="username" [(ngModel)]="username" class="form-control" />
+                    </div>
 
-      <!-- Last Name Input -->
-      <div class="d-flex align-items-center mb-3">
-        <label for="lastname" class="me-3 fw-bold">Last Name:</label>
-        <input type="text" id="lastname" [(ngModel)]="editLastName" class="form-control" />
-      </div>
+                    <!-- First Name Input -->
+                    <div class="form-group mb-3">
+                      <label for="firstname" class="fw-bold">First Name:</label>
+                      <input type="text" id="firstname" [(ngModel)]="firstname" class="form-control" />
+                    </div>
 
-      <!-- Email Input -->
-      <div class="d-flex align-items-center mb-3">
-        <label for="email" class="me-3 fw-bold">Email:</label>
-        <input type="email" id="email" [(ngModel)]="editEmail" class="form-control" />
-      </div>
+                    <!-- Last Name Input -->
+                    <div class="form-group mb-3">
+                      <label for="lastname" class="fw-bold">Last Name:</label>
+                      <input type="text" id="lastname" [(ngModel)]="lastname" class="form-control" />
+                    </div>
 
-      <!-- Groups Display (Without Roles) -->
-      <div class="d-flex align-items-start mb-3">
-        <label class="me-3 fw-bold">Groups:</label>
-        <div>
-          <div *ngFor="let group of objectKeys(groups)" class="mb-2">
-            <span class="fw-bold">{{ group }}</span>
+                    <!-- Email Input -->
+                    <div class="form-group mb-3">
+                      <label for="email" class="fw-bold">Email:</label>
+                      <input type="email" id="email" [(ngModel)]="email" class="form-control" />
+                    </div>
+
+                    <!-- Groups Display (Without Roles) -->
+                    <div class="form-group mb-3">
+                      <label class="fw-bold">Groups:</label>
+                      <div class="d-flex flex-wrap">
+                        <span *ngFor="let group of objectKeys(groups)" class="badge bg-secondary me-2 mb-2">{{ group
+                          }}</span>
+                      </div>
+                    </div>
+
+                    <!-- Save and Cancel Buttons -->
+                    <div class="d-flex justify-content-center mt-4">
+                      <button class="btn btn-primary me-2" (click)="onSave()">Save</button>
+                      <button class="btn btn-secondary" (click)="onCancelEdit()">Cancel</button>
+                    </div>
+                  </div>
+
+                  <!-- Display mode for viewing user details -->
+                  <ng-template #displayMode>
+                    <!-- Username Display -->
+                    <div class="mb-3">
+                      <label class="fw-bold">Username:</label>
+                      <span class="text-muted ms-2">{{ username }}</span>
+                    </div>
+
+                    <!-- Full Name Display -->
+                    <div class="mb-3">
+                      <label class="fw-bold">Name:</label>
+                      <span class="text-muted ms-2">{{ fullName }}</span>
+                    </div>
+
+                    <!-- Email Display -->
+                    <div class="mb-3">
+                      <label class="fw-bold">Email:</label>
+                      <span class="text-muted ms-2">{{ email }}</span>
+                    </div>
+
+                    <!-- Groups Display (Without Roles) -->
+                    <div class="mb-3">
+                      <label class="fw-bold">Groups:</label>
+                      <div class="d-flex flex-wrap">
+                        <span *ngFor="let group of objectKeys(groups)" class="badge bg-secondary me-2 mb-2">{{ group
+                          }}</span>
+                      </div>
+                    </div>
+
+                    <!-- Update, Cancel, and Delete Buttons -->
+                    <div class="d-flex justify-content-end mt-4">
+                      <button class="btn btn-outline-primary me-2" (click)="onUpdate()">Update</button>
+                      <button class="btn btn-outline-danger" (click)="onDelete()">Delete</button>
+                    </div>
+                  </ng-template>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-
-      <!-- Save and Cancel Buttons -->
-      <div class="d-flex justify-content-center mt-4">
-        <button class="btn btn-primary me-2" (click)="onSave()">Save</button>
-        <button class="btn btn-secondary" (click)="onCancelEdit()">Cancel</button>
       </div>
     </div>
-
-    <!-- Display mode for viewing user details -->
-    <ng-template #displayMode>
-      <!-- Username Display -->
-      <div class="d-flex align-items-center mb-3">
-        <label class="me-3 fw-bold">Username:</label>
-        <span class="text-muted">{{ username }}</span>
-      </div>
-
-      <!-- Full Name Display -->
-      <div class="d-flex align-items-center mb-3">
-        <label class="me-3 fw-bold">Name:</label>
-        <span class="text-muted">{{ fullName }}</span>
-      </div>
-
-      <!-- Email Display -->
-      <div class="d-flex align-items-center mb-3">
-        <label class="me-3 fw-bold">Email:</label>
-        <span class="text-muted">{{ email }}</span>
-      </div>
-
-      <!-- Groups Display (Without Roles) -->
-      <div class="d-flex align-items-start mb-3">
-        <label class="me-3 fw-bold">Groups:</label>
-        <div>
-          <div *ngFor="let group of objectKeys(groups)" class="mb-2">
-            <span class="fw-bold">{{ group }}</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Update, Cancel, and Delete Buttons -->
-      <div class="d-flex justify-content-end mt-4">
-        <button class="btn btn-outline-primary me-2" (click)="onUpdate()">Update</button>
-        <button class="btn btn-outline-danger" (click)="onDelete()">Delete</button>
-      </div>
-    </ng-template>
-  </div>
+  </section>
 </div>

@@ -2,14 +2,16 @@ var fs = require("fs");
 
 module.exports = function (req, res) {
   let userobj = {
-    userid: req.body.userid,
+    id: req.body.id,
     username: req.body.username,
-    userbirthdate: req.body.userbirthdate,
-    userage: req.body.userage,
+    firstname: req.body.firstname,
+    lastname: req.body.lastname,
+    email: req.body.email,
+    groups:req.body.groups
   };
   let uArray = [];
 
-  fs.readFile("./data/loggedOn.json", "utf8", function (err, data) {
+  fs.readFile("./data/users.json", "utf8", function (err, data) {
     if (err) throw err;
     uArray = JSON.parse(data);
     console.log(userobj);
@@ -22,7 +24,7 @@ module.exports = function (req, res) {
     }
     res.send(uArray);
     let uArrayjson = JSON.stringify(uArray);
-    fs.writeFile("./data/loggedOn.json", uArrayjson, "utf8", function (err) {
+    fs.writeFile("./data/users.json", uArrayjson, "utf8", function (err) {
       if (err) throw err;
     });
   });

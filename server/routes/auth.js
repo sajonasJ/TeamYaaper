@@ -4,10 +4,8 @@ module.exports = function (req, res){
     var u = req.body.username;
     var p = req.body.password;
     c = u + p;
-    console.log(c);
 
     fs.readFile('./data/auth.json', 'utf8', function(err, data){
-
         if (err) throw err;
         let userArray = JSON.parse(data);
         console.log(userArray);
