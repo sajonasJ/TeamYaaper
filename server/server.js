@@ -18,8 +18,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 //Routes Setup
-app.post("/routes", require("./routes/routes"));
-app.post("/postLogin", require("./routes/postLogin"));
+app.post("/auth.js", require("./routes/auth"));
+app.post("/loggedOn", require("./routes/loggedOn"));
 
 // start the server
 http.listen(PORT, () => {
