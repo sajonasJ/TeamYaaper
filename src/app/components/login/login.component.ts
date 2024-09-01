@@ -27,7 +27,7 @@ export class LoginComponent {
         alert('posting: ' + JSON.stringify(data));
         if (data.ok) {
           alert('correct');
-          sessionStorage.setItem('userid', data.id.toString());
+          sessionStorage.setItem('id', data.id.toString());
           sessionStorage.setItem('username', data.username);
           sessionStorage.setItem('firstname', data.firstname);
           sessionStorage.setItem('lastname', data.lastname);
