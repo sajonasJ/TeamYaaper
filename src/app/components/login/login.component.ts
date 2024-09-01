@@ -40,8 +40,6 @@ export class LoginComponent {
 
           // Fetch group data after successful login
           this.fetchGroups();
-          this.router.navigate(['/home']);
-          this.authService.login();
         } else {
           alert('email or password incorrect');
         }
@@ -53,6 +51,9 @@ export class LoginComponent {
         (groups: any) => {
           sessionStorage.setItem('allGroups', JSON.stringify(groups));
           console.log('Groups fetched successfully:', groups);
+
+          this.router.navigate(['/home']);
+          this.authService.login();
         },
         (error) => {
           console.error('Failed to fetch groups:', error);

@@ -19,7 +19,15 @@ export class SideNavComponent implements OnInit {
 
   loadGroups(): void {
     this.groupService.getGroups().subscribe(
-      (groups) => this.groups = groups,
+      (groups: Group[] | null) => {
+        if (groups) {
+          this.groups = groups;  // Set the groups if available
+        } else {
+          // Handle the case where no groups are found, if needed
+          this.groups = [];  // Optional: Clear the groups or handle differently
+          console.warn('No groups found');
+        }
+      },
       (error) => console.error('Error loading groups', error)
     );
   }
@@ -33,7 +41,7 @@ export class SideNavComponent implements OnInit {
         posts: []
       };
       this.groups.push(newGroup);
-      this.saveGroups();
+      // this.saveGroups();
     }
   }
 
@@ -45,10 +53,10 @@ export class SideNavComponent implements OnInit {
     return Math.random().toString(36).substr(2, 9);
   }
 
-  private saveGroups(): void {
-    this.groupService.saveGroups(this.groups).subscribe(
-      () => console.log('Groups saved successfully'),
-      (error) => console.error('Error saving groups', error)
-    );
-  }
+  // private saveGroups(): void {
+  //   this.groupService.saveGroups(this.groups).subscribe(
+  //     () => console.log('Groups saved successfully'),
+  //     (error) => console.error('Error saving groups', error)
+  //   );
+  // }
 }

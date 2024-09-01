@@ -2,7 +2,7 @@
   "groups": [
     {
       "groupId": "1",
-      "name": "Group One",
+      "name": "The Only Group One",
       "superuser": "admin1",
       "admins": [
         "admin1",
@@ -41,7 +41,6 @@
           ]
         }
       ]
-    },
-    {}
+    }
   ]
 }

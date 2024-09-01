@@ -2,20 +2,25 @@ const fs = require("fs");
 const PATH = "./data/groupDB.json";
 
 module.exports = function (req, res) {
-  let groupObj = {
-    groupId: req.body.groupId,
-    name: req.body.name,
-    superuser: req.body.superuser,
-    admins: req.body.admins,
-    users: req.body.users,
-    channels: req.body.channels,
-  };
 
   fs.readFile(PATH, "utf8", (err, data) => {
     if (err) throw err;
 
     const groupDB = JSON.parse(data);
     let groups = groupDB.groups || [];
+
+    if (!req.body.groupId) {
+      return res.send(groups);
+    }
+
+    let groupObj = {
+      groupId: req.body.groupId,
+      name: req.body.name,
+      superuser: req.body.superuser,
+      admins: req.body.admins,
+      users: req.body.users,
+      channels: req.body.channels,
+    };
 
     let index = groups.findIndex((group) => group.groupId === groupObj.groupId);
 
