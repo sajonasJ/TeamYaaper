@@ -15,6 +15,8 @@ import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { WelcomeComponent } from './pages/welcome/welcome.component';
 import { AddPostModalComponent } from './components/add-post-modal/add-post-modal.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { HttpClientModule } from '@angular/common/http';
+
 
 @NgModule({
   declarations: [
@@ -34,7 +36,8 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
   imports: [
     BrowserModule,
     AppRoutingModule,
-    FormsModule
+    FormsModule,
+    HttpClientModule
   ],
   providers: [
     provideAnimationsAsync()

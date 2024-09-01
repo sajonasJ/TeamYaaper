@@ -2,7 +2,7 @@ var fs = require('fs');
 
 module.exports = function (req, res){
     var u = req.body.username;
-    var p = req.body.pwd;
+    var p = req.body.password;
     c = u + p;
     console.log(c);
 
@@ -12,7 +12,7 @@ module.exports = function (req, res){
         let userArray = JSON.parse(data);
         console.log(userArray);
 
-        let i = userArray.findIndex(user=>((user.username==u)&&(user.pwd == p)));
+        let i = userArray.findIndex(user=>((user.username==u)&&(user.password == p)));
         if (i==-1){
             res.send({"ok": false
 

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-
+import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-account',
   templateUrl: './account.component.html',
@@ -11,7 +11,11 @@ export class AccountComponent implements OnInit {
   firstName: string = 'John';
   lastName: string = 'Doe';
   email: string = 'johndoe@example.com';
-  groups: string[] = ['Admin', 'User', 'Moderator'];
+  groups: { [key: string]: string[] } = { // Initialized with group1, group2, group3
+    'group1': ['Admin', 'Member'],
+    'group2': ['User'],
+    'group3': ['Moderator', 'User']
+  };
 
   // Editable user information properties
   editUsername: string = '';
@@ -22,7 +26,7 @@ export class AccountComponent implements OnInit {
   // Property to track edit mode
   isEditMode: boolean = false;
 
-  constructor() {}
+  constructor(private http: HttpClient) {} // Inject HttpClient
 
   ngOnInit(): void {
     // Initialization logic, such as fetching user data, can go here
@@ -71,5 +75,9 @@ export class AccountComponent implements OnInit {
     if (confirm('Are you sure you want to delete this account?')) {
       alert('Delete functionality not implemented yet.');
     }
+  }
+  // Helper method to get keys of groups for displaying in template
+  objectKeys(obj: any): string[] {
+    return Object.keys(obj);
   }
 }

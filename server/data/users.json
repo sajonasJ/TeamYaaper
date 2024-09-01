@@ -2,28 +2,30 @@
     {
       "id": "1",
       "username": "user1",
+      "firstName": "User",
+      "lastName": "One",
       "email": "user1@example.com",
-      "groupRoles": {
-        "general": ["user"],
-        "support": ["user"]
+      "groups": {
+        "group1": ["user"],
+        "group2": ["admin"]
       }
     },
     {
       "id": "2",
-      "username": "admin_user",
-      "email": "admin_user@example.com",
+      "username": "sajonasj",
+      "firstName": "Jonas",
+      "lastName": "Sajonas",
+      "email": "sajonasj@example.com",
       "groupRoles": {
-        "general": ["admin"],
-        "admin": ["admin"]
+        "group1": ["admin"]
       }
     },
     {
       "id": "3",
-      "username": "chat_user",
-      "email": "chat_user@example.com",
+      "username": "usertwo",
+      "email": "usertwo@example.com",
       "groupRoles": {
-        "general": ["user"],
-        "chat": ["user", "moderator"]
+        "group2": ["user"]
       }
     }
   ]

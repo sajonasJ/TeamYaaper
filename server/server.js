@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 //Routes Setup
-app.post("/auth.js", require("./routes/auth"));
+app.post("/auth", require("./routes/auth"));
 app.post("/loggedOn", require("./routes/loggedOn"));
 
 // start the server
