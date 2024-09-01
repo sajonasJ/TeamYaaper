@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { BACKEND_URL } from '../../constants';
 import { httpOptions } from '../../constants';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -14,7 +15,7 @@ export class LoginComponent {
   password: string = '';
   errorMessage: string = '';
 
-  constructor(private router: Router, private httpClient: HttpClient) {}
+  constructor(private router: Router, private httpClient: HttpClient, private authService: AuthService) {}
  
   submit() {
     let user = { username: this.username, password: this.password };
@@ -33,6 +34,7 @@ export class LoginComponent {
           sessionStorage.setItem('email', data.email);
           sessionStorage.setItem('groups', JSON.stringify(data.groups));
           this.router.navigate(['/home']);
+          this.authService.login();
         } else {
           alert('email or password incorrect');
         }
