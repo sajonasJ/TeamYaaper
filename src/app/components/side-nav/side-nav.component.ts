@@ -14,19 +14,19 @@ export class SideNavComponent {
     const groupName = prompt('Enter group name:');
     if (groupName) {
       const newGroup: Group = {
-        id: this.generateUniqueId(), // Generate a unique ID
+        id: this.generateUniqueId(),
         name: groupName,
-        posts: [] // Initialize with an empty posts array
+        posts: []
       };
       this.groups.push(newGroup);
     }
   }
 
   onGroupClick(group: Group): void {
-    this.groupSelected.emit(group); // Emit the selected group
+    this.groupSelected.emit(group);
   }
 
-  // Utility function to generate a unique ID for a new group
+
   private generateUniqueId(): string {
     return Math.random().toString(36).substr(2, 9); // Simple example for generating a unique ID
   }
