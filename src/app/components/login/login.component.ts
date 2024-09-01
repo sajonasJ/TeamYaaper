@@ -37,6 +37,7 @@ export class LoginComponent {
           sessionStorage.setItem('lastname', data.lastname);
           sessionStorage.setItem('email', data.email);
           sessionStorage.setItem('groups', JSON.stringify(data.groups));
+          sessionStorage.setItem('userlogin', 'true');
 
           // Fetch group data after successful login
           this.fetchGroups();

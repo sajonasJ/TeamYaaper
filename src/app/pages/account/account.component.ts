@@ -22,7 +22,11 @@ export class AccountComponent implements OnInit {
   constructor(private httpClient: HttpClient, private router: Router) {}
 
   ngOnInit() {
-    this.loadData();
+    if (!sessionStorage.getItem('userlogin') || sessionStorage.getItem('userlogin') !== 'true') {
+      this.router.navigate(['/login']);
+    } else {
+      this.loadData();
+    }
   }
 
   loadData() {

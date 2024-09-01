@@ -20,13 +20,13 @@
             <h5>Welcome</h5>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" *ngIf="isLoggedIn">
           <a class="nav-link" routerLink="/home">
-            <i class="material-icons">home</i>
+            <i class="bi bi-house-fill"></i>
             <h5>Home</h5>
           </a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item" *ngIf="isLoggedIn">
           <a class="nav-link" routerLink="/account">
             <i class="bi-person-circle"></i>
             <h5>Account</h5>
@@ -38,18 +38,19 @@
       <ul class="navbar-nav ms-auto">
         <li class="nav-item" *ngIf="!isLoggedIn">
           <a class="nav-link" routerLink="/login">
-            <i class="bi-person-fill"></i>
+            <i class="bi bi-box-arrow-in-right"></i>
             <h5>Login</h5>
           </a>
         </li>
         <li class="nav-item" *ngIf="!isLoggedIn">
           <a class="nav-link" routerLink="/login" [queryParams]="{ signup: true }">
+            <i class="bi bi-person-plus-fill"></i>
             <h5>Sign Up</h5>
           </a>
         </li>
         <li class="nav-item" *ngIf="isLoggedIn">
           <a class="nav-link" (click)="logout()">
-            <i class="bi-box-arrow-right"></i>
+            <i class="bi bi-box-arrow-right"></i>
             <h5>Logout</h5>
           </a>
         </li>
