@@ -22,10 +22,11 @@ module.exports = function (req, res) {
     // if index is not found push userobj, if found the index is the userobj
     i==-1?uArray.push(userobj):uArray[i]=userobj
 
-    res.send(uArray);
+    // res.send(uArray);
     let uArrayjson = JSON.stringify(uArray, null, 2);
     fs.writeFile(PATH, uArrayjson, "utf8", function (err) {
       if (err) throw err;
     });
+    res.send(uArray);
   });
 };

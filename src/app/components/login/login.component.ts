@@ -8,15 +8,19 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrl: './login.component.css',
 })
 export class LoginComponent {
   username: string = '';
   password: string = '';
   errorMessage: string = '';
 
-  constructor(private router: Router, private httpClient: HttpClient, private authService: AuthService) {}
- 
+  constructor(
+    private router: Router,
+    private httpClient: HttpClient,
+    private authService: AuthService
+  ) {}
+
   submit() {
     let user = { username: this.username, password: this.password };
 
@@ -33,6 +37,9 @@ export class LoginComponent {
           sessionStorage.setItem('lastname', data.lastname);
           sessionStorage.setItem('email', data.email);
           sessionStorage.setItem('groups', JSON.stringify(data.groups));
+
+          // Fetch group data after successful login
+          this.fetchGroups();
           this.router.navigate(['/home']);
           this.authService.login();
         } else {
@@ -40,4 +47,17 @@ export class LoginComponent {
         }
       });
   }
+  fetchGroups() {
+    this.httpClient.post(BACKEND_URL + '/groupRoute', {}, httpOptions)
+      .subscribe(
+        (groups: any) => {
+          sessionStorage.setItem('allGroups', JSON.stringify(groups));
+          console.log('Groups fetched successfully:', groups);
+        },
+        (error) => {
+          console.error('Failed to fetch groups:', error);
+        }
+      );
+  }
+  
 }

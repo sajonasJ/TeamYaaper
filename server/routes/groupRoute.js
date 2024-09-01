@@ -17,17 +17,16 @@ module.exports = function (req, res) {
     const groupDB = JSON.parse(data);
     let groups = groupDB.groups || [];
 
-    let index = groups.findIndex(group => group.groupId === groupObj.groupId);
+    let index = groups.findIndex((group) => group.groupId === groupObj.groupId);
 
-   index === -1? groups.push(groupObj):groups[index] = groupObj;
-   res.send(groups);
+    index === -1 ? groups.push(groupObj) : (groups[index] = groupObj);
 
-     // Convert the updated groups array back to JSON format
     let groupJSON = JSON.stringify({ groups: groups }, null, 2);
 
     // Write the updated groups back to the file
     fs.writeFile(PATH, groupJSON, "utf8", function (err) {
       if (err) throw err;
     });
+    res.send(groups);
   });
 };

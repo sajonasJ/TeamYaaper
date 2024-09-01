@@ -4,8 +4,14 @@
       "groupId": "1",
       "name": "Group One",
       "superuser": "admin1",
-      "admins": ["admin1", "admin2"],
-      "users": ["user1", "user2"],
+      "admins": [
+        "admin1",
+        "admin2"
+      ],
+      "users": [
+        "user1",
+        "user2"
+      ],
       "channels": [
         {
           "channelId": "1",
@@ -35,6 +41,7 @@
           ]
         }
       ]
-    }
+    },
+    {}
   ]
 }

@@ -1,16 +1,30 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import {Group} from '../../models/dataInterfaces';
+import { Component, EventEmitter, Input, Output, OnInit } from '@angular/core';
+import { Group } from '../../models/dataInterfaces';
+import { GroupService } from '../../services/group.service';
 
 @Component({
   selector: 'app-side-nav',
   templateUrl: './side-nav.component.html',
   styleUrl: './side-nav.component.css'
 })
-export class SideNavComponent {
+export class SideNavComponent implements OnInit {
   @Input() groups: Group[] = [];
   @Output() groupSelected = new EventEmitter<Group>();
 
-  createGroup() {
+  constructor(private groupService: GroupService) {}
+
+  ngOnInit(): void {
+    this.loadGroups();
+  }
+
+  loadGroups(): void {
+    this.groupService.getGroups().subscribe(
+      (groups) => this.groups = groups,
+      (error) => console.error('Error loading groups', error)
+    );
+  }
+
+  createGroup(): void {
     const groupName = prompt('Enter group name:');
     if (groupName) {
       const newGroup: Group = {
@@ -19,6 +33,7 @@ export class SideNavComponent {
         posts: []
       };
       this.groups.push(newGroup);
+      this.saveGroups();
     }
   }
 
@@ -26,8 +41,14 @@ export class SideNavComponent {
     this.groupSelected.emit(group);
   }
 
-
   private generateUniqueId(): string {
-    return Math.random().toString(36).substr(2, 9); // Simple example for generating a unique ID
+    return Math.random().toString(36).substr(2, 9);
+  }
+
+  private saveGroups(): void {
+    this.groupService.saveGroups(this.groups).subscribe(
+      () => console.log('Groups saved successfully'),
+      (error) => console.error('Error saving groups', error)
+    );
   }
 }

@@ -20,10 +20,16 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use((req, res, next) => {
+  console.log(`${req.method} request for '${req.url}'`);
+  next();
+});
+
+
 //Routes Setup
 app.post("/auth", AUTHROUT);
 app.post("/loggedOn", LOGGEDROUT);
-app.use("/groupRoute", GROUPROUT);
+app.post("/groupRoute", GROUPROUT);
 
 // start the server
 http.listen(PORT, () => {
