@@ -13,16 +13,11 @@
 
     <!-- Navigation Links -->
     <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
+      <!-- Left side links -->
+      <ul class="navbar-nav me-auto">
         <li class="nav-item">
           <a class="nav-link" routerLink="/welcome">
             <h5>Welcome</h5>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/login">
-            <i class="bi-person-fill"></i>
-            <h5>Login</h5>
           </a>
         </li>
         <li class="nav-item">
@@ -35,6 +30,27 @@
           <a class="nav-link" routerLink="/account">
             <i class="bi-person-circle"></i>
             <h5>Account</h5>
+          </a>
+        </li>
+      </ul>
+
+       <!-- Right side links -->
+       <ul class="navbar-nav ms-auto">
+        <li class="nav-item" *ngIf="!isLoggedIn">
+          <a class="nav-link" routerLink="/login" >
+            <i class="bi-person-fill"></i>
+            <h5>Login</h5>
+          </a>
+        </li>
+        <li class="nav-item" *ngIf="!isLoggedIn">
+          <a class="nav-link" [routerLink]="['/login']" [queryParams]="{ signup: true }">
+            <h5>Sign Up</h5>
+          </a>
+        </li>
+        <li class="nav-item" *ngIf="isLoggedIn">
+          <a class="nav-link" (click)="logout()">
+            <i class="bi-box-arrow-right"></i>
+            <h5>Logout</h5>
           </a>
         </li>
       </ul>
