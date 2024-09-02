@@ -6,9 +6,10 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrl: './home.component.css',
+  styleUrl: './home.component.css'
 })
 export class HomeComponent {
+
   selectedGroup: Group | null = null;
 
   constructor(private router: Router, private authservice: AuthService) {}

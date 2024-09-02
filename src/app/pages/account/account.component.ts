@@ -30,9 +30,12 @@ export class AccountComponent implements OnInit {
     this.authservice.isLoggedIn.subscribe((loggedIn) => {
       if (!loggedIn) {
         this.router.navigate(['/login']);
+      } else {
+        this.loadData();
       }
     });
   }
+  
 
   loadData() {
     this.id = Number(sessionStorage.getItem('id') || '0');
