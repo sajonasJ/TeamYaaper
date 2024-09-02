@@ -36,6 +36,7 @@ export class LoginComponent {
           sessionStorage.setItem('firstname', data.firstname);
           sessionStorage.setItem('lastname', data.lastname);
           sessionStorage.setItem('email', data.email);
+          sessionStorage.setItem('roles', JSON.stringify(data.roles));
           sessionStorage.setItem('groups', JSON.stringify(data.groups));
           sessionStorage.setItem('userlogin', 'true');
 

@@ -16,6 +16,7 @@ export class AccountComponent implements OnInit {
   firstname: string = '';
   lastname: string = '';
   email: string = '';
+  roles: string[] = [];
   groups: { [key: string]: string[] } = {};
 
   isEditMode: boolean = false;
@@ -35,7 +36,6 @@ export class AccountComponent implements OnInit {
       }
     });
   }
-  
 
   loadData() {
     this.id = Number(sessionStorage.getItem('id') || '0');
@@ -43,13 +43,8 @@ export class AccountComponent implements OnInit {
     this.firstname = sessionStorage.getItem('firstname') || '';
     this.lastname = sessionStorage.getItem('lastname') || '';
     this.email = sessionStorage.getItem('email') || '';
-
-    try {
-      this.groups = JSON.parse(sessionStorage.getItem('groups') || '{}');
-    } catch (error) {
-      console.error('Failed to parse groups from session storage', error);
-      this.groups = {};
-    }
+    this.roles = JSON.parse(sessionStorage.getItem('roles') || '[]');
+    this.groups = JSON.parse(sessionStorage.getItem('groups') || '{}');
   }
 
   get fullName(): string {
@@ -84,6 +79,7 @@ export class AccountComponent implements OnInit {
           sessionStorage.setItem('firstname', updatedUser.firstname);
           sessionStorage.setItem('lastname', updatedUser.lastname);
           sessionStorage.setItem('email', updatedUser.email);
+          sessionStorage.setItem('roles', JSON.stringify(updatedUser.roles));
           sessionStorage.setItem('groups', JSON.stringify(updatedUser.groups));
           this.loadData();
           this.onCancelEdit();
@@ -107,6 +103,4 @@ export class AccountComponent implements OnInit {
   objectKeys(obj: any): string[] {
     return Object.keys(obj);
   }
-
-  
 }
