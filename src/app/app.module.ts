@@ -16,6 +16,7 @@ import { WelcomeComponent } from './pages/welcome/welcome.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { HttpClientModule } from '@angular/common/http';
 import { FooterComponent } from './components/footer/footer.component';
+import { ModalComponent } from './components/modal/modal.component';
 
 
 @NgModule({
@@ -31,7 +32,8 @@ import { FooterComponent } from './components/footer/footer.component';
     HomeComponent,
     LoginPageComponent,
     WelcomeComponent,
-    FooterComponent
+    FooterComponent,
+    ModalComponent
   ],
   imports: [
     BrowserModule,
