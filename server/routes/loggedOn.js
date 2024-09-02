@@ -13,10 +13,17 @@ module.exports = function (req, res) {
   };
   let uArray = [];
 
+
+
   fs.readFile(PATH, "utf8", function (err, data) {
     if (err) throw err;
     uArray = JSON.parse(data);
     console.log(userobj);
+
+    if (!req.body.id) {
+      console.log("No ID provided, returning all users.");
+      return res.send(uArray);
+    }
 
     let i = uArray.findIndex((x) => x.username == userobj.username);
 

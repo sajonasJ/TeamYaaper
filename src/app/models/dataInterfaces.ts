@@ -20,3 +20,13 @@ export interface Group {
   users: string[];
   channels: Channel[];
 }
+
+export interface User {
+  id: string | number;
+  username: string;
+  firstname: string;
+  lastname: string;
+  email: string;
+  roles: string[];
+  groups: { [key: string]: string[] };
+}

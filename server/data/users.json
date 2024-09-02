@@ -5,9 +5,17 @@
     "firstname": "Jonas123",
     "lastname": "Sajonas",
     "email": "sajonasj@example.com",
-    "groups": { "group1": ["admin"], "group2": ["user"] },
-    "roles": ["super"]
-
+    "groups": {
+      "group1": [
+        "admin"
+      ],
+      "group2": [
+        "user"
+      ]
+    },
+    "roles": [
+      "super"
+    ]
   },
   {
     "id": "2",
@@ -15,7 +23,11 @@
     "firstname": "Jonas2",
     "lastname": "Sajonas2",
     "email": "sajonasj@example.com",
-    "groups": { "group1": ["admin"] },
+    "groups": {
+      "group1": [
+        "admin"
+      ]
+    },
     "roles": []
   },
   {
@@ -24,7 +36,11 @@
     "firstname": "Jonas3",
     "lastname": "Sajonas3",
     "email": "usertwo@example.com",
-    "groups": { "group2": ["user"] },
+    "groups": {
+      "group2": [
+        "user"
+      ]
+    },
     "roles": []
   }
 ]
