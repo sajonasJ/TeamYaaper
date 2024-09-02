@@ -16,7 +16,7 @@
     "lastname": "Sajonas2",
     "email": "sajonasj@example.com",
     "groups": { "group1": ["admin"] },
-    "roles": ["super"]
+    "roles": []
   },
   {
     "id": "3",
@@ -25,6 +25,6 @@
     "lastname": "Sajonas3",
     "email": "usertwo@example.com",
     "groups": { "group2": ["user"] },
-    "roles": ["super"]
+    "roles": []
   }
 ]

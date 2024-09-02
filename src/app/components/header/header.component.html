@@ -20,13 +20,13 @@
             <h5>Welcome</h5>
           </a>
         </li>
-        <li class="nav-item" *ngIf="isLoggedIn">
+        <li class="nav-item">
           <a class="nav-link" routerLink="/home">
             <i class="bi bi-house-fill"></i>
             <h5>Home</h5>
           </a>
         </li>
-        <li class="nav-item" *ngIf="isLoggedIn">
+        <li class="nav-item">
           <a class="nav-link" routerLink="/account">
             <i class="bi-person-circle"></i>
             <h5>Account</h5>
@@ -48,9 +48,15 @@
             <h5>Sign Up</h5>
           </a>
         </li>
+        <li class="nav-item" *ngIf="isLoggedIn && roles.includes('super')">
+          <a class="nav-link" routerLink="/dashboard">
+            <i class="bi bi-columns-gap"></i>
+            <h5>Dashboard</h5>
+          </a>
+        </li>
         <li class="nav-item" *ngIf="isLoggedIn">
           <a class="nav-link" (click)="logout()">
-            <i class="bi bi-box-arrow-right"></i>
+            <i class="bi-box-arrow-right"></i>
             <h5>Logout</h5>
           </a>
         </li>

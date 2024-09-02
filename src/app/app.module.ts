@@ -17,6 +17,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { HttpClientModule } from '@angular/common/http';
 import { FooterComponent } from './components/footer/footer.component';
 import { ModalComponent } from './components/modal/modal.component';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
 
 @NgModule({
@@ -33,7 +34,8 @@ import { ModalComponent } from './components/modal/modal.component';
     LoginPageComponent,
     WelcomeComponent,
     FooterComponent,
-    ModalComponent
+    ModalComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserModule,

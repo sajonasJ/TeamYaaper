@@ -9,11 +9,22 @@ import { Router } from '@angular/router';
 })
 export class HeaderComponent implements OnInit {
   isLoggedIn = false;
+  roles: string[] = [];
 
   constructor(private authService: AuthService, private router: Router) {}
   ngOnInit() {
-    this.authService.isLoggedIn.subscribe(status => this.isLoggedIn = status);
+    this.authService.isLoggedIn.subscribe(status => {
+      this.isLoggedIn = status;
+      if (this.isLoggedIn) {
+        this.loadUserRoles();
+      }
+    });
   }
+  loadUserRoles() {
+    const rolesFromStorage = sessionStorage.getItem('roles');
+    this.roles = rolesFromStorage ? JSON.parse(rolesFromStorage) : [];
+  }
+
 
   logout() {
     this.authService.logout();
