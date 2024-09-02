@@ -13,7 +13,7 @@ export class AuthService {
   isLoggedIn = this.loggedIn.asObservable();
 
   constructor() {
-    const isLoggedIn = !!sessionStorage.getItem('userid');
+    const isLoggedIn = !!sessionStorage.getItem('userlogin')===true;
     this.loggedIn.next(isLoggedIn);
     console.log('Is logged in:', isLoggedIn);
   }

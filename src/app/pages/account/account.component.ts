@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { httpOptions } from '../../constants';
 import { BACKEND_URL } from '../../constants';
 import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-account',
@@ -19,14 +20,18 @@ export class AccountComponent implements OnInit {
 
   isEditMode: boolean = false;
 
-  constructor(private httpClient: HttpClient, private router: Router) {}
+  constructor(
+    private httpClient: HttpClient,
+    private router: Router,
+    private authservice: AuthService
+  ) {}
 
   ngOnInit() {
-    if (!sessionStorage.getItem('userlogin') || sessionStorage.getItem('userlogin') !== 'true') {
-      this.router.navigate(['/login']);
-    } else {
-      this.loadData();
-    }
+    this.authservice.isLoggedIn.subscribe((loggedIn) => {
+      if (!loggedIn) {
+        this.router.navigate(['/login']);
+      }
+    });
   }
 
   loadData() {
