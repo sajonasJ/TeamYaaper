@@ -1,40 +1,83 @@
-:host {
-    display: block;
-    min-height: 100%;
-    max-height: 100vh; 
-    width: 100%;
-    box-sizing: border-box;
-    overflow-y: auto;
+:host .sub-container {
+  background-color: #ebebeb;
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.content-container {
-    border: 1px solid #ddd;
-    /* Optional: Adds a subtle border */
+/* Group Header */
+.group-header {
+  text-align: center;
+  margin-bottom: 20px; 
 }
 
-.welcome-message {
-    font-size: 1.25rem;
-    /* Adjusts the font size slightly larger than Bootstrap's default */
+/* Channel Container */
+.channel-container {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+  padding: 20px;
+  margin-bottom: 20px; 
 }
 
-.instructions {
-    font-size: 1rem;
-    /* Matches Bootstrap's base font size */
+.channel-container-btn {
+display: flex;
+flex-direction: row;
+justify-content: space-between;
 }
 
-
-.post-image img {
-    max-width: 100%;
-    border-radius: 0.5rem;
+.channel-container h3 {
+  margin-bottom: 15px; 
 }
 
-.comment-name {
-    margin-right: 10px;
-    font-weight: bold;
+.channel-container .list-group {
+  padding-left: 0;
 }
 
-.card-title-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.channel-container .list-group-item {
+  padding: 10px 15px;
+  background-color: #f8f9fa;
+  margin-bottom: 10px; 
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.channel-container .list-group-item:hover {
+  background-color: #e2e6ea; 
+}
+
+/* Message Container */
+.message-container {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+  padding: 20px;
+}
+
+.message-container h4 {
+  margin-bottom: 15px; 
+}
+
+.message-container .messages-list {
+  padding-left: 0; 
+}
+
+.message-container .message-card {
+  margin-bottom: 15px;
+}
+
+.message-container .card-body {
+  padding: 15px;
+}
+
+@media (max-width: 768px) {
+  .sub-container {
+    padding: 10px;
+  }
+}
+
+.custom-btn-height {
+  height: 30px;
+  padding: 0 10px;
+  font-size: 0.875rem;
 }

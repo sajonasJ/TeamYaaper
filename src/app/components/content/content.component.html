@@ -1,93 +1,55 @@
-<div class="content-container p-4 bg-light rounded shadow" *ngIf="selectedGroup">
-  <div class="welcome-message mb-3">
-    Welcome to <span class="group-name text-primary">{{ selectedGroup.name }}</span>
+<section class="sub-container">
+  <!-- Group Header -->
+  <div *ngIf="selectedGroup" class="group-header">
+    <h2>{{ selectedGroup.name }}</h2>
+    <p>{{ selectedGroup.description }}</p>
   </div>
-  <p class="instructions text-muted">You can start by posting a message to the group.</p>
 
-<!-- Wrapper for the button with flex utilities -->
-<div class="d-flex justify-content-end">
-  <!-- Button to trigger modal for adding a new post -->
-  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPostModal"
-    (click)="postToEdit = null">
-    Add New Post
-  </button>
-</div>
+  <!-- Channel Container -->
+  <div class="channel-container" *ngIf="selectedGroup">
+    <div class="channel-container-btn">
+      <h3>Channels</h3>
+      <button class="btn btn-primary btn-sm custom-btn-height">Add</button>
+    </div>
+    <ul class="list-group">
+      <!-- Make the list item visually identifiable as clickable -->
+      <li class="list-group-item clickable" *ngFor="let channel of selectedGroup.channels"
+        (click)="selectChannel(channel)">
+        {{ channel.name }}
+      </li>
+    </ul>
+  </div>
 
+  <!-- Message Container -->
+  <div class="message-container" *ngIf="selectedChannel">
+    <div class="channel-container-btn">
+      <h4>{{ selectedChannel.name }}</h4>
+      <button class="btn btn-primary btn-sm custom-btn-height">Add Message</button>
+    </div>
+    <p>{{selectedChannel.description}}</p>
 
-  <!-- Include the Add Post Modal Component -->
-  <app-add-post-modal [postToEdit]="postToEdit" (postAdded)="handlePostAdded($event)"
-    (postEdited)="handlePostEdited($event)">
-  </app-add-post-modal>
-
-  <!-- Display Posts -->
-  <div class="post-container mt-4" *ngFor="let post of selectedGroup.posts">
-    <div class="card mb-3">
-      <div class="card-body">
-        <div class="card-title-container">
-          <h5 class="card-title">{{ post.name }}</h5>
-          <div class="card-title-btns">
-            <!-- Add Comment Button -->
-            <button type="button" class="btn btn-sm btn-outline-secondary" (click)="showCommentInput(post)">
-              Add Comment
-            </button>
-            <!-- Edit Post Button -->
-            <button type="button" class="btn btn-sm btn-outline-primary" aria-label="Edit"
-              (click)="editPost(post)">Edit</button>
-            <!-- Delete Post Button -->
-            <button type="button" class="btn-close" aria-label="Delete" (click)="deletePost(post)"></button>
-          </div>
-        </div>
-        <p class="card-text">{{ post.postText }}</p>
-
-        <br>
-        <div class="d-flex justify-content-end">
-        <!-- Toggle Comments Button -->
-        <button class="btn btn-link text-primary p-0 mt-2" data-bs-toggle="collapse"
-          [attr.data-bs-target]="'#comments-' + post.id" aria-expanded="false" aria-controls="collapseExample"
-          [disabled]="!post.comments.length"> <!-- Disable when no comments -->
-          Comments ({{ post.comments.length }})
-        </button>
-      </div>
-
-
-        <!-- Comment Input Section -->
-        <div *ngIf="postCommentingOn === post" class="mt-3">
-          <textarea class="form-control" [(ngModel)]="newCommentText" placeholder="Write a comment..." rows="2"
-            maxlength="500"></textarea>
-          <small class="text-muted">{{ newCommentText.length }}/500 characters</small>
-          <br>
-          <div class="d-flex justify-content-end">
-            <button class="btn btn-primary mt-2 me-2" [disabled]="newCommentText.length > 500"
-              (click)="saveComment(post)">
-              {{ commentToEdit ? 'Save' : 'Add' }}
-            </button>
-            <button class="btn btn-secondary mt-2" (click)="cancelComment()">Cancel</button>
-          </div>
-        </div>
-
-        <!-- Collapsible Comments Section -->
-        <div [id]="'comments-' + post.id" class="collapse mt-3">
-          <div class="list-group">
-            <div *ngFor="let comment of post.comments"
-              class="list-group-item d-flex justify-content-between align-items-start">
-              <div>
-                <div class="d-flex align-items-center mb-2">
-                  <strong class="comment-name">{{ comment.name }}</strong>
-                </div>
-                <p class="mb-0">{{ comment.text }}</p>
-              </div>
-              <div class="d-flex justify-content-end">
-                <!-- Edit Comment Button -->
-                <button type="button" class="btn btn-sm btn-outline-primary me-2" aria-label="Edit Comment"
-                  (click)="showCommentInput(post, comment)">Edit</button>
-                <!-- Delete Comment Button -->
-                <button type="button" class="btn btn-sm btn-outline-danger" aria-label="Delete Comment"
-                  (click)="deleteComment(post, comment)">Delete</button>
-              </div>
+    <div class="messages-list">
+      <div class="message-card card mb-2" *ngFor="let message of selectedChannel.messages">
+        <div class="card-body">
+          <h5 class="card-title">{{ message.name }}</h5>
+          <p class="card-text">{{message.text}}</p>
+          <!-- Flex container for timestamp and buttons -->
+          <div class="d-flex justify-content-between align-items-end">
+            <div>
+              <p class="card-text small mb-0">
+                Time: {{ message.timestamp | date:'hh:mm a z' }}
+              </p>
+              <p class="card-text small mb-0">
+                Date: {{ message.timestamp | date:'dd/MM/yy' }}
+              </p>
+            </div>
+            <div>
+              <button class="btn btn-sm btn-outline-primary me-2">Edit</button>
+              <button class="btn btn-sm btn-outline-danger">Delete</button>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
+</section>

@@ -1,0 +1,24 @@
+:host,
+.footer {
+    background-color: #343a40;
+    color: #fff;
+    width: 100%;
+}
+
+.footer h5 {
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.footer p {
+    font-size: 14px;
+}
+
+.footer a {
+    text-decoration: none;
+    color: #fff;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}

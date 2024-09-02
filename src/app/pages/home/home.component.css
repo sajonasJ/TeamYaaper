@@ -1,123 +1,20 @@
-:host {
-    display: block;
-    height: 100vh;
-  }
-  
-  .home-container {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-  }
-  
-  .main-container {
-    display: flex;
-    width: 100%;
-    height: 100vh;
-  }
-  
-  .content-container {
-    margin: 20px;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .group-name {
-    font-size: 1.5rem;
-    margin-bottom: 20px;
-    color: #333;
-  }
-  
-  .post-container {
-    margin-bottom: 20px;
-  }
-  
-  .main-post {
-    padding: 15px;
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-  
-  .post-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-  }
-  
-  .profile-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 10px;
-  }
-  
-  .post-name {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #333;
-  }
-  
-  .post-body {
-    margin-bottom: 15px;
-  }
-  
-  .post-image img {
-    max-width: 100%;
-    border-radius: 8px;
-    margin-bottom: 15px;
-  }
-  
-  .post-text {
-    font-size: 1rem;
-    color: #555;
-  }
-  
-  .post-footer {
-    display: flex;
-    justify-content: flex-start;
-  }
-  
-  .comments-button {
-    background: none;
-    border: none;
-    color: #007bff;
-    cursor: pointer;
-    font-size: 1rem;
-    padding: 5px;
-  }
-  
-  .comments-button:hover {
-    text-decoration: underline;
-  }
-  
-  .post-comments {
-    margin-top: 10px;
-    padding: 15px;
-    background-color: #f1f1f1;
-    border-radius: 8px;
-  }
-  
-  .comment-item {
-    margin-bottom: 10px;
-  }
-  
-  .comment-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 5px;
-  }
-  
-  .comment-name {
-    font-size: 1rem;
-    font-weight: bold;
-    margin-left: 10px;
-    color: #333;
-  }
-  
-  .comment-text {
-    font-size: 0.9rem;
-    color: #555;
-  }
-  
+.home-container {
+  width: 100%;
+  height: 100%;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: row;
+  flex:1;
+}
+
+.side-nav {
+  flex: 0 0 20%; 
+  max-width: 20%;
+}
+
+.main-content {
+  flex: 1;
+  max-width: 80%
+}

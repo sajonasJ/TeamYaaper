@@ -1,67 +1,65 @@
-<div class="login-container dark-theme">
-    <h2>Sign Up</h2>
-    <form (ngSubmit)="onSubmit(signupForm)" #signupForm="ngForm">
-  
-      <!-- Username -->
-      <div class="form-group">
-        <label for="username">Username</label>
-        <input type="text" id="username" name="username" ngModel required minlength="3" class="form-control">
-        <div *ngIf="signupForm.submitted && signupForm.controls['username']?.invalid" class="error">
-          Username is required and must be at least 3 characters long.
+<div class="sub-container">
+  <h2 class="mb-4 text-center">Sign Up</h2>
+  <form (ngSubmit)="onSubmit(signupForm)" #signupForm="ngForm" class="w-100">
+    <!-- Username -->
+    <div class="form-group mb-3">
+      <label for="username" class="form-label">Username</label>
+      <input type="text" id="username" name="username" ngModel required minlength="4" class="form-control" placeholder="Enter your username">
+      <div *ngIf="signupForm.submitted && signupForm.controls['username']?.invalid" class="error">
+        Username is required and must be at least 3 characters long.
+      </div>
+    </div>
+
+    <!-- First Name -->
+    <div class="form-group mb-3">
+      <label for="firstname" class="form-label">First Name</label>
+      <input type="text" id="firstname" name="firstname" ngModel required class="form-control" placeholder="Enter your first name">
+      <div *ngIf="signupForm.submitted && signupForm.controls['firstname']?.invalid" class="error">
+        First name is required.
+      </div>
+    </div>
+
+    <!-- Last Name -->
+    <div class="form-group mb-3">
+      <label for="lastname" class="form-label">Last Name</label>
+      <input type="text" id="lastname" name="lastname" ngModel required class="form-control" placeholder="Enter your last name">
+      <div *ngIf="signupForm.submitted && signupForm.controls['lastname']?.invalid" class="error">
+        Last name is required.
+      </div>
+    </div>
+
+    <!-- Email -->
+    <div class="form-group mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input type="email" id="email" name="email" ngModel required email class="form-control" placeholder="Enter your email">
+      <div *ngIf="signupForm.submitted && signupForm.controls['email']?.invalid" class="error">
+        <div *ngIf="signupForm.controls['email']?.errors?.['required']">
+          Email is required.
+        </div>
+        <div *ngIf="signupForm.controls['email']?.errors?.['email']">
+          Please enter a valid email address.
         </div>
       </div>
-  
-      <!-- First Name -->
-      <div class="form-group">
-        <label for="firstname">First Name</label>
-        <input type="text" id="firstname" name="firstname" ngModel required class="form-control">
-        <div *ngIf="signupForm.submitted && signupForm.controls['firstname']?.invalid" class="error">
-          First name is required.
-        </div>
+    </div>
+
+    <!-- Password -->
+    <div class="form-group mb-3">
+      <label for="password" class="form-label">Password</label>
+      <input type="password" id="password" name="password" ngModel required minlength="8" class="form-control" placeholder="Enter your password">
+      <div *ngIf="signupForm.submitted && signupForm.controls['password']?.invalid" class="error">
+        Password is required and must be at least 8 characters long.
       </div>
-  
-      <!-- Last Name -->
-      <div class="form-group">
-        <label for="lastname">Last Name</label>
-        <input type="text" id="lastname" name="lastname" ngModel required class="form-control">
-        <div *ngIf="signupForm.submitted && signupForm.controls['lastname']?.invalid" class="error">
-          Last name is required.
-        </div>
+    </div>
+
+    <!-- Verify Password -->
+    <div class="form-group mb-4">
+      <label for="verifyPassword" class="form-label">Verify Password</label>
+      <input type="password" id="verifyPassword" name="verifyPassword" ngModel required class="form-control" placeholder="Re-enter your password">
+      <div *ngIf="signupForm.submitted && signupForm.value.password !== signupForm.value.verifyPassword" class="error">
+        Passwords do not match.
       </div>
-  
-      <!-- Email -->
-      <div class="form-group">
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" ngModel required email class="form-control">
-        <div *ngIf="signupForm.submitted && signupForm.controls['email']?.invalid" class="error">
-          <div *ngIf="signupForm.controls['email']?.errors?.['required']">
-            Email is required.
-          </div>
-          <div *ngIf="signupForm.controls['email']?.errors?.['email']">
-            Please enter a valid email address.
-          </div>
-        </div>
-      </div>
-  
-      <!-- Password -->
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" ngModel required minlength="8" class="form-control">
-        <div *ngIf="signupForm.submitted && signupForm.controls['password']?.invalid" class="error">
-          Password is required and must be at least 8 characters long.
-        </div>
-      </div>
-  
-      <!-- Verify Password -->
-      <div class="form-group">
-        <label for="verifyPassword">Verify Password</label>
-        <input type="password" id="verifyPassword" name="verifyPassword" ngModel required class="form-control">
-        <div *ngIf="signupForm.submitted && signupForm.value.password !== signupForm.value.verifyPassword" class="error">
-          Passwords do not match.
-        </div>
-      </div>
-  
-      <button type="submit" [disabled]="!signupForm.valid" class="btn btn-primary">Sign Up</button>
-    </form>
-  </div>
-  
+    </div>
+
+    <button type="submit" [disabled]="!signupForm.valid" class="btn btn-primary w-100">Sign Up</button>
+  </form>
+</div>

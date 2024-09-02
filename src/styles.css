@@ -1,41 +1,53 @@
 /* You can add global styles to this file, and also import other style files */
-html, body{
+html,
+body,
+:host,
+.main-container {
     height: 100%;
     margin: 0;
-    padding:0;
+    padding: 0;
     box-sizing: border-box;
-}
-body, .dark-theme {
-    background-color: rgb(76, 77, 79) ;
-    color:whitesmoke ;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    font-family: 'Exo 2', sans-serif;
+    background-color: rgb(221, 221, 221);
+    color: #6c757d;
+    flex: 1;
 }
 
-/* Global font settings */
-body {
-    font-family: 'Exo 2', sans-serif; /* Default font for most elements */
+.section-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin: 0;
+    flex:1;
+    min-height: 80%;
 }
 
 /* Specific font usage for Anton */
-h1, h2, h3, .primary-button, .heading, .title {
-    font-family: 'Anton', sans-serif; /* For headings, titles, and primary action buttons */
-    font-weight: 400; /* Default weight for bold display */
+h1,
+h2,
+h3,
+.primary-button,
+.heading,
+.title {
+    font-family: 'Anton', sans-serif;
+    font-weight: 400;
 }
 
 /* Styling for chat messages */
 .chat-message {
-    font-weight: 400; /* Regular weight for readability */
+    font-weight: 400;
 }
 
 /* Styling for usernames */
 .username {
-    font-weight: 600; /* Semi-bold to differentiate from body text */
+    font-weight: 600;
 }
 
 /* Styling for notifications and alerts */
 .notification {
-    font-family: 'Anton', sans-serif; /* Using Anton for a bold, standout look */
-    font-weight: 400; /* Regular weight for prominence */
+    font-family: 'Anton', sans-serif;
+    font-weight: 400;
 }
-
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

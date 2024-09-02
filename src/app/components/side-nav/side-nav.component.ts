@@ -21,42 +21,20 @@ export class SideNavComponent implements OnInit {
     this.groupService.getGroups().subscribe(
       (groups: Group[] | null) => {
         if (groups) {
-          this.groups = groups;  // Set the groups if available
+          this.groups = groups;
         } else {
-          // Handle the case where no groups are found, if needed
-          this.groups = [];  // Optional: Clear the groups or handle differently
-          console.warn('No groups found');
+          this.groups = [];
         }
       },
       (error) => console.error('Error loading groups', error)
     );
   }
 
-  createGroup(): void {
-    const groupName = prompt('Enter group name:');
-    if (groupName) {
-      const newGroup: Group = {
-        id: this.generateUniqueId(),
-        name: groupName,
-        posts: []
-      };
-      this.groups.push(newGroup);
-      // this.saveGroups();
-    }
-  }
-
   onGroupClick(group: Group): void {
     this.groupSelected.emit(group);
+    console.log('Group emitted:', group);  // Add log to verify group emitted
+
   }
 
-  private generateUniqueId(): string {
-    return Math.random().toString(36).substr(2, 9);
-  }
 
-  // private saveGroups(): void {
-  //   this.groupService.saveGroups(this.groups).subscribe(
-  //     () => console.log('Groups saved successfully'),
-  //     (error) => console.error('Error saving groups', error)
-  //   );
-  // }
 }

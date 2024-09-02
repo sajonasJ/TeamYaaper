@@ -1,20 +1,22 @@
-export interface Post {
-    id: string;
-    profileIcon: string;
-    name: string;
-    postText: string;
-    postImageUrl?: string;
-    comments: Comment[];
-  }
-  
-  export interface Comment {
-    name: string;
-    text: string;
-  }
-  
-  export interface Group {
-    id: string;
-    name: string;
-    posts: Post[];
-  }
-  
+export interface Channel {
+  id: string;
+  name: string;
+  description: string;
+  messages: Message[];
+}
+
+export interface Message {
+  name: string;
+  text: string;
+  timestamp: Date;
+}
+
+export interface Group {
+  id: string;
+  name: string;
+  description: string;
+  superuser: string[];
+  admins: string[];
+  users: string[];
+  channels: Channel[];
+}

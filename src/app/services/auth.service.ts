@@ -15,10 +15,12 @@ export class AuthService {
   constructor() {
     const isLoggedIn = !!sessionStorage.getItem('userid');
     this.loggedIn.next(isLoggedIn);
+    console.log('Is logged in:', isLoggedIn);
   }
 
   login() {
     this.loggedIn.next(true);
+    console.log('Is logged in:', this.isLoggedIn);
   }
 
   logout() {

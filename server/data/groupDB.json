@@ -1,41 +1,38 @@
 {
   "groups": [
     {
-      "groupId": "1",
+      "id": "1",
       "name": "The Only Group One",
-      "superuser": "admin1",
-      "admins": [
-        "admin1",
-        "admin2"
-      ],
-      "users": [
-        "user1",
-        "user2"
-      ],
+      "description": "A group for general discussions and announcements.",
+      "superuser": ["admin1"],
+      "admins": ["admin1", "admin2"],
+      "users": ["user1", "user2"],
       "channels": [
         {
-          "channelId": "1",
+          "id": "1",
           "name": "General",
+          "description": "A channel for general discussions.",
           "messages": [
             {
-              "sender": "user1",
-              "message": "Welcome to the General channel!",
+              "name": "user1",
+              "text": "Welcome to the General channel!",
               "timestamp": "2024-09-01T10:00:00Z"
             },
             {
-              "sender": "admin2",
-              "message": "Hello everyone, let's keep this channel for general discussions.",
+              "name": "admin2",
+              "text": "Hello everyone, let's keep this channel for general discussions.",
               "timestamp": "2024-09-01T10:05:00Z"
             }
           ]
         },
         {
-          "channelId": "2",
+          "id": "2",
           "name": "Announcements",
+          "description": "A channel for important announcements and updates.",
           "messages": [
             {
-              "sender": "admin1",
-              "message": "Please check this channel for important updates.",
+              "name": "admin1",
+              "text": "Please check this channel for important updates.",
               "timestamp": "2024-09-01T11:00:00Z"
             }
           ]

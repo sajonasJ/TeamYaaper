@@ -13,9 +13,9 @@ import { GroupInnerPageComponent } from './pages/group-inner-page/group-inner-pa
 import { HomeComponent } from './pages/home/home.component';
 import { LoginPageComponent } from './pages/login-page/login-page.component';
 import { WelcomeComponent } from './pages/welcome/welcome.component';
-import { AddPostModalComponent } from './components/add-post-modal/add-post-modal.component';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { HttpClientModule } from '@angular/common/http';
+import { FooterComponent } from './components/footer/footer.component';
 
 
 @NgModule({
@@ -31,7 +31,7 @@ import { HttpClientModule } from '@angular/common/http';
     HomeComponent,
     LoginPageComponent,
     WelcomeComponent,
-    AddPostModalComponent
+    FooterComponent
   ],
   imports: [
     BrowserModule,
