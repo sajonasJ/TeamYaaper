@@ -10,3 +10,20 @@
     </li>
   </ul>
 </nav>
+
+<!-- Reusable Modal Component for adding a new group -->
+<app-modal 
+  [title]="'Add New Group'" 
+  [modalId]="'groupModal'" 
+  (save)="addNewGroup()">
+  <div modal-body>
+    <div class="mb-3">
+      <label for="groupName" class="form-label">Group Name</label>
+      <input type="text" class="form-control" id="groupName" [(ngModel)]="newGroupName">
+    </div>
+    <div class="mb-3">
+      <label for="groupDescription" class="form-label">Group Description</label>
+      <textarea class="form-control" id="groupDescription" [(ngModel)]="newGroupDescription"></textarea>
+    </div>
+  </div>
+</app-modal>

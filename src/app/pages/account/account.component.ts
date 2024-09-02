@@ -74,7 +74,7 @@ export class AccountComponent implements OnInit {
       .post<any>(BACKEND_URL + '/loggedOn', userObj, httpOptions)
       .subscribe((response: any) => {
         alert(JSON.stringify(response));
-        alert('Profile updated successfully!, Please login again');
+        alert('Profile updated successfully!');
 
         const updatedUser = response.find((user: any) => user.id === this.id);
 

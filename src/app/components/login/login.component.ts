@@ -47,7 +47,8 @@ export class LoginComponent {
       });
   }
   fetchGroups() {
-    this.httpClient.post(BACKEND_URL + '/groupRoute', {}, httpOptions)
+    this.httpClient
+    .post(BACKEND_URL + '/groupRoute', {}, httpOptions)
       .subscribe(
         (groups: any) => {
           sessionStorage.setItem('allGroups', JSON.stringify(groups));

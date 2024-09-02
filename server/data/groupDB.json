@@ -4,9 +4,17 @@
       "id": "1",
       "name": "The Only Group One",
       "description": "A group for general discussions and announcements.",
-      "superuser": ["admin1"],
-      "admins": ["admin1", "admin2"],
-      "users": ["user1", "user2"],
+      "superuser": [
+        "admin1"
+      ],
+      "admins": [
+        "admin1",
+        "admin2"
+      ],
+      "users": [
+        "user1",
+        "user2"
+      ],
       "channels": [
         {
           "id": "1",
@@ -38,6 +46,16 @@
           ]
         }
       ]
+    },
+    {
+      "id": "2",
+      "name": "21312313",
+      "superuser": [],
+      "admins": [
+        "1"
+      ],
+      "users": [],
+      "channels": []
     }
   ]
 }
