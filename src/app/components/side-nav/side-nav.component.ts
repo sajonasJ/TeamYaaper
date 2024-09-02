@@ -17,7 +17,7 @@ export class SideNavComponent implements OnInit {
   newGroupName: string = '';
   newGroupDescription: string = '';
   maxUserId: number = 0;
-  currentUserId: string | null = null;
+  currentUser: string | null = null;
 
   constructor(
     private groupService: GroupService,
@@ -26,11 +26,11 @@ export class SideNavComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadGroups();
-    this.loadCurrentUserId();
+    this.loadCurrentUser();
   }
 
-  loadCurrentUserId(): void {
-    this.currentUserId = sessionStorage.getItem('id');
+  loadCurrentUser(): void {
+    this.currentUser = sessionStorage.getItem('name');
   }
 
   loadGroups(): void {
@@ -45,6 +45,7 @@ export class SideNavComponent implements OnInit {
       (error) => console.error('Error loading groups', error)
     );
   }
+  
 
   onGroupClick(group: Group): void {
     this.groupSelected.emit(group);
@@ -59,7 +60,7 @@ export class SideNavComponent implements OnInit {
         description: this.newGroupDescription,
         channels: [],
         superuser: [],
-        admins: this.currentUserId ? [this.currentUserId] : [],
+        admins: this.currentUser ? [this.currentUser] : [],
         users: [],
       };
       this.updateGroupDB(newGroup);
@@ -81,7 +82,7 @@ export class SideNavComponent implements OnInit {
     return (maxId + 1).toString();
   }
 
-  updateGroupsInStorage(): void {
+  updateGroupsStorage(): void {
     sessionStorage.setItem('allGroups', JSON.stringify(this.groups));
   }
 
@@ -97,7 +98,7 @@ export class SideNavComponent implements OnInit {
           // Update local group list and session storage after successful addition
           this.groups.push(groupObj);
           this.groupAdded.emit(groupObj);
-          this.updateGroupsInStorage();
+          this.updateGroupsStorage();
           this.resetNewGroupForm();
         },
         (error) => {

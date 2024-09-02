@@ -17,10 +17,11 @@ module.exports = function (req, res) {
     let groupObj = {
       id: req.body.id,
       name: req.body.name,
-      superuser: req.body.superuser,
-      admins: req.body.admins,
-      users: req.body.users,
-      channels: req.body.channels,
+      description: req.body.description || "",
+      superuser: req.body.superuser || [],
+      admins: req.body.admins || [],
+      users: req.body.users || [],
+      channels: req.body.channels || [],
     };
     console.log("Processed Group Object:", groupObj); // Log processed group object
 

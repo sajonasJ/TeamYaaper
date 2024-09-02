@@ -9,7 +9,7 @@
   <div class="channel-container" *ngIf="selectedGroup">
     <div class="channel-container-btn">
       <h3>Channels</h3>
-      <button class="btn btn-primary btn-sm custom-btn-height">Add</button>
+      <button class="btn btn-primary btn-sm custom-btn-height" data-bs-toggle="modal" data-bs-target="#channelModal">Add</button>
     </div>
     <ul class="list-group">
       <!-- Make the list item visually identifiable as clickable -->
@@ -53,3 +53,19 @@
     </div>
   </div>
 </section>
+
+<app-modal 
+  [title]="'Add New Channel'" 
+  [modalId]="'channelModal'" 
+  (save)="addNewChannel()">
+  <div modal-body>
+    <div class="mb-3">
+      <label for="channelName" class="form-label">Channel Name</label>
+      <input type="text" class="form-control" id="channelName" [(ngModel)]="newChannelName">
+    </div>
+    <div class="mb-3">
+      <label for="channelDescription" class="form-label">Channel Description</label>
+      <textarea class="form-control" id="channelDescription" [(ngModel)]="newChannelDescription"></textarea>
+    </div>
+  </div>
+</app-modal>
