@@ -1,6 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Group, Channel } from '../../models/dataInterfaces';
 import { GroupService } from '../../services/group.service';
+import { HttpClient } from '@angular/common/http';
+import { httpOptions, BACKEND_URL } from '../../constants';
 
 @Component({
   selector: 'app-content',
@@ -9,13 +11,16 @@ import { GroupService } from '../../services/group.service';
 })
 export class ContentComponent implements OnInit {
   @Input() selectedGroup: Group | null = null;
-  groups: Group[] = []
+  groups: Group[] = [];
   selectedChannel: Channel | null = null;
 
   newChannelName: string = '';
   newChannelDescription: string = '';
 
-  constructor(private groupService: GroupService) {}
+  constructor(
+    private groupService: GroupService,
+    private httpClient: HttpClient
+  ) {}
 
   ngOnInit(): void {
     this.loadGroups();
@@ -62,7 +67,10 @@ export class ContentComponent implements OnInit {
         messages: [],
       };
       this.selectedGroup.channels.push(newChannel);
-      this.updateGroupsStorage()
+      this.updateGroupsStorage();
+      this.updateGroupDB(this.selectedGroup);
+
+      
       this.resetNewChannelForm();
     } else {
       alert('Please fill in both the channel name and description.');
@@ -78,7 +86,9 @@ export class ContentComponent implements OnInit {
       const groupId = this.selectedGroup.id.toString();
       console.log('Selected Group ID:', groupId, 'Type:', typeof groupId);
 
-      const groupIndex = this.groups.findIndex(group => group.id.toString() === groupId);
+      const groupIndex = this.groups.findIndex(
+        (group) => group.id.toString() === groupId
+      );
 
       if (groupIndex !== -1) {
         this.groups[groupIndex].channels = [...this.selectedGroup.channels];
@@ -93,6 +103,24 @@ export class ContentComponent implements OnInit {
     }
   }
 
+  updateGroupDB(groupObj: Group): void {
+    console.log('Sending to Backend:', groupObj);
+    this.httpClient
+      .post<any>(BACKEND_URL + '/groupRoute', groupObj, httpOptions)
+      .subscribe(
+        (response: any) => {
+          alert(JSON.stringify(response));
+          alert('Group updated successfully!');
+
+          // Optional: Fetch updated groups from the backend to ensure synchronization
+          this.loadGroups();
+        },
+        (error) => {
+          console.error('Error updating group:', error);
+          alert('Failed to update group. Please try again.');
+        }
+      );
+  }
 
   generateUniqueId(): string {
     if (!this.selectedGroup) return '1';
