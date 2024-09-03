@@ -23,7 +23,7 @@ body,
     justify-content: center;
     width: 100%;
     margin: 0;
-    flex:1;
+    flex: 1;
     min-height: 80%;
 }
 
@@ -58,4 +58,26 @@ h3,
     background: linear-gradient(to right, #27064a 0%, #4589ff 100%);
     color: rgb(230, 230, 230);
 
+}
+
+ul {
+    list-style-type: none;
+}
+
+td {
+    margin: 0;
+    padding: 5px;
+}
+
+li {
+    display: flex;
+    margin: 5px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
