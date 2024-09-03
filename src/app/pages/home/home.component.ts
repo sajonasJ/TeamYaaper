@@ -24,6 +24,5 @@ export class HomeComponent {
 
   onGroupSelected(group: Group): void {
     this.selectedGroup = group;
-    console.log('Group selected:', this.selectedGroup);
   }
 }

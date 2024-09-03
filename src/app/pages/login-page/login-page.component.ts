@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login-page',
@@ -9,7 +11,7 @@ import { ActivatedRoute } from '@angular/router';
 export class LoginPageComponent implements OnInit {
   isSignIn = true;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute,private router: Router, private toastr: ToastrService) {}
 
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
@@ -27,5 +29,9 @@ export class LoginPageComponent implements OnInit {
 
   switchToSignIn() {
     this.isSignIn = true;
+  }
+
+  toastShow() {
+    this.toastr.error('Sign-up form not implemented yet.', 'Error');
   }
 }

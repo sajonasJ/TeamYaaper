@@ -3,6 +3,8 @@ import { Group, Channel } from '../../models/dataInterfaces';
 import { GroupService } from '../../services/group.service';
 import { HttpClient } from '@angular/common/http';
 import { httpOptions, BACKEND_URL } from '../../constants';
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-content',
@@ -19,11 +21,19 @@ export class ContentComponent implements OnInit {
 
   constructor(
     private groupService: GroupService,
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
+    private authservice: AuthService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.loadGroups();
+    this.authservice.isLoggedIn.subscribe((loggedIn) => {
+      if (!loggedIn) {
+        this.router.navigate(['/login']);
+      } else {
+        this.loadGroups();
+      }
+    });
   }
 
   loadGroups(): void {
@@ -39,13 +49,6 @@ export class ContentComponent implements OnInit {
       },
       (error) => console.error('Error loading groups', error)
     );
-  }
-
-  ngOnChanges(): void {
-    console.log('Selected Group:', this.selectedGroup);
-    if (this.selectedGroup) {
-      console.log('Channels:', this.selectedGroup.channels);
-    }
   }
 
   selectChannel(channel: Channel): void {
