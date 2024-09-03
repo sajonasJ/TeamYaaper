@@ -46,7 +46,6 @@ export class DashboardComponent implements OnInit {
   }
 
   loadGroups(): void {
-    // Sending an empty object with the POST request to fetch all groups
     this.httpClient
       .post<Group[]>(`${BACKEND_URL}/groupRoute`, {}, httpOptions)
       .subscribe(
@@ -63,7 +62,7 @@ export class DashboardComponent implements OnInit {
       user.roles.push('super');
       this.updateUser(user);
     } else {
-      alert('User is already a superuser.');
+      this.toastr.error('User is already a superuser.', 'Error');
     }
   }
 
@@ -73,14 +72,10 @@ export class DashboardComponent implements OnInit {
     if (roleIndex !== -1) {
       user.roles.splice(roleIndex, 1);
       this.updateUser(user);
-      alert('SuperUser role removed successfully.');
+      this.toastr.success('SuperUser role removed successfully!', 'Success');
     } else {
-      alert('User is not a SuperUser.');
+      this.toastr.error('User is not a SuperUser.', 'Error');
     }
-  }
-
-  addUser(): void {
-    alert('User added successfully');
   }
 
   updateUser(user: User): void {
@@ -89,12 +84,15 @@ export class DashboardComponent implements OnInit {
       .subscribe(
         (response) => {
           console.log('User updated successfully:', response);
-          this.loadUsers(); // Reload users to reflect changes
-          alert('User updated successfully');
+          this.loadUsers();
+          this.toastr.success('User updated successfully!', 'Success');
         },
         (error) => {
           console.error('Error updating user:', error);
-          alert('Failed to update user. Please try again.');
+          this.toastr.error(
+            'Failed to update user. Please try again.',
+            'Error'
+          );
         }
       );
   }
@@ -113,17 +111,21 @@ export class DashboardComponent implements OnInit {
       .subscribe(
         (response: any) => {
           if (response.ok) {
-            alert('User deleted successfully');
+            this.toastr.success('User deleted successfully!', 'Success');
             this.loadUsers();
           } else {
-            alert(
-              response.message || 'Failed to delete user. Please try again.'
+            this.toastr.error(
+              'Failed to delete user. Please try again.',
+              'Error'
             );
           }
         },
         (error) => {
           console.error('Error deleting user:', error);
-          alert('Failed to delete user. Please try again.');
+          this.toastr.error(
+            'Failed to delete user. Please try again.',
+            'Error'
+          );
         }
       );
   }
@@ -134,9 +136,20 @@ export class DashboardComponent implements OnInit {
     this.newGroupDescription = '';
   }
 
-  // Function to save the new group
   saveGroup(): void {
     if (this.newGroupName && this.newGroupDescription) {
+      const groupExists = this.groups.some(
+        (group) => group.name.toLowerCase() === this.newGroupName.toLowerCase()
+      );
+
+      if (groupExists) {
+        this.toastr.error(
+          'A group with this name already exists. Please choose a different name.',
+          'Error'
+        );
+        return;
+      }
+
       const newGroup: Group = {
         id: this.generateUniqueId(),
         name: this.newGroupName,
@@ -145,9 +158,10 @@ export class DashboardComponent implements OnInit {
         admins: this.currentUser ? [this.currentUser] : [],
         users: [],
       };
-      this.loadUsers();
-      this.updateSessionStorage();
-      this.updateGroupDB(newGroup);
+
+      this.updateGroupDB(newGroup); // Add the new group to the database
+      this.loadUsers(); // Reload users to reflect changes (if necessary)
+      this.updateSessionStorage(); // Update session storage (if necessary)
       this.toastr.success('Group added successfully!', 'Success');
     } else {
       this.toastr.error(
@@ -172,20 +186,24 @@ export class DashboardComponent implements OnInit {
       .subscribe(
         (response: any) => {
           if (response.ok) {
-            alert('Group deleted successfully');
+            this.toastr.success('Group deleted successfully!', 'Success');
             this.updateSessionStorage();
             this.loadGroups();
           } else {
-            alert(
-              response.message || 'Failed to delete group. Please try again.'
+            this.toastr.error(
+              'Failed to delete group. Please try again.',
+              'Error'
             );
-            this.loadGroups(); // Reload groups to restore original state
+            this.loadGroups();
           }
         },
         (error) => {
           console.error('Error deleting group:', error);
-          alert('Failed to delete group. Please retry again.');
-          this.loadGroups(); // Reload groups to restore original state
+          this.toastr.error(
+            'Failed to delete group. Please retry again.',
+            'Error'
+          );
+          this.loadGroups();
         }
       );
   }
@@ -204,7 +222,7 @@ export class DashboardComponent implements OnInit {
     );
 
     if (!userExists) {
-      alert('User does not exist.');
+      this.toastr.error('User does not exist.', 'Error');
       return;
     }
 
@@ -214,7 +232,7 @@ export class DashboardComponent implements OnInit {
       this.updateSessionStorage();
       this.newUserForGroup = '';
     } else {
-      alert('User already in group');
+      this.toastr.error('User already in group.', 'Error');
     }
   }
 
@@ -225,7 +243,7 @@ export class DashboardComponent implements OnInit {
     );
 
     if (!userExists) {
-      alert('User does not exist.');
+      this.toastr.error('User does not exist.', 'Error');
       return;
     }
 
@@ -238,7 +256,7 @@ export class DashboardComponent implements OnInit {
       this.updateSessionStorage();
       this.newAdminForGroup = '';
     } else {
-      alert('Admin already in group');
+      this.toastr.error('Admin already in group.', 'Error');
     }
   }
 
@@ -262,16 +280,20 @@ export class DashboardComponent implements OnInit {
       this.loadGroups();
     }
   }
+
   // Update group in the backend
   updateGroupDB(group: Group): void {
     this.httpClient
       .post<Group>(`${BACKEND_URL}/groupRoute`, group, httpOptions)
       .subscribe(
         (response) => {
-          this.loadGroups(); // Reload groups to reflect changes
+          this.loadGroups();
         },
         (error) => {
-          alert('Failed to update group. Please try again.');
+          this.toastr.error(
+            'Failed to update group. Please try again.',
+            'Error'
+          );
         }
       );
   }
@@ -293,16 +315,16 @@ export class DashboardComponent implements OnInit {
         .subscribe((response: any) => {
           if (response.ok) {
             this.saveUserData();
-            alert(response.message);
+            this.toastr.success('User saved successfully!', 'Success');
           } else {
-            alert(
-              response.message ||
-                'Failed to add user credentials. Please try again.'
-            );
+            this.toastr.error('Duplicate username. Please try again.', 'Error');
           }
         });
     } else {
-      alert('Failed to add user to loggedOn. Please try again.');
+      this.toastr.error(
+        'Failed to add user to loggedOn. Please try again.',
+        'Error'
+      );
     }
   }
   saveUserData(): void {
@@ -320,14 +342,14 @@ export class DashboardComponent implements OnInit {
       .post(`${BACKEND_URL}/loggedOn`, newUserData, httpOptions)
       .subscribe((response: any) => {
         if (response.ok) {
-          alert(response.message);
+          this.toastr.success('User data saved successfully!', 'Success');
           this.newUsername = '';
           this.newPassword = '';
           this.loadUsers();
         } else {
-          alert(
-            response.message ||
-              'Failed to add user credentials. Please try again.'
+          this.toastr.error(
+            'Failed to add user credentials. Please try again.',
+            'Error'
           );
         }
       });

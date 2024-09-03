@@ -23,15 +23,12 @@ module.exports = function (req, res) {
       users: req.body.users || [],
       channels: req.body.channels || [],
     };
-    console.log("Processed Group Object:", groupObj); // Log processed group object
 
     let index = groups.findIndex((group) => group.id === groupObj.id);
-
     index === -1 ? groups.push(groupObj) : (groups[index] = groupObj);
 
     let groupJSON = JSON.stringify({ groups: groups }, null, 2);
 
-    // Write the updated groups back to the file
     fs.writeFile(PATH, groupJSON, "utf8", function (err) {
       if (err) throw err;
     });
