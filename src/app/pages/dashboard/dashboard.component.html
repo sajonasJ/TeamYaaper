@@ -25,7 +25,7 @@
                         <td>{{ user.username }}</td>
                         <td>{{ user.email }}</td>
                         <td>{{ user.roles.join(', ') }}</td>
-                        <td class="text-center">
+                        <td class="btn-center">
                             <button class="btn btn-primary btn-sm me-1" (click)="makeSuper(user)">
                                 <span class="material-symbols-outlined">
                                     arrow_upward
@@ -69,7 +69,7 @@
                         <td>{{ group.description }}</td>
                         <td>
                             <!-- Admins Management -->
-                            <div class="input-group mb-2">
+                            <div class="input-group td-limiter">
                                 <input type="text" class="form-control form-control-sm" [(ngModel)]="newAdminForGroup"
                                     placeholder="Add Username">
                                 <button class="btn btn-sm btn-primary" (click)="addAdminToGroup(group)">
@@ -86,9 +86,9 @@
                                 </li>
                             </ul>
                         </td>
-                        <td>
+                        <td class="td-limiter"> 
                             <!-- Users Management -->
-                            <div class="input-group mb-2">
+                            <div class="input-group td-limiter">
                                 <input type="text" class="form-control form-control-sm" [(ngModel)]="newUserForGroup"
                                     placeholder="Add Username">
                                 <button class="btn btn-sm btn-primary" (click)="addUserToGroup(group)">
@@ -96,7 +96,7 @@
                                 </button>
                             </div>
                             <ul class="list-unstyled">
-                                <li *ngFor="let username of group.users" class="d-flex align-items-center mb-1">
+                                <li *ngFor="let username of group.users" class="d-flex align-items-center">
                                     {{ username }}
                                     <button class="btn btn-sm btn-danger ms-2"
                                         (click)="deleteUserFromGroup(group, username)">
@@ -105,7 +105,7 @@
                                 </li>
                             </ul>
                         </td>
-                        <td class="text-center">
+                        <td class="btn-container">
                             <button class="btn btn-danger btn-sm" (click)="deleteGroup(group)">
                                 <span class="material-symbols-outlined">delete_forever</span>
                             </button>

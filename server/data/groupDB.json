@@ -56,15 +56,6 @@
           "messages": []
         }
       ]
-    },
-    {
-      "id": "2",
-      "name": "New Group",
-      "description": "newest group",
-      "superuser": [],
-      "admins": [],
-      "users": [],
-      "channels": []
     }
   ]
 }

@@ -128,8 +128,37 @@ export class DashboardComponent implements OnInit {
   }
 
   deleteGroup(group: Group): void {
-    alert('Group deleted successfully');
+    const confirmDelete = confirm(
+      `Are you sure you want to delete the group "${group.name}"?`
+    );
+    if (!confirmDelete) return;
+
+    // Remove the group from the component's groups array
+    this.groups = this.groups.filter((g) => g.id !== group.id);
+
+    // Send delete request to backend
+    this.httpClient
+      .post(`${BACKEND_URL}/delGroupRoute`, { id: group.id }, httpOptions)
+      .subscribe(
+        (response: any) => {
+          if (response.ok) {
+            alert('Group deleted successfully');
+            this.loadGroups(); // Reload groups to reflect changes
+          } else {
+            alert(
+              response.message || 'Failed to delete group. Please try again.'
+            );
+            this.loadGroups(); // Reload groups to restore original state
+          }
+        },
+        (error) => {
+          console.error('Error deleting group:', error);
+          alert('Failed to delete group. Please retry again.');
+          this.loadGroups(); // Reload groups to restore original state
+        }
+      );
   }
+
   // Helper method to get the role of a user in a specific group
   getUserRoleInGroup(group: Group, username: string): string {
     if (group.admins.includes(username)) return 'admin';

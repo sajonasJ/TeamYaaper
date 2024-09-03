@@ -16,11 +16,31 @@
   align-items: center;
   height: 100%;
   width: 100%;
-  justify-content: center;
+  justify-content: space-evenly;
 
 }
 
 .gradient-custom {
   background: linear-gradient(to right, #27064a 0%, #4589ff 100%);
   color: rgb(230, 230, 230);
+}
+
+.td-limiter{
+padding: 5px;
+margin:0;
+
+}
+
+.list-unstyled{
+padding: 0;
+margin:0;
+}
+
+.btn-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 10px;
 }

@@ -26,6 +26,7 @@
     "bootstrap-icons": "^1.11.3",
     "material-icons": "^1.13.12",
     "material-symbols": "^0.22.2",
+    "ngx-toastr": "^19.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.3"
