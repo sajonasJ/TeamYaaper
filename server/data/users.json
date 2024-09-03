@@ -28,7 +28,9 @@
         "admin"
       ]
     },
-    "roles": []
+    "roles": [
+      "super"
+    ]
   },
   {
     "id": "3",

@@ -4,9 +4,6 @@
       "id": "1",
       "name": "The Only Group One",
       "description": "A group for general discussions and announcements.",
-      "superuser": [
-        "user1"
-      ],
       "admins": [
         "user1",
         "sajonasj"

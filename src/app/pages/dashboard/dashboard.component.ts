@@ -24,13 +24,11 @@ export class DashboardComponent implements OnInit {
 
   // Load groups from backend or storage
   loadUsers(): void {
-    // Assuming your backend endpoint for users also works with POST
     this.httpClient
       .post<User[]>(`${BACKEND_URL}/loggedOn`, {}, httpOptions)
       .subscribe(
         (data) => {
           this.users = data;
-          console.log('Loaded users:', this.users); // Log the loaded users
         },
         
         (error) => console.error('Error loading users:', error)
@@ -44,7 +42,6 @@ export class DashboardComponent implements OnInit {
       .subscribe(
         (data) => {
           this.groups = data;
-          console.log('Loaded groups:', this.groups);
         },
         (error) => console.error('Error loading groups:', error)
       );
@@ -52,15 +49,43 @@ export class DashboardComponent implements OnInit {
 
   // Make a user a superuser
   makeSuper(user: User): void {
-    this.updateUser(user);
-    alert('User is now a superuser');
+    if (!user.roles.includes('super')) {
+      user.roles.push('super');
+      this.updateUser(user);
+    } else {
+      alert('User is already a superuser.');
+    }
   }
+
+removeSuper(user: User): void {
+  const roleIndex = user.roles.indexOf('super');
+
+  if (roleIndex !== -1) {
+    user.roles.splice(roleIndex, 1);
+    this.updateUser(user);
+    alert('SuperUser role removed successfully.');
+  } else {
+    alert('User is not a SuperUser.');
+  }
+}
+
 
   addUser(): void {
     alert('User added successfully');
   }
   updateUser(user: User): void {
-    alert('User updated successfully');
+    this.httpClient.post<User[]>(`${BACKEND_URL}/loggedOn`, user, httpOptions)
+      .subscribe(
+        (response) => {
+          console.log('User updated successfully:', response);
+          this.loadUsers(); // Reload users to reflect changes
+          alert('User updated successfully');
+        },
+        (error) => {
+          console.error('Error updating user:', error);
+          alert('Failed to update user. Please try again.');
+        }
+      );
   }
   deleteUser(user: User): void {
     alert('User deleted successfully');
@@ -82,8 +107,6 @@ export class DashboardComponent implements OnInit {
 
   // Add user to a specific group
   addUserToGroup(group: Group): void {
-    console.log('Current users:', this.users); // Log current users for debugging
-
     const userExists = this.users.some(
       (user) => user.username === this.newUserForGroup
     );
@@ -105,7 +128,6 @@ export class DashboardComponent implements OnInit {
 
   // Add user to a specific group
   addAdminToGroup(group: Group): void {
-    console.log('Current admins:', this.users); // Log current admins for debugging
     const userExists = this.users.some(
       (users) => users.username === this.newAdminForGroup
     );
@@ -150,16 +172,13 @@ export class DashboardComponent implements OnInit {
     }
   // Update group in the backend
   updateGroupDB(group: Group): void {
-    console.log('Sending updated group to backend:', group);
     this.httpClient
       .post<Group>(`${BACKEND_URL}/groupRoute`, group, httpOptions)
       .subscribe(
         (response) => {
-          console.log('Group updated successfully:', response);
           this.loadGroups(); // Reload groups to reflect changes
         },
         (error) => {
-          console.error('Error updating group:', error);
           alert('Failed to update group. Please try again.');
         }
       );
@@ -167,6 +186,5 @@ export class DashboardComponent implements OnInit {
   // Update groups in session storage
   updateSessionStorage(): void {
     sessionStorage.setItem('allGroups', JSON.stringify(this.groups));
-    console.log('Updated session storage with groups:', this.groups);
   }
 }
