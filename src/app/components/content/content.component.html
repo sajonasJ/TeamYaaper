@@ -1,4 +1,10 @@
 <section class="sub-container">
+
+  <div *ngIf="!selectedGroup" class="placeholder-message">
+    <h2>No Group Selected</h2>
+    <p>Please select a group to view its channels and messages.</p>
+  </div>
+
   <!-- Group Header -->
   <div *ngIf="selectedGroup" class="group-header">
     <h2>{{ selectedGroup.name }}</h2>

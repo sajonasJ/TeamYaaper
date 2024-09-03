@@ -1,12 +1,14 @@
 .welcome-message {
     margin-bottom: 2rem;
     margin:0px;
+    width: 100%;
 }
 
 .quotes-container {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     width: 100%;
     max-width: 600px;
 }
@@ -14,6 +16,8 @@
 .quote-card {
     width: 100%;
     text-align: center;
+    background-color: rgba(240, 240, 240, 0.9);
+    color: #000000;
     transition: transform 0.3s, box-shadow 0.3s;
 }
 
@@ -25,5 +29,18 @@
 .blockquote-footer {
     margin-top: 1rem;
     font-size: 0.85rem;
-    color: #6c757d;
+    color: #000000;
+}
+
+
+.sub-section{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-image: url('/pixel3.gif');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: auto;
 }
