@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BACKEND_URL, httpOptions } from '../../constants';
 import { User, Group } from '../../models/dataInterfaces';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-dashboard',
@@ -20,7 +21,7 @@ export class DashboardComponent implements OnInit {
   newGroupDescription: string = '';
   currentUser: string | null = null;
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(private httpClient: HttpClient, private toastr: ToastrService) {}
 
   ngOnInit(): void {
     this.loadUsers();
@@ -98,15 +99,39 @@ export class DashboardComponent implements OnInit {
       );
   }
   deleteUser(user: User): void {
-    alert('User deleted successfully');
+    const confirmDelete = confirm(
+      `Are you sure you want to delete the user "${user.username}"?`
+    );
+    if (!confirmDelete) return;
+
+    this.httpClient
+      .post(
+        `${BACKEND_URL}/delUserRoute`,
+        { username: user.username },
+        httpOptions
+      )
+      .subscribe(
+        (response: any) => {
+          if (response.ok) {
+            alert('User deleted successfully');
+            this.loadUsers();
+          } else {
+            alert(
+              response.message || 'Failed to delete user. Please try again.'
+            );
+          }
+        },
+        (error) => {
+          console.error('Error deleting user:', error);
+          alert('Failed to delete user. Please try again.');
+        }
+      );
   }
 
   // Function to open modal and prepare for adding new group
   addNewGroup(): void {
-    // Clear input fields before opening the modal
     this.newGroupName = '';
     this.newGroupDescription = '';
-    // Trigger the modal open (this is handled by the [modalId] binding in HTML)
   }
 
   // Function to save the new group
@@ -121,10 +146,14 @@ export class DashboardComponent implements OnInit {
         users: [],
       };
       this.loadUsers();
-      this.updateSessionStorage()
+      this.updateSessionStorage();
       this.updateGroupDB(newGroup);
+      this.toastr.success('Group added successfully!', 'Success');
     } else {
-      alert('Please fill in both the group name and description.');
+      this.toastr.error(
+        'Please fill in both the group name and description.',
+        'Error'
+      );
     }
   }
 
@@ -144,7 +173,7 @@ export class DashboardComponent implements OnInit {
         (response: any) => {
           if (response.ok) {
             alert('Group deleted successfully');
-            this.updateSessionStorage()
+            this.updateSessionStorage();
             this.loadGroups();
           } else {
             alert(

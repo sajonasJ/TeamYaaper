@@ -68,7 +68,7 @@ td {
     margin: 0;
 }
 
-thead{
+thead {
     text-align: center;
 }
 
@@ -84,4 +84,37 @@ li {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.custom-toast-position {
+    top: 50%;
+    bottom: auto;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.custom-toast-position .toast {
+    animation: slideInBottom 0.5s, fadeOut 0.5s 3.5s;
+}
+
+@keyframes slideInBottom {
+    from {
+        transform: translate(-50%, 100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translate(-50%, -50%);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
 }

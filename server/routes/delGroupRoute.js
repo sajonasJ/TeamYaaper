@@ -1,3 +1,4 @@
+// delGroupRoute.js
 const fs = require('fs');
 const GROUPS_PATH = './data/groupDB.json';
 

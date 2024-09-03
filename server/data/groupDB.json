@@ -88,29 +88,6 @@
           "messages": []
         }
       ]
-    },
-    {
-      "id": "3",
-      "name": "newwees",
-      "description": "sdsdad",
-      "admins": [
-        "user1"
-      ],
-      "users": [],
-      "channels": [
-        {
-          "id": "1",
-          "name": "adwd",
-          "description": "asdads",
-          "messages": []
-        },
-        {
-          "id": "2",
-          "name": "fhfh",
-          "description": "fhfh",
-          "messages": []
-        }
-      ]
     }
   ]
 }

@@ -1,3 +1,4 @@
+// server.js
 const express = require("express");
 const cors = require("cors");
 const app = express();
@@ -8,7 +9,7 @@ const LOGGEDROUT = require("./routes/loggedOn")
 const GROUPROUT=require("./routes/groupRoute")
 const SAVEROUT=require("./routes/saveUserRoute")
 const DELGROUPROUT=require("./routes/delGroupRoute")
-// const DELUSERROUT=require("./routes/delUserRoute")
+const DELUSERROUT=require("./routes/delUserRoute")
 
 
 //CORS Middleware Configuration
@@ -35,7 +36,7 @@ app.post("/loggedOn", LOGGEDROUT);
 app.post("/groupRoute", GROUPROUT);
 app.post("/saveUserRoute",SAVEROUT);
 app.post("/delGroupRoute", DELGROUPROUT);
-// app.post("/delUserRoute",DELUSERROUT);
+app.post("/delUserRoute",DELUSERROUT);
 
 // start the server
 http.listen(PORT, () => {

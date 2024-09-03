@@ -17,7 +17,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { FooterComponent } from './components/footer/footer.component';
 import { ModalComponent } from './components/modal/modal.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [
@@ -33,17 +34,23 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
     WelcomeComponent,
     FooterComponent,
     ModalComponent,
-    DashboardComponent
+    DashboardComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    HttpClientModule
+    BrowserAnimationsModule,
+    ToastrModule.forRoot({
+      positionClass: 'custom-toast-position',
+      timeOut: 2000,
+      preventDuplicates: true,
+      progressBar: true,
+    }),
+
+    HttpClientModule,
   ],
-  providers: [
-    provideAnimationsAsync()
-  ],
-  bootstrap: [AppComponent]
+  providers: [provideAnimationsAsync()],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

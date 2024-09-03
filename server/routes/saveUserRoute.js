@@ -1,3 +1,4 @@
+// saveUserRoute.js
 const fs = require('fs');
 const USERS = './data/auth.json';
 
@@ -5,7 +6,6 @@ module.exports = function (req, res) {
   var u = req.body.username;
   var p = req.body.password;
 
-  // Check if we're adding a new user
   if (req.body.newUser) {
     fs.readFile(USERS, 'utf8', function (err, data) {
       if (err) {

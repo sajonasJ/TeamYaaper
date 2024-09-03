@@ -1,3 +1,4 @@
+// authRoute.js
 var fs = require('fs');
 const USERDATA = './data/users.json';
 const USERS = './data/auth.json';

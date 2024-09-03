@@ -1,3 +1,4 @@
+// groupRoute.js
 const fs = require("fs");
 const PATH = "./data/groupDB.json";
 
