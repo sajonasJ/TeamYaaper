@@ -1,7 +1,7 @@
 <main class="main-container">
   <app-header></app-header>
   <section class="section-container">
-    <div *ngIf="isSignIn; else signUpTemplate">
+    <div class="card py-3 px-3" *ngIf="isSignIn; else signUpTemplate">
       <app-login></app-login>
       <p>Create an Account? <a class="login-link" (click)="toastShow()">Sign up</a></p>
     </div>

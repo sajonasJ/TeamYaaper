@@ -23,3 +23,12 @@ a.nav-link,
 a.login-link {
     text-decoration: none;
 }
+.section-container{
+background-image: url('/pixel3.gif');
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
+min-height: 70vh;
+padding: 20px;
+
+}

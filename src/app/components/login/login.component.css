@@ -1,11 +1,8 @@
 
 .sub-container {
-  max-width: 400px;
-  margin: 0 auto;
-  padding: 30px;
-  background-color: #f8f9fa;
+  margin: 0;
+  background-color: inherit;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 
