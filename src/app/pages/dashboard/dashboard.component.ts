@@ -10,8 +10,10 @@ import { User, Group } from '../../models/dataInterfaces';
 })
 export class DashboardComponent implements OnInit {
   users: User[] = [];
+  admins: User[] = [];
   groups: Group[] = [];
-  newUserForGroup: string = ''; 
+  newUserForGroup: string = '';
+  newAdminForGroup: string = '';
 
   constructor(private httpClient: HttpClient) {}
 
@@ -26,7 +28,11 @@ export class DashboardComponent implements OnInit {
     this.httpClient
       .post<User[]>(`${BACKEND_URL}/loggedOn`, {}, httpOptions)
       .subscribe(
-        (data) => (this.users = data),
+        (data) => {
+          this.users = data;
+          console.log('Loaded users:', this.users); // Log the loaded users
+        },
+        
         (error) => console.error('Error loading users:', error)
       );
   }
@@ -66,8 +72,8 @@ export class DashboardComponent implements OnInit {
   deleteGroup(group: Group): void {
     alert('Group deleted successfully');
   }
-   // Helper method to get the role of a user in a specific group
-   getUserRoleInGroup(group: Group, username: string): string {
+  // Helper method to get the role of a user in a specific group
+  getUserRoleInGroup(group: Group, username: string): string {
     if (group.superuser.includes(username)) return 'superuser';
     if (group.admins.includes(username)) return 'admin';
     if (group.users.includes(username)) return 'user';
@@ -76,17 +82,18 @@ export class DashboardComponent implements OnInit {
 
   // Add user to a specific group
   addUserToGroup(group: Group): void {
-    const userExists = this.users.some(user => user.username === this.newUserForGroup);
+    console.log('Current users:', this.users); // Log current users for debugging
+
+    const userExists = this.users.some(
+      (user) => user.username === this.newUserForGroup
+    );
 
     if (!userExists) {
       alert('User does not exist.');
       return;
     }
-    
-    
+
     if (this.newUserForGroup && !group.users.includes(this.newUserForGroup)) {
-      
-      
       group.users.push(this.newUserForGroup);
       this.updateGroupDB(group);
       this.updateSessionStorage();
@@ -96,16 +103,51 @@ export class DashboardComponent implements OnInit {
     }
   }
 
+  // Add user to a specific group
+  addAdminToGroup(group: Group): void {
+    console.log('Current admins:', this.users); // Log current admins for debugging
+    const userExists = this.users.some(
+      (users) => users.username === this.newAdminForGroup
+    );
+
+    if (!userExists) {
+      alert('User does not exist.');
+      return;
+    }
+
+    if (
+      this.newAdminForGroup &&
+      !group.admins.includes(this.newAdminForGroup)
+    ) {
+      group.admins.push(this.newAdminForGroup);
+      this.updateGroupDB(group);
+      this.updateSessionStorage();
+      this.newAdminForGroup = '';
+    } else {
+      alert('Admin already in group');
+    }
+  }
+
   // Delete a user from a group
   deleteUserFromGroup(group: Group, username: string): void {
     const index = group.users.indexOf(username);
     if (index !== -1) {
       group.users.splice(index, 1);
       this.updateGroupDB(group);
-      this.updateSessionStorage()
-      this.loadGroups()
+      this.updateSessionStorage();
+      this.loadGroups();
     }
   }
+    // Delete a user from a group
+    deleteAdminFromGroup(group: Group, username: string): void {
+      const index = group.admins.indexOf(username);
+      if (index !== -1) {
+        group.admins.splice(index, 1);
+        this.updateGroupDB(group);
+        this.updateSessionStorage();
+        this.loadGroups();
+      }
+    }
   // Update group in the backend
   updateGroupDB(group: Group): void {
     console.log('Sending updated group to backend:', group);
@@ -127,5 +169,4 @@ export class DashboardComponent implements OnInit {
     sessionStorage.setItem('allGroups', JSON.stringify(this.groups));
     console.log('Updated session storage with groups:', this.groups);
   }
-
 }

@@ -5,16 +5,15 @@
       "name": "The Only Group One",
       "description": "A group for general discussions and announcements.",
       "superuser": [
-        "admin1"
+        "user1"
       ],
       "admins": [
-        "admin1",
-        "admin2"
+        "user1",
+        "sajonasj"
       ],
       "users": [
-        "user1",
         "user2",
-        "sajonasj"
+        "user1"
       ],
       "channels": [
         {

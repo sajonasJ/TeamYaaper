@@ -1,106 +1,114 @@
 <main class="main-container">
     <!-- Header Component -->
     <app-header></app-header>
-
+  
     <!-- Main Content Section -->
-    <section class="section-container container py-3">
-
-        <!-- List of Users -->
-        <div class="card mb-3">
-            <div class="card-header gradient-custom py-2 d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Users</h5>
-                <button class="btn btn-success btn-sm" (click)="addUser()">
-
-                    <span class="material-symbols-outlined">
-                        person_add
-                    </span>
-                </button>
-            </div>
-            <!-- <div class="card"> -->
-            <table class="table table-sm table-bordered">
-                <thead class="table-light">
-                    <tr>
-                        <th>Username</th>
-                        <th>Email</th>
-                        <th>Role</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let user of users">
-                        <td>{{ user.username }}</td>
-                        <td>{{ user.email }}</td>
-                        <td>{{ user.roles.join(', ') }}</td>
-                        <td class="btn-center">
-                            <button class="btn btn-primary btn-sm me-1" (click)="makeSuper(user)"> <span
-                                    class="material-symbols-outlined">
-                                    upgrade
-                                </span></button>
-                            <button class="btn btn-danger btn-sm" (click)="deleteUser(user)"> <span
-                                    class="material-symbols-outlined">
-                                    delete_forever
-                                </span></button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+    <section class="section-container">
+      <!-- List of Users -->
+      <div class="card mb-3">
+        <div class="card-header gradient-custom py-2 d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">Users</h5>
+          <button class="btn btn-success btn-sm" (click)="addUser()">
+            <span class="material-symbols-outlined">person_add</span>
+          </button>
         </div>
-        <!-- </div> -->
-
-        <!-- List of Groups -->
-        <div class="card mb-3">
-            <div class="card-header gradient-custom py-2 d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Groups</h5>
-                <button class="btn btn-success btn-sm" (click)="addGroup()">
-                    <span class="material-symbols-outlined">group_add</span>
+        <table class="table table-sm table-bordered mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of users">
+              <td>{{ user.username }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.roles.join(', ') }}</td>
+              <td class="text-center">
+                <button class="btn btn-primary btn-sm me-1" (click)="makeSuper(user)">
+                  <span class="material-symbols-outlined">upgrade</span>
                 </button>
-            </div>
-            <table class="table table-sm table-bordered">
-                <thead class="table-light">
-                    <tr>
-                        <th>Group Name</th>
-                        <th>Description</th>
-                        <th>Users</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let group of groups">
-                        <td>{{ group.name }}</td>
-                        <td>{{ group.description }}</td>
-                        <td>
-                            <div class="input-group">
-                                <input type="text" class="form-control form-control-sm" [(ngModel)]="newUserForGroup"
-                                    placeholder="Add Username">
-                                <button class="btn btn-sm btn-primary" (click)="addUserToGroup(group)">
-                                    <span class="material-symbols-outlined">person_add</span>
-                                </button>
-                            </div>
-                            <ul>
-                                <li *ngFor="let username of group.users">
-                                    {{ username }}
-                                    <button class="btn btn-sm btn-danger ms-2"
-                                        (click)="deleteUserFromGroup(group, username)">
-                                        <span class="material-symbols-outlined">
-                                            person_remove
-                                        </span>
-                                    </button>
-                                </li>
-                            </ul>
-
-                        </td>
-                        <td class="btn-center">
-                            <button class="btn btn-danger btn-sm" (click)="deleteGroup(group)">
-                                <span class="material-symbols-outlined">delete_forever</span>
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+                <button class="btn btn-danger btn-sm" (click)="deleteUser(user)">
+                  <span class="material-symbols-outlined">delete_forever</span>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+  
+      <!-- List of Groups -->
+      <div class="card mb-3">
+        <div class="card-header gradient-custom py-2 d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">Groups</h5>
+          <button class="btn btn-success btn-sm" (click)="addGroup()">
+            <span class="material-symbols-outlined">group_add</span>
+          </button>
         </div>
-
+        <table class="table table-sm table-bordered mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Group Name</th>
+              <th>Description</th>
+              <th>Admins</th>
+              <th>Users</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let group of groups">
+              <td>{{ group.name }}</td>
+              <td>{{ group.description }}</td>
+              <td>
+                <!-- Admins Management -->
+                <div class="input-group mb-2">
+                  <input type="text" class="form-control form-control-sm" [(ngModel)]="newAdminForGroup"
+                    placeholder="Add Username">
+                  <button class="btn btn-sm btn-primary" (click)="addAdminToGroup(group)">
+                    <span class="material-symbols-outlined">person_add</span>
+                  </button>
+                </div>
+                <ul class="list-unstyled">
+                  <li *ngFor="let username of group.admins" class="d-flex align-items-center mb-1">
+                    {{ username }}
+                    <button class="btn btn-sm btn-danger ms-2" (click)="deleteAdminFromGroup(group, username)">
+                      <span class="material-symbols-outlined">person_remove</span>
+                    </button>
+                  </li>
+                </ul>
+              </td>
+              <td>
+                <!-- Users Management -->
+                <div class="input-group mb-2">
+                  <input type="text" class="form-control form-control-sm" [(ngModel)]="newUserForGroup"
+                    placeholder="Add Username">
+                  <button class="btn btn-sm btn-primary" (click)="addUserToGroup(group)">
+                    <span class="material-symbols-outlined">person_add</span>
+                  </button>
+                </div>
+                <ul class="list-unstyled">
+                  <li *ngFor="let username of group.users" class="d-flex align-items-center mb-1">
+                    {{ username }}
+                    <button class="btn btn-sm btn-danger ms-2" (click)="deleteUserFromGroup(group, username)">
+                      <span class="material-symbols-outlined">person_remove</span>
+                    </button>
+                  </li>
+                </ul>
+              </td>
+              <td class="text-center">
+                <button class="btn btn-danger btn-sm" (click)="deleteGroup(group)">
+                  <span class="material-symbols-outlined">delete_forever</span>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </section>
-
+  
     <!-- Footer Component -->
     <app-footer></app-footer>
-</main>
+  </main>
+  
