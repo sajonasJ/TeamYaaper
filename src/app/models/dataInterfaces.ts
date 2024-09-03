@@ -15,7 +15,6 @@ export interface Group {
   id: string;
   name: string;
   description: string;
-  superuser: string[];
   admins: string[];
   users: string[];
   channels: Channel[];

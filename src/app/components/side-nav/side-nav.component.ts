@@ -59,7 +59,6 @@ export class SideNavComponent implements OnInit {
         name: this.newGroupName,
         description: this.newGroupDescription,
         channels: [],
-        superuser: [],
         admins: this.currentUser ? [this.currentUser] : [],
         users: [],
       };

@@ -18,7 +18,6 @@ module.exports = function (req, res) {
       id: req.body.id,
       name: req.body.name,
       description: req.body.description || "",
-      superuser: req.body.superuser || [],
       admins: req.body.admins || [],
       users: req.body.users || [],
       channels: req.body.channels || [],

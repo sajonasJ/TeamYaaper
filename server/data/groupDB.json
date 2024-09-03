@@ -48,8 +48,23 @@
           "name": "123123",
           "description": "dsdadad",
           "messages": []
+        },
+        {
+          "id": "4",
+          "name": "ewe",
+          "description": "ewe",
+          "messages": []
         }
       ]
+    },
+    {
+      "id": "2",
+      "name": "New Group",
+      "description": "newest group",
+      "superuser": [],
+      "admins": [],
+      "users": [],
+      "channels": []
     }
   ]
 }

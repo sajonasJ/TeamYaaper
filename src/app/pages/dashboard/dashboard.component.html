@@ -8,12 +8,8 @@
         <div class="card mb-3">
             <div class="card-header gradient-custom py-2 d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Users</h5>
-
                 <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addUserModal"><span
                         class="material-symbols-outlined">person_add</span></button>
-
-
-
             </div>
             <table class="table table-sm table-bordered mb-0">
                 <thead class="table-light">
@@ -53,7 +49,7 @@
         <div class="card mb-3">
             <div class="card-header gradient-custom py-2 d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Groups</h5>
-                <button class="btn btn-success btn-sm" (click)="addGroup()">
+                <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addGroupModal">
                     <span class="material-symbols-outlined">group_add</span>
                 </button>
             </div>
@@ -138,3 +134,19 @@
         </div>
     </div>
 </app-modal>
+
+<!-- Parent component HTML (e.g., dashboard.component.html) -->
+<app-modal [title]="'Add New Group'" [modalId]="'addGroupModal'" (save)="saveGroup()">
+    <!-- Modal content -->
+    <div modal-body>
+      <div class="mb-3">
+        <label for="groupName" class="form-label">Group Name</label>
+        <input type="text" class="form-control" id="groupName" [(ngModel)]="newGroupName">
+      </div>
+      <div class="mb-3">
+        <label for="groupDescription" class="form-label">Description</label>
+        <textarea class="form-control" id="groupDescription" [(ngModel)]="newGroupDescription"></textarea>
+      </div>
+    </div>
+  </app-modal>
+  

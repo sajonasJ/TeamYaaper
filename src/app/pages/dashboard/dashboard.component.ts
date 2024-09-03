@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BACKEND_URL, httpOptions } from '../../constants';
 import { User, Group } from '../../models/dataInterfaces';
-import { last } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -17,12 +16,19 @@ export class DashboardComponent implements OnInit {
   newAdminForGroup: string = '';
   newUsername: string = '';
   newPassword: string = '';
+  newGroupName: string = '';
+  newGroupDescription: string = '';
+  currentUser: string | null = null;
 
   constructor(private httpClient: HttpClient) {}
 
   ngOnInit(): void {
     this.loadUsers();
     this.loadGroups();
+    this.loadCurrentUser();
+  }
+  loadCurrentUser(): void {
+    this.currentUser = sessionStorage.getItem('username');
   }
 
   // Load groups from backend or storage
@@ -95,15 +101,37 @@ export class DashboardComponent implements OnInit {
     alert('User deleted successfully');
   }
 
-  addGroup(): void {
-    alert('Group added successfully');
+  // Function to open modal and prepare for adding new group
+  addNewGroup(): void {
+    // Clear input fields before opening the modal
+    this.newGroupName = '';
+    this.newGroupDescription = '';
+    // Trigger the modal open (this is handled by the [modalId] binding in HTML)
   }
+
+  // Function to save the new group
+  saveGroup(): void {
+    if (this.newGroupName && this.newGroupDescription) {
+      const newGroup: Group = {
+        id: this.generateUniqueId(),
+        name: this.newGroupName,
+        description: this.newGroupDescription,
+        channels: [],
+        admins: this.currentUser ? [this.currentUser] : [],
+        users: [],
+      };
+      this.loadUsers();
+      this.updateGroupDB(newGroup);
+    } else {
+      alert('Please fill in both the group name and description.');
+    }
+  }
+
   deleteGroup(group: Group): void {
     alert('Group deleted successfully');
   }
   // Helper method to get the role of a user in a specific group
   getUserRoleInGroup(group: Group, username: string): string {
-    if (group.superuser.includes(username)) return 'superuser';
     if (group.admins.includes(username)) return 'admin';
     if (group.users.includes(username)) return 'user';
     return 'none';
@@ -229,20 +257,20 @@ export class DashboardComponent implements OnInit {
     };
 
     this.httpClient
-        .post(`${BACKEND_URL}/loggedOn`, newUserData, httpOptions)
-        .subscribe((response: any) => {
-          if (response.ok) {
-            alert(response.message);
-            this.newUsername = '';
-            this.newPassword = '';
-            this.loadUsers();
-          } else {
-            alert(
-              response.message ||
-                'Failed to add user credentials. Please try again.'
-            );
-          }
-        });
+      .post(`${BACKEND_URL}/loggedOn`, newUserData, httpOptions)
+      .subscribe((response: any) => {
+        if (response.ok) {
+          alert(response.message);
+          this.newUsername = '';
+          this.newPassword = '';
+          this.loadUsers();
+        } else {
+          alert(
+            response.message ||
+              'Failed to add user credentials. Please try again.'
+          );
+        }
+      });
   }
 
   generateMaxId(): string {
@@ -250,6 +278,14 @@ export class DashboardComponent implements OnInit {
       return '1';
     }
     const maxId = Math.max(...this.users.map((user) => +user.id));
+    return (maxId + 1).toString();
+  }
+
+  generateUniqueId(): string {
+    const maxId = this.groups.reduce(
+      (max, group) => Math.max(max, +group.id),
+      0
+    );
     return (maxId + 1).toString();
   }
 }
