@@ -58,6 +58,17 @@ export class DashboardComponent {
         );
     }
   }
+  addGroup(group: Group): void {
+    if (confirm(`Are you sure you want to delete group ${group.name}?`)) {
+      // Sending delete request to backend
+      this.httpClient
+        .delete(`${BACKEND_URL}/groups/${group.id}`, httpOptions)
+        .subscribe(
+          () => (this.groups = this.groups.filter((g) => g.id !== group.id)),
+          (error) => console.error('Error deleting group:', error)
+        );
+    }
+  }
 
   updateUser(user: User): void {
     this.httpClient

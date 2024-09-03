@@ -1,4 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
+@import 'material-symbols';
+
 html,
 body,
 :host,
@@ -50,4 +52,10 @@ h3,
 .notification {
     font-family: 'Anton', sans-serif;
     font-weight: 400;
+}
+
+.gradient-custom {
+    background: linear-gradient(to right, #27064a 0%, #4589ff 100%);
+    color: rgb(230, 230, 230);
+
 }

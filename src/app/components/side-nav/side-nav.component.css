@@ -32,9 +32,9 @@
 }
 
 .side-btn-group {
-  background-color: #007bff;
   color: white;
   border: none;
+  background-color: rgba(0, 0, 0, .1);
   font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.3s ease;
@@ -47,5 +47,5 @@
 }
 
 .side-btn-group:hover {
-  background-color: #0056b3;
+  background-color: rgba(0, 0, 0, .2);
 }

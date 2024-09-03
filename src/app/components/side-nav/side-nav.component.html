@@ -1,7 +1,7 @@
 <nav class="sub-container">
-  <ul class="sidenav-content">
+  <ul class="sidenav-content gradient-custom">
     <li *ngFor="let group of groups" class="side-group-item">
-      <button (click)="onGroupClick(group)" class="side-btn-group">
+      <button (click)="onGroupClick(group)" class="side-btn-group btn btn-primary">
         {{ group.name }}
       </button>
     </li>

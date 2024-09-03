@@ -4,64 +4,73 @@
 
     <!-- Main Content Section -->
     <section class="section-container container py-3">
+
         <!-- List of Users -->
         <div class="card mb-3">
-            <div class="card-header py-2">
+            <div class="card-header gradient-custom py-2">
                 <h5 class="mb-0">Users</h5>
             </div>
-            <div class="card-body p-2">
-                <table class="table table-sm table-bordered">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Username</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let user of users">
-                            <td>{{ user.username }}</td>
-                            <td>{{ user.email }}</td>
-                            <td>{{ user.roles.join(', ') }}</td>
-                            <td class="text-center">
-                                <button class="btn btn-success btn-sm me-1" (click)="makeSuper(user)"> <i
-                                        class="bi bi-arrow-up-circle"></i></button>
-                                <button class="btn btn-danger btn-sm"> <i class="bi bi-trash3-fill"></i></button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+            <!-- <div class="card"> -->
+            <table class="table table-sm table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let user of users">
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.roles.join(', ') }}</td>
+                        <td class="btn-center">
+                            <button class="btn btn-success btn-sm me-1" (click)="makeSuper(user)"> <span class="material-symbols-outlined">
+                                upgrade
+                                </span></button>
+                            <button class="btn btn-danger btn-sm"> <span class="material-symbols-outlined">
+                                delete_forever
+                                </span></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
+        <!-- </div> -->
 
         <!-- List of Groups -->
         <div class="card mb-3">
-            <div class="card-header py-2">
+            <div class="card-header gradient-custom py-2">
                 <h5 class="mb-0">Groups</h5>
             </div>
-            <div class="card-body p-2">
-                <table class="table table-sm table-bordered">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Group Name</th>
-                            <th>Description</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let group of groups">
-                            <td>{{ group.name }}</td>
-                            <td>{{ group.description }}</td>
-                            <td class="text-center">
-                                <button class="btn btn-danger btn-sm" (click)="deleteGroup(group)"><i
-                                        class="bi bi-trash3"></i></button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+
+            <table class="table table-sm table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th>Group Name</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let group of groups">
+                        <td>{{ group.name }}</td>
+                        <td>{{ group.description }}</td>
+                        <td class="btn-center">
+                            <button class="btn btn-success btn-sm" (click)="addGroup(group)"><span class="material-symbols-outlined">
+                                group_add
+                                </span></button>
+                            <button class="btn btn-danger btn-sm" (click)="deleteGroup(group)"><span class="material-symbols-outlined">
+                                delete_forever
+                                </span></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
+
+
     </section>
 
     <!-- Footer Component -->

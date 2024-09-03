@@ -1,0 +1,21 @@
+.card {
+  height: 100%;
+  width: 100%;
+}
+
+.section-container {
+  height: 100%;
+}
+
+.btn-center {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+  justify-content: center;
+
+}
+
+.gradient-custom {
+  background: linear-gradient(to right, #27064a 0%, #4589ff 100%);
+  color: rgb(230, 230, 230);
+}
