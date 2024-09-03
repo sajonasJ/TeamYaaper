@@ -121,6 +121,7 @@ export class DashboardComponent implements OnInit {
         users: [],
       };
       this.loadUsers();
+      this.updateSessionStorage()
       this.updateGroupDB(newGroup);
     } else {
       alert('Please fill in both the group name and description.');
@@ -143,7 +144,8 @@ export class DashboardComponent implements OnInit {
         (response: any) => {
           if (response.ok) {
             alert('Group deleted successfully');
-            this.loadGroups(); // Reload groups to reflect changes
+            this.updateSessionStorage()
+            this.loadGroups();
           } else {
             alert(
               response.message || 'Failed to delete group. Please try again.'

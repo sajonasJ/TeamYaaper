@@ -69,9 +69,8 @@ export class ContentComponent implements OnInit {
       this.selectedGroup.channels.push(newChannel);
       this.updateGroupsStorage();
       this.updateGroupDB(this.selectedGroup);
-
-      
       this.resetNewChannelForm();
+      this.loadGroups();
     } else {
       alert('Please fill in both the channel name and description.');
     }
@@ -84,16 +83,12 @@ export class ContentComponent implements OnInit {
   updateGroupsStorage(): void {
     if (this.selectedGroup) {
       const groupId = this.selectedGroup.id.toString();
-      console.log('Selected Group ID:', groupId, 'Type:', typeof groupId);
-
       const groupIndex = this.groups.findIndex(
         (group) => group.id.toString() === groupId
       );
 
       if (groupIndex !== -1) {
         this.groups[groupIndex].channels = [...this.selectedGroup.channels];
-        console.log('Updating group:', this.groups[groupIndex]);
-        console.log('Updated groups array:', this.groups);
         sessionStorage.setItem('allGroups', JSON.stringify(this.groups));
       } else {
         console.error('Group not found in groups array:', this.selectedGroup);

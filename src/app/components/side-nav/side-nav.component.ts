@@ -30,7 +30,7 @@ export class SideNavComponent implements OnInit {
   }
 
   loadCurrentUser(): void {
-    this.currentUser = sessionStorage.getItem('name');
+    this.currentUser = sessionStorage.getItem('username');
   }
 
   loadGroups(): void {

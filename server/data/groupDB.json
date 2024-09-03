@@ -4,7 +4,6 @@
       "id": "1",
       "name": "The Only Group One",
       "description": "A group for general discussions and announcements.",
-      "superuser": [],
       "admins": [
         "user1",
         "sajonasj"
@@ -53,6 +52,62 @@
           "id": "4",
           "name": "ewe",
           "description": "ewe",
+          "messages": []
+        },
+        {
+          "id": "5",
+          "name": "wdqwd",
+          "description": "qdqdq",
+          "messages": []
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "21312313",
+      "description": "123132",
+      "admins": [],
+      "users": [],
+      "channels": [
+        {
+          "id": "1",
+          "name": "can you please",
+          "description": "dasdad",
+          "messages": []
+        },
+        {
+          "id": "2",
+          "name": "asdad",
+          "description": "adad",
+          "messages": []
+        },
+        {
+          "id": "3",
+          "name": "asdad",
+          "description": "adsada",
+          "messages": []
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "name": "newwees",
+      "description": "sdsdad",
+      "admins": [
+        "user1"
+      ],
+      "users": [],
+      "channels": [
+        {
+          "id": "1",
+          "name": "adwd",
+          "description": "asdads",
+          "messages": []
+        },
+        {
+          "id": "2",
+          "name": "fhfh",
+          "description": "fhfh",
           "messages": []
         }
       ]
