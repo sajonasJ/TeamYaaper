@@ -70,8 +70,8 @@
                         <td>
                             <!-- Admins Management -->
                             <div class="input-group td-limiter">
-                                <input type="text" class="form-control form-control-sm" [(ngModel)]="newAdminForGroup"
-                                    placeholder="Add Username">
+                                <input type="text" class="form-control form-control-sm" [(ngModel)]="adminInputs[group.id]"
+                                placeholder="Add Username">
                                 <button class="btn btn-sm btn-primary" (click)="addAdminToGroup(group)">
                                     <span class="material-symbols-outlined">person_add</span>
                                 </button>
@@ -89,8 +89,8 @@
                         <td class="td-limiter"> 
                             <!-- Users Management -->
                             <div class="input-group td-limiter">
-                                <input type="text" class="form-control form-control-sm" [(ngModel)]="newUserForGroup"
-                                    placeholder="Add Username">
+                                <input type="text" class="form-control form-control-sm" [(ngModel)]="userInputs[group.id]"
+                                placeholder="Add Username">
                                 <button class="btn btn-sm btn-primary" (click)="addUserToGroup(group)">
                                     <span class="material-symbols-outlined">person_add</span>
                                 </button>

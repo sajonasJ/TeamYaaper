@@ -33,21 +33,8 @@
     ]
   },
   {
-    "id": "3",
-    "username": "usertwo",
-    "firstname": "Jonas3",
-    "lastname": "Sajonas3",
-    "email": "usertwo@example.com",
-    "groups": {
-      "group2": [
-        "user"
-      ]
-    },
-    "roles": []
-  },
-  {
-    "id": "4",
-    "username": "usertwo2",
+    "id": "5",
+    "username": "user2",
     "firstname": "",
     "lastname": "",
     "email": "",

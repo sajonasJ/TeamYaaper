@@ -17,8 +17,7 @@ export class AccountComponent implements OnInit {
   lastname: string = '';
   email: string = '';
   roles: string[] = [];
-  groups: { [key: string]: string[] } = {};
-
+  groups:string[] = [];
   isEditMode: boolean = false;
 
   constructor(
@@ -33,9 +32,21 @@ export class AccountComponent implements OnInit {
         this.router.navigate(['/login']);
       } else {
         this.loadData();
+        this.loadGroups();
       }
     });
   }
+
+  loadGroups(): void {
+    // Retrieve all groups from session storage
+    const allGroups = JSON.parse(sessionStorage.getItem('allGroups') || '[]');
+    
+    // Filter groups to include only those where the user is in both admins and users
+    this.groups = allGroups.filter((group: any) =>
+      group.admins.includes(this.username) ||  group.users.includes(this.username)
+    ).map((group: any) => group.name);
+  }
+  
 
   loadData() {
     this.id = Number(sessionStorage.getItem('id') || '0');

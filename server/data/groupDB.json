@@ -6,10 +6,9 @@
       "description": "A group for general discussions and announcements.",
       "admins": [
         "user1",
-        "sajonasj"
+        "user2"
       ],
       "users": [
-        "user2",
         "user1"
       ],
       "channels": [
@@ -64,30 +63,13 @@
     },
     {
       "id": "2",
-      "name": "21312313",
-      "description": "123132",
-      "admins": [],
+      "name": "12",
+      "description": "12",
+      "admins": [
+        "user1"
+      ],
       "users": [],
-      "channels": [
-        {
-          "id": "1",
-          "name": "can you please",
-          "description": "dasdad",
-          "messages": []
-        },
-        {
-          "id": "2",
-          "name": "asdad",
-          "description": "adad",
-          "messages": []
-        },
-        {
-          "id": "3",
-          "name": "asdad",
-          "description": "adsada",
-          "messages": []
-        }
-      ]
+      "channels": []
     }
   ]
 }

@@ -8,14 +8,14 @@
   <!-- Channel Container -->
   <div class="channel-container" *ngIf="selectedGroup">
     <div class="channel-container-btn">
-      <h3>Channels</h3>
+      <h3>&#64;Channels</h3>
       <button class="btn btn-primary btn-sm custom-btn-height" data-bs-toggle="modal" data-bs-target="#channelModal">Add</button>
     </div>
     <ul class="list-group">
       <!-- Make the list item visually identifiable as clickable -->
       <li class="list-group-item clickable" *ngFor="let channel of selectedGroup.channels"
         (click)="selectChannel(channel)">
-        {{ channel.name }}
+        # {{ channel.name }}
       </li>
     </ul>
   </div>

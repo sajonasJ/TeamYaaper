@@ -20,6 +20,8 @@ export class DashboardComponent implements OnInit {
   newGroupName: string = '';
   newGroupDescription: string = '';
   currentUser: string | null = null;
+  adminInputs: { [key: string]: string } = {};
+  userInputs: { [key: string]: string } = {};
 
   constructor(private httpClient: HttpClient, private toastr: ToastrService) {}
 
@@ -51,6 +53,7 @@ export class DashboardComponent implements OnInit {
       .subscribe(
         (data) => {
           this.groups = data;
+          this.updateSessionStorage();
         },
         (error) => console.error('Error loading groups:', error)
       );
@@ -61,6 +64,10 @@ export class DashboardComponent implements OnInit {
     if (!user.roles.includes('super')) {
       user.roles.push('super');
       this.updateUser(user);
+      this.toastr.success(
+        'User ugraded to Super User successfully!',
+        'Success'
+      );
     } else {
       this.toastr.error('User is already a superuser.', 'Error');
     }
@@ -159,9 +166,7 @@ export class DashboardComponent implements OnInit {
         users: [],
       };
 
-      this.updateGroupDB(newGroup); // Add the new group to the database
-      this.loadUsers(); // Reload users to reflect changes (if necessary)
-      this.updateSessionStorage(); // Update session storage (if necessary)
+      this.updateGroupDB(newGroup);
       this.toastr.success('Group added successfully!', 'Success');
     } else {
       this.toastr.error(
@@ -215,31 +220,44 @@ export class DashboardComponent implements OnInit {
     return 'none';
   }
 
-  // Add user to a specific group
-  addUserToGroup(group: Group): void {
-    const userExists = this.users.some(
-      (user) => user.username === this.newUserForGroup
-    );
+  // Add user to a specific group using map-based input storage
+addUserToGroup(group: Group): void {
+  const newUserUsername = this.userInputs[group.id];
 
-    if (!userExists) {
-      this.toastr.error('User does not exist.', 'Error');
-      return;
-    }
-
-    if (this.newUserForGroup && !group.users.includes(this.newUserForGroup)) {
-      group.users.push(this.newUserForGroup);
-      this.updateGroupDB(group);
-      this.updateSessionStorage();
-      this.newUserForGroup = '';
-    } else {
-      this.toastr.error('User already in group.', 'Error');
-    }
+  if (!newUserUsername) {
+    this.toastr.error('Please enter a username.', 'Error');
+    return;
   }
+
+  const userExists = this.users.some((user) => user.username === newUserUsername);
+
+  if (!userExists) {
+    this.toastr.error('User does not exist.', 'Error');
+    return;
+  }
+
+  if (!group.users.includes(newUserUsername)) {
+    group.users.push(newUserUsername);
+    this.updateGroupDB(group);
+    this.updateSessionStorage();
+    this.toastr.success('User added successfully!', 'Success');
+    this.userInputs[group.id] = ''; // Clear input after adding
+  } else {
+    this.toastr.error('User already in group.', 'Error');
+  }
+}
 
   // Add user to a specific group
   addAdminToGroup(group: Group): void {
+    const newAdminUsername = this.adminInputs[group.id];
+
+    if (!newAdminUsername) {
+      this.toastr.error('Please enter a username.', 'Error');
+      return;
+    }
+
     const userExists = this.users.some(
-      (users) => users.username === this.newAdminForGroup
+      (user) => user.username === newAdminUsername
     );
 
     if (!userExists) {
@@ -247,14 +265,11 @@ export class DashboardComponent implements OnInit {
       return;
     }
 
-    if (
-      this.newAdminForGroup &&
-      !group.admins.includes(this.newAdminForGroup)
-    ) {
-      group.admins.push(this.newAdminForGroup);
+    if (!group.admins.includes(newAdminUsername)) {
+      group.admins.push(newAdminUsername);
       this.updateGroupDB(group);
-      this.updateSessionStorage();
-      this.newAdminForGroup = '';
+      this.toastr.success('Admin added successfully!', 'Success');
+      this.adminInputs[group.id] = ''; // Clear input after adding
     } else {
       this.toastr.error('Admin already in group.', 'Error');
     }
@@ -268,6 +283,7 @@ export class DashboardComponent implements OnInit {
       this.updateGroupDB(group);
       this.updateSessionStorage();
       this.loadGroups();
+      this.toastr.success('User removed uccessfully!', 'Success');
     }
   }
   // Delete a user from a group
@@ -276,8 +292,8 @@ export class DashboardComponent implements OnInit {
     if (index !== -1) {
       group.admins.splice(index, 1);
       this.updateGroupDB(group);
-      this.updateSessionStorage();
       this.loadGroups();
+      this.toastr.success('Admin removed uccessfully!', 'Success');
     }
   }
 
