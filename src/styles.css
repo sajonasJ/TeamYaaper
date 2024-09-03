@@ -69,6 +69,11 @@ td {
     padding: 5px;
 }
 
+thead{
+    text-align: center;
+}
+
+
 li {
     display: flex;
     margin: 5px;

@@ -8,7 +8,7 @@ import { User, Group } from '../../models/dataInterfaces';
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css',
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
   users: User[] = [];
   groups: Group[] = [];
   newUserForGroup: string = ''; 
@@ -76,12 +76,23 @@ export class DashboardComponent {
 
   // Add user to a specific group
   addUserToGroup(group: Group): void {
+    const userExists = this.users.some(user => user.username === this.newUserForGroup);
+
+    if (!userExists) {
+      alert('User does not exist.');
+      return;
+    }
+    
+    
     if (this.newUserForGroup && !group.users.includes(this.newUserForGroup)) {
+      
+      
       group.users.push(this.newUserForGroup);
       this.updateGroupDB(group);
-      this.newUserForGroup = ''; // Clear input after adding
+      this.updateSessionStorage();
+      this.newUserForGroup = '';
     } else {
-      alert('User already in group or no user specified');
+      alert('User already in group');
     }
   }
 
@@ -91,6 +102,8 @@ export class DashboardComponent {
     if (index !== -1) {
       group.users.splice(index, 1);
       this.updateGroupDB(group);
+      this.updateSessionStorage()
+      this.loadGroups()
     }
   }
   // Update group in the backend
@@ -108,6 +121,11 @@ export class DashboardComponent {
           alert('Failed to update group. Please try again.');
         }
       );
+  }
+  // Update groups in session storage
+  updateSessionStorage(): void {
+    sessionStorage.setItem('allGroups', JSON.stringify(this.groups));
+    console.log('Updated session storage with groups:', this.groups);
   }
 
 }
