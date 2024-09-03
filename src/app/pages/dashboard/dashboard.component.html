@@ -8,9 +8,12 @@
         <div class="card mb-3">
             <div class="card-header gradient-custom py-2 d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Users</h5>
-                <button class="btn btn-success btn-sm" (click)="addUser()">
-                    <span class="material-symbols-outlined">person_add</span>
-                </button>
+
+                <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addUserModal"><span
+                        class="material-symbols-outlined">person_add</span></button>
+
+
+
             </div>
             <table class="table table-sm table-bordered mb-0">
                 <thead class="table-light">
@@ -30,7 +33,7 @@
                             <button class="btn btn-primary btn-sm me-1" (click)="makeSuper(user)">
                                 <span class="material-symbols-outlined">
                                     arrow_upward
-                                    </span>
+                                </span>
                             </button>
                             <button class="btn btn-warning btn-sm me-1" (click)="removeSuper(user)">
                                 <span class="material-symbols-outlined">
@@ -120,3 +123,18 @@
     <!-- Footer Component -->
     <app-footer></app-footer>
 </main>
+
+<!-- Parent component HTML (e.g., dashboard.component.html) -->
+<app-modal [title]="'Add New User'" [modalId]="'addUserModal'" (save)="saveUser()">
+    <!-- Modal content -->
+    <div modal-body>
+        <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            <input type="text" class="form-control" id="username" [(ngModel)]="newUsername">
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" [(ngModel)]="newPassword">
+        </div>
+    </div>
+</app-modal>

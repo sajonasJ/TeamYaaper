@@ -6,6 +6,7 @@ const PORT = 3000;
 const AUTHROUT= require("./routes/auth")
 const LOGGEDROUT = require("./routes/loggedOn")
 const GROUPROUT=require("./routes/groupRoute")
+const SAVEROUT=require("./routes/saveUserRoute")
 
 
 //CORS Middleware Configuration
@@ -30,6 +31,7 @@ app.use((req, res, next) => {
 app.post("/auth", AUTHROUT);
 app.post("/loggedOn", LOGGEDROUT);
 app.post("/groupRoute", GROUPROUT);
+app.post("/saveUserRoute",SAVEROUT);
 
 // start the server
 http.listen(PORT, () => {

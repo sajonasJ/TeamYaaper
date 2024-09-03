@@ -63,24 +63,24 @@ export class AccountComponent implements OnInit {
       lastname: this.lastname,
       email: this.email,
       groups: this.groups,
+      roles: this.roles,
     };
 
     this.httpClient
       .post<any>(BACKEND_URL + '/loggedOn', userObj, httpOptions)
       .subscribe((response: any) => {
-        alert(JSON.stringify(response));
-        alert('Profile updated successfully!');
+        if (response.ok) {
+          alert('Profile updated successfully!');
 
-        const updatedUser = response.find((user: any) => user.id === this.id);
+          // Update session storage with the new user information
+          sessionStorage.setItem('id', userObj.id.toString());
+          sessionStorage.setItem('username', userObj.username);
+          sessionStorage.setItem('firstname', userObj.firstname);
+          sessionStorage.setItem('lastname', userObj.lastname);
+          sessionStorage.setItem('email', userObj.email);
+          sessionStorage.setItem('roles', JSON.stringify(userObj.roles));
+          sessionStorage.setItem('groups', JSON.stringify(userObj.groups));
 
-        if (updatedUser) {
-          sessionStorage.setItem('id', updatedUser.id.toString());
-          sessionStorage.setItem('username', updatedUser.username);
-          sessionStorage.setItem('firstname', updatedUser.firstname);
-          sessionStorage.setItem('lastname', updatedUser.lastname);
-          sessionStorage.setItem('email', updatedUser.email);
-          sessionStorage.setItem('roles', JSON.stringify(updatedUser.roles));
-          sessionStorage.setItem('groups', JSON.stringify(updatedUser.groups));
           this.loadData();
           this.onCancelEdit();
         } else {

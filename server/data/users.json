@@ -43,6 +43,17 @@
         "user"
       ]
     },
+    "roles": [
+      "super"
+    ]
+  },
+  {
+    "id": 4,
+    "username": "user2",
+    "firstname": "12344242",
+    "lastname": "12313",
+    "email": "123123",
+    "groups": {},
     "roles": []
   }
 ]
