@@ -133,7 +133,8 @@ export class ContentComponent implements OnInit {
   }
 
   addUserToGroup(group: Group): void {
-    const newUserUsername = this.userInputs[group.id];
+    this.loadUsers();
+    const newUserUsername = this.userInputs['group-' + group.id];
 
     if (!newUserUsername) {
       this.toastr.error('Please enter a username.', 'Error');
@@ -162,8 +163,8 @@ export class ContentComponent implements OnInit {
   }
 
   addUserToChannel(channel: Channel): void {
-    const newUserUsername = this.userInputs[channel.id];
-
+    this.loadUsers();
+    const newUserUsername = this.userInputs['channel-' + channel.id];
     if (!newUserUsername) {
       this.toastr.error('Please enter a username.', 'Error');
       return;
@@ -195,9 +196,7 @@ export class ContentComponent implements OnInit {
       this.toastr.error('No channel selected.', 'Error');
       return;
     }
-
-    const username = this.userInputs[channel.id];
-
+    const username = this.userInputs['channel-' + channel.id];
     if (!username) {
       this.toastr.error('Please enter a username to delete.', 'Error');
       return;
@@ -222,7 +221,7 @@ export class ContentComponent implements OnInit {
   }
 
   deleteUserFromGroup(group: Group): void {
-    const username = this.userInputs[group.id];
+    const username = this.userInputs['group-' + group.id];
 
     if (!username) {
       this.toastr.error('Please enter a username to delete.', 'Error');

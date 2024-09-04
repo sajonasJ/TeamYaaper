@@ -12,7 +12,7 @@
         <div class="ctrl-sim">
           <div class="ctrl-sim-btn">
             <div class="input-group" style="width: auto;">
-              <!-- For Group Admin Controls -->
+              <!-- Group Admin Controls -->
               <input type="text" class="form-control form-control-sm"
                 [(ngModel)]="userInputs['group-' + selectedGroup.id]" placeholder="Add Username">
               <button class="btn btn-sm btn-primary ms-1" (click)="addUserToGroup(selectedGroup)">
@@ -54,6 +54,7 @@
     </ul>
   </div>
 
+
   <!-- Message Container -->
   <div class="message-container" *ngIf="selectedChannel">
     <div class="d-flex justify-content-between align-items-center mb-3">
@@ -61,7 +62,8 @@
       <div class="ctrl-sim-btn">
         <div class="input-group" style="width: auto;">
 
-          <!-- For Channel User Controls -->
+
+          <!-- Channel User Controls -->
           <input type="text" class="form-control form-control-sm"
             [(ngModel)]="userInputs['channel-' + selectedChannel.id]" placeholder="Add Username">
           <button class="btn btn-sm btn-primary ms-1" (click)="addUserToChannel(selectedChannel)">
@@ -70,12 +72,10 @@
           <button class="btn btn-sm btn-danger ms-1" (click)="deleteUserFromChannel(selectedChannel)">
             <span class="material-symbols-outlined">person_remove</span>
           </button>
-          <button class="btn btn-sm btn-success ms-1" (click)="info('New Message')">
-            <span class="material-symbols-outlined">sms</span>
-          </button>
         </div>
       </div>
     </div>
+
 
     <p>-{{ selectedChannel.description }}</p>
     <div class="messages-list">
