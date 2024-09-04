@@ -3,7 +3,6 @@ const fs = require("fs");
 const PATH = "./data/groupDB.json";
 
 module.exports = function (req, res) {
-  console.log("Incoming Request Body:", req.body);
   fs.readFile(PATH, "utf8", (err, data) => {
     if (err) throw err;
 

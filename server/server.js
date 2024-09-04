@@ -4,7 +4,7 @@ const cors = require("cors");
 const app = express();
 const http = require("http").Server(app);
 const PORT = 3000;
-const AUTHROUT= require("./routes/auth")
+const AUTHROUT= require("./routes/authRout")
 const LOGGEDROUT = require("./routes/loggedOn")
 const GROUPROUT=require("./routes/groupRoute")
 const SAVEROUT=require("./routes/saveUserRoute")
@@ -31,7 +31,7 @@ app.use((req, res, next) => {
 
 
 //Routes Setup
-app.post("/auth", AUTHROUT);
+app.post("/authRoute", AUTHROUT);
 app.post("/loggedOn", LOGGEDROUT);
 app.post("/groupRoute", GROUPROUT);
 app.post("/saveUserRoute",SAVEROUT);
