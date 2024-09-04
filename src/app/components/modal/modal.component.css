@@ -1,8 +1,8 @@
 .custom-modal-height .modal-dialog {
-    max-height: 80vh;
-    margin: 0 auto;
-  }
+  max-height: 80vh;
+  margin: 0 auto;
+}
 
-  .custom-modal-height .modal-content {
-    height: 100%;
-  }
+.custom-modal-height .modal-content {
+  height: 100%;
+}

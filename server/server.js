@@ -23,7 +23,7 @@ app.use(
 //Express Middleware Setup
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+//log check for errors
 app.use((req, res, next) => {
   console.log(`${req.method} request for '${req.url}'`);
   next();

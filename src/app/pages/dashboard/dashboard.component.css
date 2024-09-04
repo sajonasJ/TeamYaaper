@@ -7,7 +7,7 @@
 .section-container {
   height: 100%;
   min-width: 100%;
-  padding:15px;
+  padding: 15px;
 }
 
 .btn-center {
@@ -26,18 +26,18 @@
   color: rgb(230, 230, 230);
 }
 
-.td-limiter{
-padding: 5px;
-margin:0;
+.td-limiter {
+  padding: 5px;
+  margin: 0;
 
 }
 
-.list-unstyled{
-padding: 0;
-margin:0;
+.list-unstyled {
+  padding: 0;
+  margin: 0;
 }
 
-.btn-container{
+.btn-container {
   display: flex;
   flex-direction: column;
   align-items: center;

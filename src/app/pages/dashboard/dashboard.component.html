@@ -70,8 +70,8 @@
                         <td>
                             <!-- Admins Management -->
                             <div class="input-group td-limiter">
-                                <input type="text" class="form-control form-control-sm" [(ngModel)]="adminInputs[group.id]"
-                                placeholder="Add Username">
+                                <input type="text" class="form-control form-control-sm"
+                                    [(ngModel)]="adminInputs[group.id]" placeholder="Add Username">
                                 <button class="btn btn-sm btn-primary" (click)="addAdminToGroup(group)">
                                     <span class="material-symbols-outlined">person_add</span>
                                 </button>
@@ -86,11 +86,11 @@
                                 </li>
                             </ul>
                         </td>
-                        <td class="td-limiter"> 
+                        <td class="td-limiter">
                             <!-- Users Management -->
                             <div class="input-group td-limiter">
-                                <input type="text" class="form-control form-control-sm" [(ngModel)]="userInputs[group.id]"
-                                placeholder="Add Username">
+                                <input type="text" class="form-control form-control-sm"
+                                    [(ngModel)]="userInputs[group.id]" placeholder="Add Username">
                                 <button class="btn btn-sm btn-primary" (click)="addUserToGroup(group)">
                                     <span class="material-symbols-outlined">person_add</span>
                                 </button>
@@ -139,14 +139,13 @@
 <app-modal [title]="'Add New Group'" [modalId]="'addGroupModal'" (save)="saveGroup()">
     <!-- Modal content -->
     <div modal-body>
-      <div class="mb-3">
-        <label for="groupName" class="form-label">Group Name</label>
-        <input type="text" class="form-control" id="groupName" [(ngModel)]="newGroupName">
-      </div>
-      <div class="mb-3">
-        <label for="groupDescription" class="form-label">Description</label>
-        <textarea class="form-control" id="groupDescription" [(ngModel)]="newGroupDescription"></textarea>
-      </div>
+        <div class="mb-3">
+            <label for="groupName" class="form-label">Group Name</label>
+            <input type="text" class="form-control" id="groupName" [(ngModel)]="newGroupName">
+        </div>
+        <div class="mb-3">
+            <label for="groupDescription" class="form-label">Description</label>
+            <textarea class="form-control" id="groupDescription" [(ngModel)]="newGroupDescription"></textarea>
+        </div>
     </div>
-  </app-modal>
-  
+</app-modal>

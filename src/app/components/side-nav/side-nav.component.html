@@ -12,10 +12,7 @@
 </nav>
 
 <!-- Reusable Modal Component for adding a new group -->
-<app-modal 
-  [title]="'Add New Group'" 
-  [modalId]="'groupModal'" 
-  (save)="addNewGroup()">
+<app-modal [title]="'Add New Group'" [modalId]="'groupModal'" (save)="addNewGroup()">
   <div modal-body>
     <div class="mb-3">
       <label for="groupName" class="form-label">Group Name</label>

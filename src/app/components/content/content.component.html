@@ -47,10 +47,10 @@
         </div>
       </div>
     </div>
-       <!-- Show request button only if the user is not part of the group -->
-       <button class="btn btn-sm btn-primary ms-1" *ngIf="!isUser()" (click)="info('Request to Join')">
-        Request to Join
-      </button>
+    <!-- Show request button only if the user is not part of the group -->
+    <button class="btn btn-sm btn-primary ms-1" *ngIf="!isUser()" (click)="info('Request to Join')">
+      Request to Join
+    </button>
     <ul class="list-group" *ngIf="isUser()">
       <!-- List channels and provide a delete button for each -->
       <li class="list-group-item clickable" *ngFor="let channel of selectedGroup.channels "

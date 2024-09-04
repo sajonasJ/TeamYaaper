@@ -9,47 +9,47 @@
 }
 
 .navbar-brand img {
-  height: 50px; /* Logo size for the navbar */
+  height: 50px;
   width: auto;
 }
 
 .nav-item {
   display: flex;
-  align-items: center; /* Center align items vertically */
+  align-items: center;
 }
 
 .nav-link {
-  display: flex; /* Use flexbox to align icon and text horizontally */
-  align-items: center; /* Center align items vertically */
-  gap: 0.5rem; /* Space between icon and text */
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .nav-link i {
-  font-size: 20px; /* Set icon size to match h5 text */
-  margin-right: 5px; /* Space between icon and text */
+  font-size: 20px;
+  margin-right: 5px;
 }
 
 .nav-link h5 {
-  margin: 0; /* Remove any default margin */
-  font-size: 20px; /* Ensure h5 text size is consistent */
+  margin: 0;
+  font-size: 20px;
 }
 
 @media (max-width: 768px) {
   .navbar-brand img {
-    height: 40px; /* Reduce logo size for smaller screens */
+    height: 40px;
   }
 
   .nav-link {
-    font-size: 16px; /* Adjust font size for better readability on mobile */
+    font-size: 16px;
   }
 }
 
 @media (max-width: 480px) {
   .navbar-brand img {
-    height: 30px; /* Further reduce logo size */
+    height: 30px;
   }
 
   .nav-link {
-    font-size: 14px; /* Adjust font size for smaller screens */
+    font-size: 14px;
   }
 }

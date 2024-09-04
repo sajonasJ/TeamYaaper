@@ -1,6 +1,6 @@
 .welcome-message {
     margin-bottom: 2rem;
-    margin:0px;
+    margin: 0px;
     width: 100%;
 }
 
@@ -33,7 +33,7 @@
 }
 
 
-.sub-section{
+.sub-section {
     display: flex;
     justify-content: center;
     align-items: center;

@@ -21,13 +21,13 @@
   color: rgb(255, 255, 255);
 }
 
-.p-m{
+.p-m {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   background-color: rgba(8, 8, 8, 0.9);
-  padding:60px;
+  padding: 60px;
   border-radius: 25px;
 }
 
@@ -109,7 +109,7 @@
   box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
   border-radius: 10px;
   padding: 20px;
-  margin:20px;
+  margin: 20px;
 }
 
 .message-container h4 {
