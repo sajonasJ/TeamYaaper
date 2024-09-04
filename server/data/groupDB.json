@@ -61,6 +61,16 @@
           ]
         }
       ]
+    },
+    {
+      "id": "2",
+      "name": "wdwd",
+      "description": "asdad",
+      "admins": [
+        "user1"
+      ],
+      "users": [],
+      "channels": []
     }
   ]
 }

@@ -1,15 +1,20 @@
 <section class="sub-container">
   <div *ngIf="!selectedGroup" class="placeholder-message">
-    <h2>No Group Selected</h2>
-    <p>Please select a group to view its channels and messages.</p>
+    <div class="p-m">
+      <h2>No Group Selected</h2>
+      <p>Please select a group to view its channels and messages.</p>
+    </div>
   </div>
   <div class="channel-container" *ngIf="selectedGroup">
     <div *ngIf="selectedGroup" class="group-header container">
       <h2>"{{ selectedGroup.name }}"</h2>
       <p>-{{ selectedGroup.description }}</p>
-      <div class="admin-ctrl">
+      <div class="admin-ctrl" *ngIf="isAdmin()">
         <p>Admin Controls</p>
         <div class="ctrl-sim">
+          <button class="btn btn-sm btn-danger ms-2" (click)="banUser()">
+            <span class="material-symbols-outlined">Delete</span>Delete Group
+          </button>
           <div class="ctrl-sim-btn">
             <div class="input-group" style="width: auto;">
               <!-- Group Admin Controls -->
@@ -34,20 +39,24 @@
       </div>
       <div class="channel-container-btn">
         <h3>&#64;Channels</h3>
-        <div class="ctrl-sim-btn">
+        <div class="ctrl-sim-btn" *ngIf="isAdmin()">
           <button class="btn btn-success btn-sm custom-btn-height" data-bs-toggle="modal"
             data-bs-target="#channelModal">
-            <span class="material-symbols-outlined">maps_ugc</span>
+            <span class="material-symbols-outlined">add</span>
           </button>
         </div>
       </div>
     </div>
-    <ul class="list-group">
+       <!-- Show request button only if the user is not part of the group -->
+       <button class="btn btn-sm btn-primary ms-1" *ngIf="!isUser()" (click)="info('Request to Join')">
+        Request to Join
+      </button>
+    <ul class="list-group" *ngIf="isUser()">
       <!-- List channels and provide a delete button for each -->
-      <li class="list-group-item clickable" *ngFor="let channel of selectedGroup.channels"
+      <li class="list-group-item clickable" *ngFor="let channel of selectedGroup.channels "
         (click)="selectChannel(channel)">
         # {{ channel.name }}
-        <button class="btn btn-sm btn-danger ms-1" (click)="deleteChannel(channel)">
+        <button class="btn btn-sm btn-danger ms-1" *ngIf="isAdmin()" (click)="deleteChannel(channel)">
           <span class="material-symbols-outlined">delete</span>
         </button>
       </li>
@@ -59,12 +68,12 @@
   <div class="message-container" *ngIf="selectedChannel">
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h4 class="mb-0"># {{ selectedChannel.name }}</h4>
-      <div class="ctrl-sim-btn">
+      <div class="ctrl-sim-btn" *ngIf="isAdmin()">
         <div class="input-group" style="width: auto;">
 
 
           <!-- Channel User Controls -->
-          <input type="text" class="form-control form-control-sm"
+          <input type="text" class="form-control form-control-sm "
             [(ngModel)]="userInputs['channel-' + selectedChannel.id]" placeholder="Add Username">
           <button class="btn btn-sm btn-primary ms-1" (click)="addUserToChannel(selectedChannel)">
             <span class="material-symbols-outlined">person_add</span>
@@ -73,6 +82,9 @@
             <span class="material-symbols-outlined">person_remove</span>
           </button>
         </div>
+        <button class="btn btn-success btn-sm ms-1" (click)="info('Add Message')">
+          <span class="material-symbols-outlined">maps_ugc</span>
+        </button>
       </div>
     </div>
 

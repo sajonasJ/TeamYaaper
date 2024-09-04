@@ -43,6 +43,17 @@ export class ContentComponent implements OnInit {
     });
   }
 
+  // Add this method to check if the current user is an admin
+  isAdmin(): boolean {
+    if (!this.selectedGroup || !this.currentUser) return false;
+    return this.selectedGroup.admins.includes(this.currentUser);
+  }
+
+  isUser(): boolean {
+    if (!this.selectedGroup || !this.currentUser) return false;
+    return this.selectedGroup.users.includes(this.currentUser);
+  }
+
   // Add this method to load users
   loadUsers(): void {
     this.httpClient
@@ -258,6 +269,7 @@ export class ContentComponent implements OnInit {
   info(message: string): void {
     this.toastr.success(`Not Implemented ${message}!`, 'Success');
   }
+  
 
   // New method to fetch updated groups from the backend
   fetchGroups() {
