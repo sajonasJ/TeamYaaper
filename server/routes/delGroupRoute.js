@@ -17,14 +17,6 @@ module.exports = function (req, res) {
       return res.send({ ok: false, message: "Failed to parse groups data." });
     }
 
-    // Check if the parsed data has the expected structure
-    if (!parsedData.groups || !Array.isArray(parsedData.groups)) {
-      return res.send({
-        ok: false,
-        message: "Invalid data format in groups file.",
-      });
-    }
-
     const groups = parsedData.groups;
     const groupIndex = groups.findIndex((g) => g.id === groupId);
 
