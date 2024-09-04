@@ -1,6 +1,7 @@
 .card {
   height: 100%;
   width: 100%;
+  box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
 }
 
 .section-container {

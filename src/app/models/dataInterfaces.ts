@@ -3,6 +3,7 @@ export interface Channel {
   name: string;
   description: string;
   messages: Message[];
+  users: string[];
 }
 
 export interface Message {

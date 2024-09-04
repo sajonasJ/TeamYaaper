@@ -1,10 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Group, Channel } from '../../models/dataInterfaces';
+import {User, Group, Channel } from '../../models/dataInterfaces';
 import { GroupService } from '../../services/group.service';
 import { HttpClient } from '@angular/common/http';
 import { httpOptions, BACKEND_URL } from '../../constants';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+
+
 
 @Component({
   selector: 'app-content',
@@ -13,17 +16,21 @@ import { Router } from '@angular/router';
 })
 export class ContentComponent implements OnInit {
   @Input() selectedGroup: Group | null = null;
+  users: User[] = [];
   groups: Group[] = [];
   selectedChannel: Channel | null = null;
 
   newChannelName: string = '';
   newChannelDescription: string = '';
+  userInputs: { [key: string]: string } = {};
+  currentUser: string | null = null;
 
   constructor(
     private groupService: GroupService,
     private httpClient: HttpClient,
     private authservice: AuthService,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -41,10 +48,8 @@ export class ContentComponent implements OnInit {
       (groups: Group[] | null) => {
         if (groups) {
           this.groups = groups;
-          console.log('Loaded groups from GroupService:', this.groups);
         } else {
           this.groups = [];
-          console.error('No groups found in session storage');
         }
       },
       (error) => console.error('Error loading groups', error)
@@ -53,7 +58,6 @@ export class ContentComponent implements OnInit {
 
   selectChannel(channel: Channel): void {
     this.selectedChannel = channel;
-    console.log('Selected Channel:', this.selectedChannel);
   }
 
   // Method to add a new channel to the selected group
@@ -68,6 +72,7 @@ export class ContentComponent implements OnInit {
         name: this.newChannelName,
         description: this.newChannelDescription,
         messages: [],
+        users: this.currentUser ? [this.currentUser] : []
       };
       this.selectedGroup.channels.push(newChannel);
       this.updateGroupsStorage();
@@ -77,6 +82,10 @@ export class ContentComponent implements OnInit {
     } else {
       alert('Please fill in both the channel name and description.');
     }
+  }
+
+  loadCurrentUser(): void {
+    this.currentUser = sessionStorage.getItem('username');
   }
 
   resetNewChannelForm(): void {
@@ -102,7 +111,6 @@ export class ContentComponent implements OnInit {
   }
 
   updateGroupDB(groupObj: Group): void {
-    console.log('Sending to Backend:', groupObj);
     this.httpClient
       .post<any>(BACKEND_URL + '/groupRoute', groupObj, httpOptions)
       .subscribe(
@@ -128,4 +136,93 @@ export class ContentComponent implements OnInit {
     );
     return (maxId + 1).toString();
   }
+
+  addUserToGroup(group: Group): void {
+    const newUserUsername = this.userInputs[group.id];
+
+    if (!newUserUsername) {
+      this.toastr.error('Please enter a username.', 'Error');
+      return;
+    }
+
+    const userExists = this.users.some(
+      (user) => user.username === newUserUsername
+    );
+
+    if (!userExists) {
+      this.toastr.error('User does not exist.', 'Error');
+      return;
+    }
+
+    if (!group.users.includes(newUserUsername)) {
+      group.users.push(newUserUsername);
+      this.updateGroupDB(group);
+      this.updateSessionStorage();
+      this.toastr.success('User added successfully!', 'Success');
+      this.userInputs[group.id] = '';
+    } else {
+      this.toastr.error('User already in group.', 'Error');
+    }
+  }
+
+  addUserToChannel(channel: Channel): void {
+    const newUserUsername = this.userInputs[channel.id];
+
+    if (!newUserUsername) {
+      this.toastr.error('Please enter a username.', 'Error');
+      return;
+    }
+
+    const userExists = this.users.some((user) => user.username === newUserUsername);
+
+    if (!userExists) {
+      this.toastr.error('User does not exist.', 'Error');
+      return;
+    }
+
+    if (!channel.users.includes(newUserUsername)) {
+      channel.users.push(newUserUsername);
+      this.updateGroupDB(this.selectedGroup!);
+      this.updateSessionStorage();
+      this.toastr.success('User added successfully!', 'Success');
+      this.userInputs[channel.id] = ''; // Clear input after adding
+    } else {
+      this.toastr.error('User already in channel.', 'Error');
+    }
+  }
+
+  deleteUserFromChannel(channel: Channel, username: string): void {
+    const index = channel.users.indexOf(username);
+    if (index !== -1) {
+      channel.users.splice(index, 1);
+      this.updateGroupDB(this.selectedGroup!);
+      this.updateSessionStorage();
+      this.loadGroups();
+      this.toastr.success('User removed successfully!', 'Success');
+    }
+  }
+
+
+   // Delete a user from a group
+   deleteUserFromGroup(group: Group, username: string): void {
+    const index = group.users.indexOf(username);
+    if (index !== -1) {
+      group.users.splice(index, 1);
+      this.updateGroupDB(group);
+      this.updateSessionStorage();
+      this.loadGroups();
+      this.toastr.success('User removed uccessfully!', 'Success');
+    }
+  }
+  updateSessionStorage(): void {
+    sessionStorage.setItem('allGroups', JSON.stringify(this.groups));
+  }
+
+   // Helper method to get the role of a user in a specific group
+   getUserRoleInGroup(group: Group, username: string): string {
+    if (group.admins.includes(username)) return 'admin';
+    if (group.users.includes(username)) return 'user';
+    return 'none';
+  }
+
 }

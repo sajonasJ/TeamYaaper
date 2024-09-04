@@ -34,7 +34,7 @@ export class DashboardComponent implements OnInit {
     this.currentUser = sessionStorage.getItem('username');
   }
 
-  // Load groups from backend or storage
+
   loadUsers(): void {
     this.httpClient
       .post<User[]>(`${BACKEND_URL}/loggedOn`, {}, httpOptions)
@@ -221,31 +221,33 @@ export class DashboardComponent implements OnInit {
   }
 
   // Add user to a specific group using map-based input storage
-addUserToGroup(group: Group): void {
-  const newUserUsername = this.userInputs[group.id];
+  addUserToGroup(group: Group): void {
+    const newUserUsername = this.userInputs[group.id];
 
-  if (!newUserUsername) {
-    this.toastr.error('Please enter a username.', 'Error');
-    return;
+    if (!newUserUsername) {
+      this.toastr.error('Please enter a username.', 'Error');
+      return;
+    }
+
+    const userExists = this.users.some(
+      (user) => user.username === newUserUsername
+    );
+
+    if (!userExists) {
+      this.toastr.error('User does not exist.', 'Error');
+      return;
+    }
+
+    if (!group.users.includes(newUserUsername)) {
+      group.users.push(newUserUsername);
+      this.updateGroupDB(group);
+      this.updateSessionStorage();
+      this.toastr.success('User added successfully!', 'Success');
+      this.userInputs[group.id] = ''; // Clear input after adding
+    } else {
+      this.toastr.error('User already in group.', 'Error');
+    }
   }
-
-  const userExists = this.users.some((user) => user.username === newUserUsername);
-
-  if (!userExists) {
-    this.toastr.error('User does not exist.', 'Error');
-    return;
-  }
-
-  if (!group.users.includes(newUserUsername)) {
-    group.users.push(newUserUsername);
-    this.updateGroupDB(group);
-    this.updateSessionStorage();
-    this.toastr.success('User added successfully!', 'Success');
-    this.userInputs[group.id] = ''; // Clear input after adding
-  } else {
-    this.toastr.error('User already in group.', 'Error');
-  }
-}
 
   // Add user to a specific group
   addAdminToGroup(group: Group): void {
