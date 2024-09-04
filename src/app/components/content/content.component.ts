@@ -1,13 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
-import {User, Group, Channel } from '../../models/dataInterfaces';
+import { User, Group, Channel } from '../../models/dataInterfaces';
 import { GroupService } from '../../services/group.service';
 import { HttpClient } from '@angular/common/http';
 import { httpOptions, BACKEND_URL } from '../../constants';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-
-
 
 @Component({
   selector: 'app-content',
@@ -39,8 +37,22 @@ export class ContentComponent implements OnInit {
         this.router.navigate(['/login']);
       } else {
         this.loadGroups();
+        this.loadUsers();
+        this.loadCurrentUser();
       }
     });
+  }
+
+  // Add this method to load users
+  loadUsers(): void {
+    this.httpClient
+      .post<User[]>(`${BACKEND_URL}/loggedOn`, {}, httpOptions)
+      .subscribe(
+        (data) => {
+          this.users = data;
+        },
+        (error) => console.error('Error loading users:', error)
+      );
   }
 
   loadGroups(): void {
@@ -72,13 +84,14 @@ export class ContentComponent implements OnInit {
         name: this.newChannelName,
         description: this.newChannelDescription,
         messages: [],
-        users: this.currentUser ? [this.currentUser] : []
+        users: this.currentUser ? [this.currentUser] : [],
       };
       this.selectedGroup.channels.push(newChannel);
-      this.updateGroupsStorage();
+      // this.updateGroupsStorage();
+      this.fetchGroups();
       this.updateGroupDB(this.selectedGroup);
-      this.resetNewChannelForm();
       this.loadGroups();
+      this.resetNewChannelForm();
     } else {
       alert('Please fill in both the channel name and description.');
     }
@@ -92,23 +105,6 @@ export class ContentComponent implements OnInit {
     this.newChannelName = '';
     this.newChannelDescription = '';
   }
-  updateGroupsStorage(): void {
-    if (this.selectedGroup) {
-      const groupId = this.selectedGroup.id.toString();
-      const groupIndex = this.groups.findIndex(
-        (group) => group.id.toString() === groupId
-      );
-
-      if (groupIndex !== -1) {
-        this.groups[groupIndex].channels = [...this.selectedGroup.channels];
-        sessionStorage.setItem('allGroups', JSON.stringify(this.groups));
-      } else {
-        console.error('Group not found in groups array:', this.selectedGroup);
-      }
-    } else {
-      console.error('No group selected.');
-    }
-  }
 
   updateGroupDB(groupObj: Group): void {
     this.httpClient
@@ -117,8 +113,7 @@ export class ContentComponent implements OnInit {
         (response: any) => {
           alert(JSON.stringify(response));
           alert('Group updated successfully!');
-
-          // Optional: Fetch updated groups from the backend to ensure synchronization
+          this.fetchGroups();
           this.loadGroups();
         },
         (error) => {
@@ -157,9 +152,10 @@ export class ContentComponent implements OnInit {
     if (!group.users.includes(newUserUsername)) {
       group.users.push(newUserUsername);
       this.updateGroupDB(group);
-      this.updateSessionStorage();
-      this.toastr.success('User added successfully!', 'Success');
-      this.userInputs[group.id] = '';
+      this.fetchGroups();
+      this.toastr.success('User added successfully to group!', 'Success');
+      this.loadGroups();
+      this.userInputs['group-' + group.id] = '';
     } else {
       this.toastr.error('User already in group.', 'Error');
     }
@@ -173,7 +169,9 @@ export class ContentComponent implements OnInit {
       return;
     }
 
-    const userExists = this.users.some((user) => user.username === newUserUsername);
+    const userExists = this.users.some(
+      (user) => user.username === newUserUsername
+    );
 
     if (!userExists) {
       this.toastr.error('User does not exist.', 'Error');
@@ -183,46 +181,154 @@ export class ContentComponent implements OnInit {
     if (!channel.users.includes(newUserUsername)) {
       channel.users.push(newUserUsername);
       this.updateGroupDB(this.selectedGroup!);
-      this.updateSessionStorage();
-      this.toastr.success('User added successfully!', 'Success');
-      this.userInputs[channel.id] = ''; // Clear input after adding
+      this.fetchGroups();
+      this.toastr.success('User added successfully to channel!', 'Success');
+      this.loadGroups();
+      this.userInputs['channel-' + channel.id] = '';
     } else {
       this.toastr.error('User already in channel.', 'Error');
     }
   }
 
-  deleteUserFromChannel(channel: Channel, username: string): void {
+  deleteUserFromChannel(channel: Channel | null): void {
+    if (!channel) {
+      this.toastr.error('No channel selected.', 'Error');
+      return;
+    }
+
+    const username = this.userInputs[channel.id];
+
+    if (!username) {
+      this.toastr.error('Please enter a username to delete.', 'Error');
+      return;
+    }
+
+    if (!channel.users) {
+      this.toastr.error('No users found in the channel.', 'Error');
+      return;
+    }
+
     const index = channel.users.indexOf(username);
     if (index !== -1) {
       channel.users.splice(index, 1);
       this.updateGroupDB(this.selectedGroup!);
-      this.updateSessionStorage();
+      this.fetchGroups();
+      this.toastr.success('User removed successfully from channel!', 'Success');
       this.loadGroups();
-      this.toastr.success('User removed successfully!', 'Success');
+      this.userInputs['channel-' + channel.id] = '';
+    } else {
+      this.toastr.error('User not found in channel.', 'Error');
     }
   }
 
+  deleteUserFromGroup(group: Group): void {
+    const username = this.userInputs[group.id];
 
-   // Delete a user from a group
-   deleteUserFromGroup(group: Group, username: string): void {
+    if (!username) {
+      this.toastr.error('Please enter a username to delete.', 'Error');
+      return;
+    }
+
     const index = group.users.indexOf(username);
     if (index !== -1) {
       group.users.splice(index, 1);
       this.updateGroupDB(group);
-      this.updateSessionStorage();
+      this.fetchGroups();
       this.loadGroups();
-      this.toastr.success('User removed uccessfully!', 'Success');
+      this.toastr.success('User removed successfully from group!', 'Success');
+      this.userInputs['group-' + group.id] = '';
+    } else {
+      this.toastr.error('User not found in group.', 'Error');
     }
   }
-  updateSessionStorage(): void {
-    sessionStorage.setItem('allGroups', JSON.stringify(this.groups));
-  }
 
-   // Helper method to get the role of a user in a specific group
-   getUserRoleInGroup(group: Group, username: string): string {
+  // Helper method to get the role of a user in a specific group
+  getUserRoleInGroup(group: Group, username: string): string {
     if (group.admins.includes(username)) return 'admin';
     if (group.users.includes(username)) return 'user';
     return 'none';
   }
 
+  // Planned feature: Report, Ban and Unban users
+  reportUser(): void {
+    this.toastr.success('User Reported!', 'Success');
+  }
+  banUser(): void {
+    this.toastr.success('User Banned!', 'Success');
+  }
+  info(message: string): void {
+    this.toastr.success(`Not Implemented ${message}!`, 'Success');
+  }
+
+  // New method to fetch updated groups from the backend
+  fetchGroups() {
+    this.httpClient
+      .post(BACKEND_URL + '/groupRoute', {}, httpOptions)
+      .subscribe(
+        (groups: any) => {
+          sessionStorage.setItem('allGroups', JSON.stringify(groups));
+          this.loadGroups();
+        },
+        (error) => {
+          console.error('Failed to fetch groups:', error);
+        }
+      );
+  }
+
+  deleteChannel(channel: Channel): void {
+    if (this.selectedGroup) {
+      const channelIndex = this.selectedGroup.channels.findIndex(
+        (ch) => ch.id === channel.id
+      );
+
+      if (channelIndex !== -1) {
+        this.selectedGroup.channels.splice(channelIndex, 1);
+        this.updateGroupDB(this.selectedGroup);
+        this.toastr.success('Channel deleted successfully!', 'Success');
+        this.fetchGroups();
+        this.loadGroups();
+        this.selectedChannel = null;
+      } else {
+        this.toastr.error('Channel not found.', 'Error');
+      }
+    } else {
+      this.toastr.error('No group selected.', 'Error');
+    }
+  }
+  deleteGroup(group: Group): void {
+    const confirmDelete = confirm(
+      `Are you sure you want to delete the group "${group.name}"?`
+    );
+    if (!confirmDelete) return;
+
+    // Remove the group from the component's groups array
+    this.groups = this.groups.filter((g) => g.id !== group.id);
+
+    // Send delete request to backend
+    this.httpClient
+      .post(`${BACKEND_URL}/delGroupRoute`, { id: group.id }, httpOptions)
+      .subscribe(
+        (response: any) => {
+          if (response.ok) {
+            this.toastr.success('Group deleted successfully!', 'Success');
+            this.fetchGroups();
+            this.loadGroups();
+          } else {
+            this.toastr.error(
+              'Failed to delete group. Please try again.',
+              'Error'
+            );
+            this.loadGroups();
+          }
+        },
+        (error) => {
+          console.error('Error deleting group:', error);
+          this.toastr.error(
+            'Failed to delete group. Please retry again.',
+            'Error'
+          );
+          this.loadGroups();
+        }
+      );
+  }
 }

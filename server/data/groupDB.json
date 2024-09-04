@@ -5,8 +5,7 @@
       "name": "The Only Group One",
       "description": "A group for general discussions and announcements.",
       "admins": [
-        "user1",
-        "user2"
+        "user1"
       ],
       "users": [
         "user1"
@@ -43,33 +42,14 @@
         },
         {
           "id": "3",
-          "name": "123123",
-          "description": "dsdadad",
-          "messages": []
-        },
-        {
-          "id": "4",
-          "name": "ewe",
-          "description": "ewe",
-          "messages": []
-        },
-        {
-          "id": "5",
-          "name": "wdqwd",
-          "description": "qdqdq",
-          "messages": []
+          "name": "news",
+          "description": "222",
+          "messages": [],
+          "users": [
+            "user1"
+          ]
         }
       ]
-    },
-    {
-      "id": "2",
-      "name": "12",
-      "description": "12",
-      "admins": [
-        "user1"
-      ],
-      "users": [],
-      "channels": []
     }
   ]
 }

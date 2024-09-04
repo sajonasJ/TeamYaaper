@@ -53,8 +53,6 @@ export class LoginComponent {
       .subscribe(
         (groups: any) => {
           sessionStorage.setItem('allGroups', JSON.stringify(groups));
-          console.log('Groups fetched successfully:', groups);
-
           this.router.navigate(['/home']);
           this.authService.login();
         },

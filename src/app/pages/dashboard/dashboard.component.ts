@@ -271,7 +271,7 @@ export class DashboardComponent implements OnInit {
       group.admins.push(newAdminUsername);
       this.updateGroupDB(group);
       this.toastr.success('Admin added successfully!', 'Success');
-      this.adminInputs[group.id] = ''; // Clear input after adding
+      this.adminInputs[group.id] = '';
     } else {
       this.toastr.error('Admin already in group.', 'Error');
     }

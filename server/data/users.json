@@ -40,5 +40,14 @@
     "email": "",
     "groups": {},
     "roles": []
+  },
+  {
+    "id": "6",
+    "username": "user3",
+    "firstname": "",
+    "lastname": "",
+    "email": "",
+    "groups": {},
+    "roles": []
   }
 ]

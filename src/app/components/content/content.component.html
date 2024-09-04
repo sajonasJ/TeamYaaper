@@ -1,67 +1,88 @@
 <section class="sub-container">
-
   <div *ngIf="!selectedGroup" class="placeholder-message">
     <h2>No Group Selected</h2>
     <p>Please select a group to view its channels and messages.</p>
   </div>
-
-
-
-  <!-- Channel Container -->
   <div class="channel-container" *ngIf="selectedGroup">
-      <!-- Group Header -->
-  <div *ngIf="selectedGroup" class="group-header container">
-    <h2>{{ selectedGroup.name }}</h2>
-    <p>{{ selectedGroup.description }}</p>
-  </div>
-    <div class="channel-container-btn">
-      <h3>&#64;Channels</h3>
-      <button class="btn btn-primary btn-sm custom-btn-height" data-bs-toggle="modal"
-        data-bs-target="#channelModal">Add</button>
+    <div *ngIf="selectedGroup" class="group-header container">
+      <h2>"{{ selectedGroup.name }}"</h2>
+      <p>-{{ selectedGroup.description }}</p>
+      <div class="admin-ctrl">
+        <p>Admin Controls</p>
+        <div class="ctrl-sim">
+          <div class="ctrl-sim-btn">
+            <div class="input-group" style="width: auto;">
+              <!-- For Group Admin Controls -->
+              <input type="text" class="form-control form-control-sm"
+                [(ngModel)]="userInputs['group-' + selectedGroup.id]" placeholder="Add Username">
+              <button class="btn btn-sm btn-primary ms-1" (click)="addUserToGroup(selectedGroup)">
+                <span class="material-symbols-outlined">person_add</span>
+              </button>
+              <button class="btn btn-sm btn-danger ms-1" (click)="deleteUserFromGroup(selectedGroup)">
+                <span class="material-symbols-outlined">person_remove</span>
+              </button>
+
+              <button class="btn btn-sm btn-warning ms-2" (click)="reportUser()">
+                <span class="material-symbols-outlined">flag</span>
+              </button>
+              <button class="btn btn-sm btn-danger ms-2" (click)="banUser()">
+                <span class="material-symbols-outlined">block</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="channel-container-btn">
+        <h3>&#64;Channels</h3>
+        <div class="ctrl-sim-btn">
+          <button class="btn btn-success btn-sm custom-btn-height" data-bs-toggle="modal"
+            data-bs-target="#channelModal">
+            <span class="material-symbols-outlined">maps_ugc</span>
+          </button>
+        </div>
+      </div>
     </div>
     <ul class="list-group">
-      <!-- Make the list item visually identifiable as clickable -->
+      <!-- List channels and provide a delete button for each -->
       <li class="list-group-item clickable" *ngFor="let channel of selectedGroup.channels"
         (click)="selectChannel(channel)">
         # {{ channel.name }}
+        <button class="btn btn-sm btn-danger ms-1" (click)="deleteChannel(channel)">
+          <span class="material-symbols-outlined">delete</span>
+        </button>
       </li>
     </ul>
   </div>
 
   <!-- Message Container -->
   <div class="message-container" *ngIf="selectedChannel">
-    <!-- Flex container to align elements -->
     <div class="d-flex justify-content-between align-items-center mb-3">
-      <!-- Channel name on the left -->
       <h4 class="mb-0"># {{ selectedChannel.name }}</h4>
+      <div class="ctrl-sim-btn">
+        <div class="input-group" style="width: auto;">
 
-      <!-- Input and button on the right -->
-      <div class="input-group" style="width: auto;">
-        <input type="text" class="form-control form-control-sm" [(ngModel)]="userInputs[selectedChannel.id]"
-          placeholder="Add Username">
-        <button class="btn btn-sm btn-primary ms-1" (click)="addUserToChannel(selectedChannel)">
-          <span class="material-symbols-outlined">person_add</span>
-        </button>
-        <button class="btn btn-sm btn-danger ms-1" (click)="addUserToChannel(selectedChannel)">
-          <span class="material-symbols-outlined">person_remove</span>
-        </button>
-        <button class="btn btn-sm btn-success ms-2"><span class="material-symbols-outlined">
-          sms
-          </span></button>
+          <!-- For Channel User Controls -->
+          <input type="text" class="form-control form-control-sm"
+            [(ngModel)]="userInputs['channel-' + selectedChannel.id]" placeholder="Add Username">
+          <button class="btn btn-sm btn-primary ms-1" (click)="addUserToChannel(selectedChannel)">
+            <span class="material-symbols-outlined">person_add</span>
+          </button>
+          <button class="btn btn-sm btn-danger ms-1" (click)="deleteUserFromChannel(selectedChannel)">
+            <span class="material-symbols-outlined">person_remove</span>
+          </button>
+          <button class="btn btn-sm btn-success ms-1" (click)="info('New Message')">
+            <span class="material-symbols-outlined">sms</span>
+          </button>
+        </div>
       </div>
     </div>
 
-
-
-
-    <p>{{ selectedChannel.description }}</p>
-
+    <p>-{{ selectedChannel.description }}</p>
     <div class="messages-list">
       <div class="message-card card mb-2" *ngFor="let message of selectedChannel.messages">
         <div class="card-body">
           <h5 class="card-title">{{ message.name }}</h5>
           <p class="card-text">{{ message.text }}</p>
-          <!-- Flex container for timestamp and buttons -->
           <div class="d-flex justify-content-between align-items-end">
             <div>
               <p class="card-text small mb-0">
@@ -72,8 +93,8 @@
               </p>
             </div>
             <div>
-              <button class="btn btn-sm btn-outline-primary me-2">Edit</button>
-              <button class="btn btn-sm btn-outline-danger">Delete</button>
+              <button class="btn btn-sm btn-outline-primary me-2" (click)="info('Edit')">Edit</button>
+              <button class="btn btn-sm btn-outline-danger" (click)="info('Delete')">Delete</button>
             </div>
           </div>
         </div>
@@ -82,6 +103,7 @@
   </div>
 </section>
 
+<!-- Modal -->
 <app-modal [title]="'Add New Channel'" [modalId]="'channelModal'" (save)="addNewChannel()">
   <div modal-body>
     <div class="mb-3">

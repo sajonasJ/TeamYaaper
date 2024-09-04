@@ -22,7 +22,6 @@
   background-color: rgba(233, 233, 233, 0.9);
 }
 
-/* Group Header */
 .group-header {
   display: flex;
   flex-direction: column;
@@ -31,7 +30,6 @@
   padding: 20px;
 }
 
-/* Channel Container */
 .channel-container {
   background-color: rgba(255, 255, 255, 1);
   color: #000000;
@@ -40,11 +38,37 @@
   box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
   border-radius: 10px;
 }
+.list-group-item{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;  
+}
 
 .channel-container-btn {
   display: flex;
   flex-direction: row;
+  align-items: center;
   justify-content: space-between;
+  margin-top: 30px;
+}
+
+.admin-ctrl{
+  display: flex;
+  flex-direction: column;
+}
+
+.ctrl-sim{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.ctrl-sim-btn{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: .5rem;
 }
 
 .channel-container h3 {
