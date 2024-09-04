@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { BACKEND_URL } from '../../constants';
 import { httpOptions } from '../../constants';
 import { AuthService } from '../../services/auth.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-login',
@@ -18,19 +19,18 @@ export class LoginComponent {
   constructor(
     private router: Router,
     private httpClient: HttpClient,
-    private authService: AuthService
+    private authService: AuthService,
+    private toastr: ToastrService
   ) {}
 
+  //submit the username and password to the backend and set the session storage on login
   submit() {
     let user = { username: this.username, password: this.password };
 
     this.httpClient
-      .post(BACKEND_URL + '/auth', user, httpOptions)
+      .post(BACKEND_URL + '/authRoute', user, httpOptions)
       .subscribe((data: any) => {
-        alert('posting: ' + JSON.stringify(user));
-        alert('posting: ' + JSON.stringify(data));
         if (data.ok) {
-          alert('correct');
           sessionStorage.setItem('id', data.id.toString());
           sessionStorage.setItem('username', data.username);
           sessionStorage.setItem('firstname', data.firstname);
@@ -40,16 +40,18 @@ export class LoginComponent {
           sessionStorage.setItem('groups', JSON.stringify(data.groups));
           sessionStorage.setItem('userlogin', 'true');
 
-          // Fetch group data after successful login
           this.fetchGroups();
         } else {
-          alert('email or password incorrect');
+          this.toastr.error('email or password incorrect');
         }
       });
   }
+
+
+//fetch groups from the backend
   fetchGroups() {
     this.httpClient
-    .post(BACKEND_URL + '/groupRoute', {}, httpOptions)
+      .post(BACKEND_URL + '/groupRoute', {}, httpOptions)
       .subscribe(
         (groups: any) => {
           sessionStorage.setItem('allGroups', JSON.stringify(groups));
@@ -58,8 +60,8 @@ export class LoginComponent {
         },
         (error) => {
           console.error('Failed to fetch groups:', error);
+          this.toastr.error('Failed to fetch groups');
         }
       );
   }
-
 }

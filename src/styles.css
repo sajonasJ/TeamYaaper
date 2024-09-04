@@ -27,7 +27,6 @@ body,
     min-height: 80%;
 }
 
-/* Specific font usage for Anton */
 h1,
 h2,
 h3,
@@ -38,17 +37,16 @@ h3,
     font-weight: 400;
 }
 
-/* Styling for chat messages */
 .chat-message {
     font-weight: 400;
 }
 
-/* Styling for usernames */
+
 .username {
     font-weight: 600;
 }
 
-/* Styling for notifications and alerts */
+
 .notification {
     font-family: 'Anton', sans-serif;
     font-weight: 400;

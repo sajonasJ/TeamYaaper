@@ -4,8 +4,8 @@ const cors = require("cors");
 const app = express();
 const http = require("http").Server(app);
 const PORT = 3000;
-const AUTHROUT= require("./routes/authRout")
-const LOGGEDROUT = require("./routes/loggedOn")
+const AUTHROUT= require("./routes/authRoute")
+const LOGINROUT = require("./routes/loginRoute")
 const GROUPROUT=require("./routes/groupRoute")
 const SAVEROUT=require("./routes/saveUserRoute")
 const DELGROUPROUT=require("./routes/delGroupRoute")
@@ -32,7 +32,7 @@ app.use((req, res, next) => {
 
 //Routes Setup
 app.post("/authRoute", AUTHROUT);
-app.post("/loggedOn", LOGGEDROUT);
+app.post("/loginRoute", LOGINROUT);
 app.post("/groupRoute", GROUPROUT);
 app.post("/saveUserRoute",SAVEROUT);
 app.post("/delGroupRoute", DELGROUPROUT);

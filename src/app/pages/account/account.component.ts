@@ -4,6 +4,7 @@ import { httpOptions } from '../../constants';
 import { BACKEND_URL } from '../../constants';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-account',
@@ -17,15 +18,17 @@ export class AccountComponent implements OnInit {
   lastname: string = '';
   email: string = '';
   roles: string[] = [];
-  groups:string[] = [];
+  groups: string[] = [];
   isEditMode: boolean = false;
 
   constructor(
     private httpClient: HttpClient,
     private router: Router,
-    private authservice: AuthService
+    private authservice: AuthService,
+    private toastr: ToastrService
   ) {}
 
+  //check if user is logged in otherwise return to login page, load user data and groups
   ngOnInit() {
     this.authservice.isLoggedIn.subscribe((loggedIn) => {
       if (!loggedIn) {
@@ -37,17 +40,19 @@ export class AccountComponent implements OnInit {
     });
   }
 
+  //load user groups
   loadGroups(): void {
-    // Retrieve all groups from session storage
     const allGroups = JSON.parse(sessionStorage.getItem('allGroups') || '[]');
-    
-    // Filter groups to include only those where the user is in both admins and users
-    this.groups = allGroups.filter((group: any) =>
-      group.admins.includes(this.username) ||  group.users.includes(this.username)
-    ).map((group: any) => group.name);
+    this.groups = allGroups
+      .filter(
+        (group: any) =>
+          group.admins.includes(this.username) ||
+          group.users.includes(this.username)
+      )
+      .map((group: any) => group.name);
   }
-  
 
+  //load user data
   loadData() {
     this.id = Number(sessionStorage.getItem('id') || '0');
     this.username = sessionStorage.getItem('username') || '';
@@ -58,14 +63,17 @@ export class AccountComponent implements OnInit {
     this.groups = JSON.parse(sessionStorage.getItem('groups') || '{}');
   }
 
+  //Join first and last name
   get fullName(): string {
     return `${this.firstname} ${this.lastname}`;
   }
 
+  //switch to edit mode
   onUpdate(): void {
     this.isEditMode = true;
   }
 
+  //save user data
   onSave() {
     const userObj = {
       id: this.id,
@@ -78,12 +86,9 @@ export class AccountComponent implements OnInit {
     };
 
     this.httpClient
-      .post<any>(BACKEND_URL + '/loggedOn', userObj, httpOptions)
+      .post<any>(BACKEND_URL + '/loginRoute', userObj, httpOptions)
       .subscribe((response: any) => {
         if (response.ok) {
-          alert('Profile updated successfully!');
-
-          // Update session storage with the new user information
           sessionStorage.setItem('id', userObj.id.toString());
           sessionStorage.setItem('username', userObj.username);
           sessionStorage.setItem('firstname', userObj.firstname);
@@ -95,22 +100,24 @@ export class AccountComponent implements OnInit {
           this.loadData();
           this.onCancelEdit();
         } else {
-          alert('Failed to find updated user in response.');
+          this.toastr.error('Failed to update user data.');
         }
       });
   }
 
+  //cancel edit mode
   onCancelEdit(): void {
     this.isEditMode = false;
   }
 
+  //delete user account
   onDelete(): void {
-    console.log('Delete button clicked');
     if (confirm('Are you sure you want to delete this account?')) {
-      alert('Delete functionality not implemented yet.');
+      this.toastr.error('Delete functionality not implemented yet.');
     }
   }
 
+  //display groups by object keys
   objectKeys(obj: any): string[] {
     return Object.keys(obj);
   }

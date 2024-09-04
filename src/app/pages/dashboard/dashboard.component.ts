@@ -25,28 +25,34 @@ export class DashboardComponent implements OnInit {
 
   constructor(private httpClient: HttpClient, private toastr: ToastrService) {}
 
+  // Load users and groups when the component is initialized
   ngOnInit(): void {
     this.loadUsers();
     this.loadGroups();
     this.loadCurrentUser();
   }
+
+  // Load the current user from session storage
   loadCurrentUser(): void {
     this.currentUser = sessionStorage.getItem('username');
   }
 
-
+  // Load users from the backend
   loadUsers(): void {
     this.httpClient
-      .post<User[]>(`${BACKEND_URL}/loggedOn`, {}, httpOptions)
+      .post<User[]>(`${BACKEND_URL}/loginRoute`, {}, httpOptions)
       .subscribe(
         (data) => {
           this.users = data;
         },
-
-        (error) => console.error('Error loading users:', error)
+        (error) => {
+          console.error('Error loading users:', error);
+          this.toastr.error('Failed to load users. Please try again.', 'Error');
+        }
       );
   }
 
+  // Load groups from the backend
   loadGroups(): void {
     this.httpClient
       .post<Group[]>(`${BACKEND_URL}/groupRoute`, {}, httpOptions)
@@ -73,6 +79,7 @@ export class DashboardComponent implements OnInit {
     }
   }
 
+  // Remove superuser role from a user
   removeSuper(user: User): void {
     const roleIndex = user.roles.indexOf('super');
 
@@ -85,12 +92,12 @@ export class DashboardComponent implements OnInit {
     }
   }
 
+  // Update user in the backend
   updateUser(user: User): void {
     this.httpClient
-      .post<User[]>(`${BACKEND_URL}/loggedOn`, user, httpOptions)
+      .post<User[]>(`${BACKEND_URL}/loginRoute`, user, httpOptions)
       .subscribe(
         (response) => {
-          console.log('User updated successfully:', response);
           this.loadUsers();
           this.toastr.success('User updated successfully!', 'Success');
         },
@@ -103,6 +110,8 @@ export class DashboardComponent implements OnInit {
         }
       );
   }
+
+  //delete user from the backend
   deleteUser(user: User): void {
     const confirmDelete = confirm(
       `Are you sure you want to delete the user "${user.username}"?`
@@ -143,6 +152,7 @@ export class DashboardComponent implements OnInit {
     this.newGroupDescription = '';
   }
 
+  // Function to save a new group
   saveGroup(): void {
     if (this.newGroupName && this.newGroupDescription) {
       const groupExists = this.groups.some(
@@ -176,16 +186,13 @@ export class DashboardComponent implements OnInit {
     }
   }
 
+  // Delete a group from the backend
   deleteGroup(group: Group): void {
     const confirmDelete = confirm(
       `Are you sure you want to delete the group "${group.name}"?`
     );
     if (!confirmDelete) return;
-
-    // Remove the group from the component's groups array
     this.groups = this.groups.filter((g) => g.id !== group.id);
-
-    // Send delete request to backend
     this.httpClient
       .post(`${BACKEND_URL}/delGroupRoute`, { id: group.id }, httpOptions)
       .subscribe(
@@ -288,6 +295,7 @@ export class DashboardComponent implements OnInit {
       this.toastr.success('User removed uccessfully!', 'Success');
     }
   }
+
   // Delete a user from a group
   deleteAdminFromGroup(group: Group, username: string): void {
     const index = group.admins.indexOf(username);
@@ -315,11 +323,13 @@ export class DashboardComponent implements OnInit {
         }
       );
   }
-  // Update groups in session storage
+
+  // Update group in the frontend
   updateSessionStorage(): void {
     sessionStorage.setItem('allGroups', JSON.stringify(this.groups));
   }
 
+  // Add new user to the backend
   saveUser(): void {
     if (this.newUsername && this.newPassword) {
       const newUser = {
@@ -339,12 +349,11 @@ export class DashboardComponent implements OnInit {
           }
         });
     } else {
-      this.toastr.error(
-        'Failed to add user to loggedOn. Please try again.',
-        'Error'
-      );
+      this.toastr.error('Failed to add user. Please try again.', 'Error');
     }
   }
+
+  // Save user data to the backend
   saveUserData(): void {
     const newUserData = {
       id: this.generateMaxId(),
@@ -357,7 +366,7 @@ export class DashboardComponent implements OnInit {
     };
 
     this.httpClient
-      .post(`${BACKEND_URL}/loggedOn`, newUserData, httpOptions)
+      .post(`${BACKEND_URL}/loginRoute`, newUserData, httpOptions)
       .subscribe((response: any) => {
         if (response.ok) {
           this.toastr.success('User data saved successfully!', 'Success');
@@ -373,6 +382,7 @@ export class DashboardComponent implements OnInit {
       });
   }
 
+  // Generate a new user ID
   generateMaxId(): string {
     if (this.users.length === 0) {
       return '1';
@@ -381,6 +391,7 @@ export class DashboardComponent implements OnInit {
     return (maxId + 1).toString();
   }
 
+  // Generate a new group ID
   generateUniqueId(): string {
     const maxId = this.groups.reduce(
       (max, group) => Math.max(max, +group.id),

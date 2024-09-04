@@ -3,7 +3,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 @Component({
   selector: 'app-modal',
   templateUrl: './modal.component.html',
-  styleUrl: './modal.component.css'
+  styleUrl: './modal.component.css',
 })
 export class ModalComponent {
   @Input() title: string = '';
@@ -11,6 +11,7 @@ export class ModalComponent {
 
   @Output() save = new EventEmitter<void>();
 
+  // Emit the save event when the save button is clicked
   onSave() {
     this.save.emit();
   }

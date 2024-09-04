@@ -6,19 +6,17 @@ import { AccountComponent } from './pages/account/account.component';
 import { WelcomeComponent } from './pages/welcome/welcome.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
-
 const routes: Routes = [
   { path: '', redirectTo: '/welcome', pathMatch: 'full' },
   { path: 'home', component: HomeComponent },
   { path: 'login', component: LoginPageComponent },
   { path: 'account', component: AccountComponent },
-  { path: 'welcome', component: WelcomeComponent},
-  { path: 'dashboard', component: DashboardComponent}
+  { path: 'welcome', component: WelcomeComponent },
+  { path: 'dashboard', component: DashboardComponent },
 ];
-
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

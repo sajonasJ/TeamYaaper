@@ -12,6 +12,7 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './content.component.html',
   styleUrl: './content.component.css',
 })
+
 export class ContentComponent implements OnInit {
   @Input() selectedGroup: Group | null = null;
   users: User[] = [];
@@ -31,6 +32,7 @@ export class ContentComponent implements OnInit {
     private toastr: ToastrService
   ) {}
 
+  // Load groups and users on component initialization reroutes to login if not logged in
   ngOnInit(): void {
     this.authservice.isLoggedIn.subscribe((loggedIn) => {
       if (!loggedIn) {
@@ -43,29 +45,34 @@ export class ContentComponent implements OnInit {
     });
   }
 
-  // Add this method to check if the current user is an admin
+  //check if the current user is an admin
   isAdmin(): boolean {
     if (!this.selectedGroup || !this.currentUser) return false;
     return this.selectedGroup.admins.includes(this.currentUser);
   }
 
+  //check if the current user is a user
   isUser(): boolean {
     if (!this.selectedGroup || !this.currentUser) return false;
     return this.selectedGroup.users.includes(this.currentUser);
   }
 
-  // Add this method to load users
+  // grab the users from the backend
   loadUsers(): void {
     this.httpClient
-      .post<User[]>(`${BACKEND_URL}/loggedOn`, {}, httpOptions)
+      .post<User[]>(`${BACKEND_URL}/loginRoute`, {}, httpOptions)
       .subscribe(
         (data) => {
           this.users = data;
         },
-        (error) => console.error('Error loading users:', error)
+        (error) => {
+          console.error('Error loading users:', error);
+          this.toastr.error('Failed to load users. Please try again.', 'Error');
+        }
       );
   }
 
+  // grab the groups from the backend
   loadGroups(): void {
     this.groupService.getGroups().subscribe(
       (groups: Group[] | null) => {
@@ -75,10 +82,14 @@ export class ContentComponent implements OnInit {
           this.groups = [];
         }
       },
-      (error) => console.error('Error loading groups', error)
+      (error) => {
+        console.error('Error loading groups:', error);
+        this.toastr.error('Failed to load groups. Please try again.', 'Error');
+      }
     );
   }
 
+  // Sets the selected channel
   selectChannel(channel: Channel): void {
     this.selectedChannel = channel;
   }
@@ -98,42 +109,49 @@ export class ContentComponent implements OnInit {
         users: this.currentUser ? [this.currentUser] : [],
       };
       this.selectedGroup.channels.push(newChannel);
-      // this.updateGroupsStorage();
       this.fetchGroups();
       this.updateGroupDB(this.selectedGroup);
       this.loadGroups();
       this.resetNewChannelForm();
     } else {
-      alert('Please fill in both the channel name and description.');
+      this.toastr.error(
+        'Please fill in both the channel name and description.',
+        'Error'
+      );
     }
   }
 
+  //loac the current user from session storage
   loadCurrentUser(): void {
     this.currentUser = sessionStorage.getItem('username');
   }
 
+  //reset the channel form
   resetNewChannelForm(): void {
     this.newChannelName = '';
     this.newChannelDescription = '';
   }
 
+  // Method to update the group in the backend
   updateGroupDB(groupObj: Group): void {
     this.httpClient
       .post<any>(BACKEND_URL + '/groupRoute', groupObj, httpOptions)
       .subscribe(
         (response: any) => {
-          alert(JSON.stringify(response));
-          alert('Group updated successfully!');
           this.fetchGroups();
           this.loadGroups();
         },
         (error) => {
           console.error('Error updating group:', error);
-          alert('Failed to update group. Please try again.');
+          this.toastr.error(
+            'Failed to update group. Please try again.',
+            'Error'
+          );
         }
       );
   }
 
+  // Generate a unique ID for the new channel
   generateUniqueId(): string {
     if (!this.selectedGroup) return '1';
     const maxId = this.selectedGroup.channels.reduce(
@@ -143,6 +161,7 @@ export class ContentComponent implements OnInit {
     return (maxId + 1).toString();
   }
 
+  // Method to add a new user to the selected group
   addUserToGroup(group: Group): void {
     this.loadUsers();
     const newUserUsername = this.userInputs['group-' + group.id];
@@ -173,6 +192,7 @@ export class ContentComponent implements OnInit {
     }
   }
 
+  // Method to add user to channel
   addUserToChannel(channel: Channel): void {
     this.loadUsers();
     const newUserUsername = this.userInputs['channel-' + channel.id];
@@ -202,6 +222,7 @@ export class ContentComponent implements OnInit {
     }
   }
 
+  // Method to delete a user from a channel
   deleteUserFromChannel(channel: Channel | null): void {
     if (!channel) {
       this.toastr.error('No channel selected.', 'Error');
@@ -231,6 +252,7 @@ export class ContentComponent implements OnInit {
     }
   }
 
+  // Method to delete a user from a group
   deleteUserFromGroup(group: Group): void {
     const username = this.userInputs['group-' + group.id];
 
@@ -269,7 +291,6 @@ export class ContentComponent implements OnInit {
   info(message: string): void {
     this.toastr.success(`Not Implemented ${message}!`, 'Success');
   }
-  
 
   // New method to fetch updated groups from the backend
   fetchGroups() {
@@ -282,10 +303,12 @@ export class ContentComponent implements OnInit {
         },
         (error) => {
           console.error('Failed to fetch groups:', error);
+          this.toastr.error('Failed to fetch groups. Please try again.', 'Error');
         }
       );
   }
 
+  // New method to delete a channel
   deleteChannel(channel: Channel): void {
     if (this.selectedGroup) {
       const channelIndex = this.selectedGroup.channels.findIndex(
@@ -306,16 +329,16 @@ export class ContentComponent implements OnInit {
       this.toastr.error('No group selected.', 'Error');
     }
   }
+
+  // New method to delete a group
   deleteGroup(group: Group): void {
     const confirmDelete = confirm(
       `Are you sure you want to delete the group "${group.name}"?`
     );
     if (!confirmDelete) return;
 
-    // Remove the group from the component's groups array
     this.groups = this.groups.filter((g) => g.id !== group.id);
 
-    // Send delete request to backend
     this.httpClient
       .post(`${BACKEND_URL}/delGroupRoute`, { id: group.id }, httpOptions)
       .subscribe(
