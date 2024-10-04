@@ -19,6 +19,7 @@ import { ModalComponent } from './components/modal/modal.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
+import { SettingsComponent } from './components/settings/settings.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { ToastrModule } from 'ngx-toastr';
     FooterComponent,
     ModalComponent,
     DashboardComponent,
+    SettingsComponent,
   ],
   imports: [
     BrowserModule,
