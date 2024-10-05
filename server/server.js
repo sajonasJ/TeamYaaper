@@ -26,7 +26,7 @@ async function startServer() {
     console.log("Connected successfully to MongoDB from server.js");
 
     // Load routes and pass the database object to them
-    require("./newroutes/verify")(db, app);
+    require("./newroutes/show/verify")(db, app);
 
     // Start listening on port 3000
     app.listen(3000, () => {
