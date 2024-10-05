@@ -1,22 +1,24 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { Group } from '../models/dataInterfaces';
+import { BACKEND_URL } from '../constants';
+import { httpOptions } from '../constants';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GroupService {
-  private readonly STORAGE_KEY = 'allGroups';
 
-  constructor() {}
+  constructor(private httpClient: HttpClient) {}
 
-  // Fetch groups from session storage
-  getGroups(): Observable<Group[] | null> {
-    const groups = sessionStorage.getItem(this.STORAGE_KEY);
-    if (groups) {
-      return of(JSON.parse(groups) as Group[]);
-    } else {
-      return of(null); 
-    }
+  // Fetch all groups from the backend
+  getGroups(): Observable<Group[]> {
+    return this.httpClient.get<Group[]>(`${BACKEND_URL}/groups`, httpOptions);
+  }
+
+  // Fetch a specific group by its ID from the backend
+  getGroupById(groupId: string): Observable<Group> {
+    return this.httpClient.get<Group>(`${BACKEND_URL}/groups/${groupId}`, httpOptions);
   }
 }

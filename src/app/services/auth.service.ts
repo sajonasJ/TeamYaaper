@@ -9,17 +9,17 @@ export class AuthService {
   isLoggedIn = this.loggedIn.asObservable();
 
   constructor() {
-    //check if the user is logged in
-    const isLoggedIn = !!sessionStorage.getItem('userlogin') === true;
+    const isLoggedIn = !!sessionStorage.getItem('userlogin');
     this.loggedIn.next(isLoggedIn);
   }
 
-  //
+  // Method to log in the user
   login() {
+    sessionStorage.setItem('userlogin', 'true');
     this.loggedIn.next(true);
   }
 
-  //clear the session storage on logout
+  // Method to log out the user
   logout() {
     sessionStorage.clear();
     this.loggedIn.next(false);
