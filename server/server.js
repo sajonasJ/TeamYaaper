@@ -1,49 +1,41 @@
-// server.js
-const express = require("express"); 
-const cors = require("cors"); 
-const app = express(); 
-// const http = require("http").Server(app); //! change
-// const PORT = 3000; //! change
-// const AUTHROUT= require("./routes/authRoute") //! change
-// const LOGINROUT = require("./routes/loginRoute") //! change
-// const GROUPROUT=require("./routes/groupRoute") //! change
-// const SAVEROUT=require("./routes/saveUserRoute") //! change
-// const DELGROUPROUT=require("./routes/delGroupRoute") //! change
-// const DELUSERROUT=require("./routes/delUserRoute") //! change
+// server/server.js
+const express = require("express");
+const cors = require("cors");
+const { main, closeConnection } = require("../app"); // Import the main function from app.js
+const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-//CORS Middleware Configuration
+// CORS Middleware Configuration
 app.use(cors());
 
 let db;
 
-//log check for errors
+// Log check for incoming requests
 app.use((req, res, next) => {
   console.log(`${req.method} request for '${req.url}'`);
   next();
 });
 
 
-// //! To change Routes Setup
-// app.post("/authRoute", AUTHROUT); //!
-// app.post("/loginRoute", LOGINROUT); //!
-// app.post("/groupRoute", GROUPROUT); //!
-// app.post("/saveUserRoute",SAVEROUT); //!
-// app.post("/delGroupRoute", DELGROUPROUT); //!
-// app.post("/delUserRoute",DELUSERROUT); //!
-
-// load routes
-require("./newroutes/")(db,app);
-
+// Start the server
 async function startServer() {
-  db = await main();
+  try {
+    db = await main(); // Connect to MongoDB and assign the database object to `db`
+    console.log("Connected successfully to MongoDB from server.js");
 
-  // Start the server
-  app.listen(3000, () => {
-    console.log("Server running on port 3000...");
-  });
+    // Load routes and pass the database object to them
+    require("./newroutes/verify")(db, app);
+
+    // Start listening on port 3000
+    app.listen(3000, () => {
+      console.log("Server running on port 3000...");
+    });
+
+  } catch (error) {
+    console.error("Failed to start server:", error);
+  }
 }
 
 // Gracefully handle shutdown
