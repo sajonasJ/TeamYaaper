@@ -7,12 +7,12 @@
   </div>
   <div class="channel-container" *ngIf="selectedGroup">
     <div *ngIf="selectedGroup" class="group-header container">
-      <h2>"{{ selectedGroup.name }}"</h2>
-      <p>-{{ selectedGroup.description }}</p>
+      <h2>Group: "{{ selectedGroup.name }}"</h2>
+      <p>Description: {{ selectedGroup.description }}</p>
       <div class="admin-ctrl" *ngIf="isAdmin()">
         <p>Admin Controls</p>
         <div class="ctrl-sim">
-          <button class="btn btn-sm btn-danger ms-2" (click)="banUser()">
+          <button class="btn btn-sm btn-danger ms-1" (click)="banUser()">
             <span class="material-symbols-outlined">Delete</span>Delete Group
           </button>
           <div class="ctrl-sim-btn">
@@ -33,10 +33,12 @@
               <button class="btn btn-sm btn-danger ms-2" (click)="banUser()">
                 <span class="material-symbols-outlined">block</span>
               </button>
+              <app-settings></app-settings>
             </div>
           </div>
         </div>
       </div>
+
       <div class="channel-container-btn">
         <h3>&#64;Channels</h3>
         <div class="ctrl-sim-btn" *ngIf="isAdmin()">
