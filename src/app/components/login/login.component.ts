@@ -63,11 +63,11 @@ export class LoginComponent {
   // Fetch groups from the backend
   fetchGroups() {
     this.httpClient
-      .post(BACKEND_URL + '/groupRoute', {}, httpOptions)
+      .get(BACKEND_URL + '/groups', httpOptions) // Changed to GET request and updated endpoint
       .subscribe(
         (groups: any) => {
           sessionStorage.setItem('allGroups', JSON.stringify(groups));
-
+  
           // Redirect to the home page after groups are fetched
           this.router.navigate(['/home']);
         },
@@ -77,4 +77,5 @@ export class LoginComponent {
         }
       );
   }
+  
 }

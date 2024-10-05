@@ -27,6 +27,8 @@ async function startServer() {
 
     // Load routes and pass the database object to them
     require("./newroutes/show/verify")(db, app);
+    require("./newroutes/show/showAllGroups")(db, app);
+    require("./newroutes/show/showGroupById")(db, app);
 
     // Start listening on port 3000
     app.listen(3000, () => {
