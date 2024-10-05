@@ -2,7 +2,7 @@
 
 module.exports = function (db, app) {
   // Fetch All Groups
-  app.get("/groups", async (req, res) => {
+  app.get("/allGroups", async (req, res) => {
     try {
       const groupsCollection = db.collection("groups");
       const allGroups = await groupsCollection.find({}).toArray();

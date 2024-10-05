@@ -6,13 +6,14 @@
       </button>
     </li>
     <li class="side-group-item">
+      <!-- Button to open the modal for adding a new group -->
       <button class="side-btn-group btn btn-primary" data-bs-toggle="modal" data-bs-target="#groupModal">+</button>
     </li>
   </ul>
 </nav>
 
-<!-- Reusable Modal Component for adding a new group -->
-<app-modal [title]="'Add New Group'" [modalId]="'groupModal'" (save)="addNewGroup()">
+<!-- Modal for adding a new group -->
+<app-modal [title]="'Add New Group'" [modalId]="'groupModal'" (save)="addGroup()">
   <div modal-body>
     <div class="mb-3">
       <label for="groupName" class="form-label">Group Name</label>

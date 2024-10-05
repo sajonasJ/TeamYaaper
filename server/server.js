@@ -10,6 +10,7 @@ app.use(express.urlencoded({ extended: true }));
 // CORS Middleware Configuration
 app.use(cors());
 
+
 let db;
 
 // Log check for incoming requests
@@ -24,11 +25,16 @@ async function startServer() {
   try {
     db = await main(); // Connect to MongoDB and assign the database object to `db`
     console.log("Connected successfully to MongoDB from server.js");
-
+    console.log("Registering /verify route");
     // Load routes and pass the database object to them
     require("./newroutes/show/verify")(db, app);
     require("./newroutes/show/showAllGroups")(db, app);
-    require("./newroutes/show/showGroupById")(db, app);
+    require("./newroutes/show/showGroup")(db, app);
+    require('./newroutes/show/showUser')(db, app);
+    require("./newroutes/show/showAllUsers")(db, app);
+    require("./newroutes/add/addGroup")(db, app);
+    require("./newroutes/add/addChannel")(db, app);
+
 
     // Start listening on port 3000
     app.listen(3000, () => {

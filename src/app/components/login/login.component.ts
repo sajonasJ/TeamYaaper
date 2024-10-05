@@ -5,11 +5,12 @@ import { BACKEND_URL } from '../../constants';
 import { httpOptions } from '../../constants';
 import { AuthService } from '../../services/auth.service';
 import { ToastrService } from 'ngx-toastr';
+import { GroupService } from '../../services/group.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'], // Corrected property name and syntax
+  styleUrls: ['./login.component.css'],
 })
 export class LoginComponent {
   username: string = '';
@@ -20,37 +21,42 @@ export class LoginComponent {
     private router: Router,
     private httpClient: HttpClient,
     private authService: AuthService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private groupService: GroupService
   ) {}
 
-  // Submit the username and password to the backend and set the session storage on login
   submit() {
     let user = { username: this.username, password: this.password };
 
     this.httpClient
-      .post(BACKEND_URL + '/auth/verify', user, httpOptions) // Updated route
+      .post(BACKEND_URL + '/verify', user, httpOptions) // Updated route
       .subscribe(
-        (data: any) => {
-          if (data.ok) {
+        (response: any) => {
+          if (response.ok) {
             // Store user information in session storage
-            if (data.id) {
-              sessionStorage.setItem('id', data.id.toString()); // Store id if available
-            }
-            sessionStorage.setItem('username', data.username);
-            sessionStorage.setItem('firstname', data.firstname);
-            sessionStorage.setItem('lastname', data.lastname);
-            sessionStorage.setItem('email', data.email);
-            sessionStorage.setItem('roles', JSON.stringify(data.roles));
-            sessionStorage.setItem('groups', JSON.stringify(data.groupMemberships));
+            sessionStorage.setItem('username', response.username);
+            sessionStorage.setItem('firstname', response.firstname);
+            sessionStorage.setItem('lastname', response.lastname);
+            sessionStorage.setItem('email', response.email);
+
+            // If roles and group memberships are arrays, use JSON.stringify
+            sessionStorage.setItem('roles', JSON.stringify(response.roles));
+            sessionStorage.setItem(
+              'groupMemberships',
+              JSON.stringify(response.groupMemberships)
+            );
+
             sessionStorage.setItem('userlogin', 'true');
 
             // Update the login status in AuthService
             this.authService.login();
 
-            // Fetch groups and then redirect to the home page
-            this.fetchGroups();
+            // Redirect to the home page after successful login
+            this.router.navigate(['/home']);
           } else {
-            this.toastr.error(data.message || 'Email or password incorrect');
+            this.toastr.error(
+              response.message || 'Email or password incorrect'
+            );
           }
         },
         (error) => {
@@ -59,23 +65,4 @@ export class LoginComponent {
         }
       );
   }
-
-  // Fetch groups from the backend
-  fetchGroups() {
-    this.httpClient
-      .get(BACKEND_URL + '/groups', httpOptions) // Changed to GET request and updated endpoint
-      .subscribe(
-        (groups: any) => {
-          sessionStorage.setItem('allGroups', JSON.stringify(groups));
-  
-          // Redirect to the home page after groups are fetched
-          this.router.navigate(['/home']);
-        },
-        (error) => {
-          console.error('Failed to fetch groups:', error);
-          this.toastr.error('Failed to fetch groups');
-        }
-      );
-  }
-  
 }

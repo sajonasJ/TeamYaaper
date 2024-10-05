@@ -10,8 +10,9 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class SideNavComponent implements OnInit {
   groups: Group[] = [];
+  newGroupName: string = ''; // Property to bind the group name input
+  newGroupDescription: string = ''; // Property to bind the group description input
 
-  // Output event to notify the parent component of the selected group
   @Output() groupSelected = new EventEmitter<Group>();
 
   constructor(
@@ -39,5 +40,39 @@ export class SideNavComponent implements OnInit {
   // Emit selected group when a group is clicked
   onGroupClick(group: Group): void {
     this.groupSelected.emit(group);
+  }
+
+  // Add a new group by calling the GroupService
+  addGroup(): void {
+    if (!this.newGroupName || !this.newGroupDescription) {
+      this.toastr.error('Group name and description are required', 'Error');
+      return;
+    }
+
+    const newGroup: Group = {
+      id: '',
+      name: this.newGroupName,
+      description: this.newGroupDescription,
+      admins: [], // Add current user/admins as needed
+      users: [],
+      channels: [],
+    };
+
+    this.groupService.addGroup(newGroup).subscribe(
+      (response: any) => {
+        if (response.ok) {
+          this.groups.push(response.group);
+          this.toastr.success('Group added successfully', 'Success');
+          this.newGroupName = ''; // Clear the input fields
+          this.newGroupDescription = '';
+        } else {
+          this.toastr.error(response.message || 'Failed to add group', 'Error');
+        }
+      },
+      (error) => {
+        console.error('Error adding group:', error);
+        this.toastr.error('An error occurred while adding the group.', 'Error');
+      }
+    );
   }
 }
