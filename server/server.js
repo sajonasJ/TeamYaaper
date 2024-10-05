@@ -1,28 +1,24 @@
 // server.js
-const express = require("express");
-const cors = require("cors");
-const app = express();
-const http = require("http").Server(app);
-const PORT = 3000;
-const AUTHROUT= require("./routes/authRoute")
-const LOGINROUT = require("./routes/loginRoute")
-const GROUPROUT=require("./routes/groupRoute")
-const SAVEROUT=require("./routes/saveUserRoute")
-const DELGROUPROUT=require("./routes/delGroupRoute")
-const DELUSERROUT=require("./routes/delUserRoute")
+const express = require("express"); 
+const cors = require("cors"); 
+const app = express(); 
+// const http = require("http").Server(app); //! change
+// const PORT = 3000; //! change
+// const AUTHROUT= require("./routes/authRoute") //! change
+// const LOGINROUT = require("./routes/loginRoute") //! change
+// const GROUPROUT=require("./routes/groupRoute") //! change
+// const SAVEROUT=require("./routes/saveUserRoute") //! change
+// const DELGROUPROUT=require("./routes/delGroupRoute") //! change
+// const DELUSERROUT=require("./routes/delUserRoute") //! change
 
-
-//CORS Middleware Configuration
-app.use(
-  cors({
-    origin: "http://localhost:4200",
-    methods: "GET,POST",
-  })
-);
-
-//Express Middleware Setup
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+//CORS Middleware Configuration
+app.use(cors());
+
+let db;
+
 //log check for errors
 app.use((req, res, next) => {
   console.log(`${req.method} request for '${req.url}'`);
@@ -30,15 +26,34 @@ app.use((req, res, next) => {
 });
 
 
-//Routes Setup
-app.post("/authRoute", AUTHROUT);
-app.post("/loginRoute", LOGINROUT);
-app.post("/groupRoute", GROUPROUT);
-app.post("/saveUserRoute",SAVEROUT);
-app.post("/delGroupRoute", DELGROUPROUT);
-app.post("/delUserRoute",DELUSERROUT);
+// //! To change Routes Setup
+// app.post("/authRoute", AUTHROUT); //!
+// app.post("/loginRoute", LOGINROUT); //!
+// app.post("/groupRoute", GROUPROUT); //!
+// app.post("/saveUserRoute",SAVEROUT); //!
+// app.post("/delGroupRoute", DELGROUPROUT); //!
+// app.post("/delUserRoute",DELUSERROUT); //!
 
-// start the server
-http.listen(PORT, () => {
-  console.log("Server listening in " + PORT);
+// load routes
+require("./newroutes/")(db,app);
+
+async function startServer() {
+  db = await main();
+
+  // Start the server
+  app.listen(3000, () => {
+    console.log("Server running on port 3000...");
+  });
+}
+
+// Gracefully handle shutdown
+process.on('SIGINT', async () => {
+  console.log("Shutting down server...");
+  if (db) {
+    await closeConnection();
+    console.log("MongoDB connection closed.");
+  }
+  process.exit(0);
 });
+
+startServer();
