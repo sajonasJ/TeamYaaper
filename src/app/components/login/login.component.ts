@@ -27,9 +27,9 @@ export class LoginComponent {
 
   submit() {
     let user = { username: this.username, password: this.password };
-
+  
     this.httpClient
-      .post(BACKEND_URL + '/verify', user, httpOptions) // Updated route
+      .post(BACKEND_URL + '/verify', user, httpOptions)
       .subscribe(
         (response: any) => {
           if (response.ok) {
@@ -38,25 +38,20 @@ export class LoginComponent {
             sessionStorage.setItem('firstname', response.firstname);
             sessionStorage.setItem('lastname', response.lastname);
             sessionStorage.setItem('email', response.email);
-
+  
             // If roles and group memberships are arrays, use JSON.stringify
             sessionStorage.setItem('roles', JSON.stringify(response.roles));
-            sessionStorage.setItem(
-              'groupMemberships',
-              JSON.stringify(response.groupMemberships)
-            );
-
+            sessionStorage.setItem('groupMemberships', JSON.stringify(response.groupMemberships)); // Ensure they are stored as strings
+  
             sessionStorage.setItem('userlogin', 'true');
-
+  
             // Update the login status in AuthService
             this.authService.login();
-
+  
             // Redirect to the home page after successful login
             this.router.navigate(['/home']);
           } else {
-            this.toastr.error(
-              response.message || 'Email or password incorrect'
-            );
+            this.toastr.error(response.message || 'Email or password incorrect');
           }
         },
         (error) => {
@@ -65,4 +60,5 @@ export class LoginComponent {
         }
       );
   }
+  
 }

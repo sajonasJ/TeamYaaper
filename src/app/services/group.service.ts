@@ -26,7 +26,7 @@ export class GroupService {
 
   // Add a new group
   addGroup(group: Group): Observable<any> {
-    return this.httpClient.post(`${BACKEND_URL}/groups`, group, httpOptions);
+    return this.httpClient.post(`${BACKEND_URL}/allGroups`, group, httpOptions);
   }
 
   // Add this to your GroupService

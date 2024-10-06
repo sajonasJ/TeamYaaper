@@ -7,7 +7,7 @@ export interface Channel {
 }
 
 export interface Message {
-  senderId: string; 
+  senderId: string;
   name: string;
   text: string;
   timestamp: Date;

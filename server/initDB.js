@@ -1,6 +1,6 @@
 // server/initializeDatabase.js
 
-const { MongoClient } = require("mongodb");
+const { MongoClient, ObjectId } = require("mongodb");
 const bcrypt = require("bcrypt");
 
 // Replace this with your MongoDB URI
@@ -17,40 +17,41 @@ async function main() {
 
     const db = client.db(dbName);
 
-    // Initialize Collections
-
-    // 1. Drop Users Collection if it exists
-    const usersCollection = db.collection("users");
-    const collections = await db.listCollections({ name: "users" }).toArray();
-    if (collections.length > 0) {
-      await usersCollection.drop();
-      console.log("Dropped existing users collection");
+    // Drop collections if they exist to prevent duplication
+    const collectionNames = ["users", "groups", "channels", "messages", "joinRequests"];
+    for (const collectionName of collectionNames) {
+      const collection = db.collection(collectionName);
+      const exists = await db.listCollections({ name: collectionName }).toArray();
+      if (exists.length > 0) {
+        await collection.drop();
+        console.log(`Dropped existing ${collectionName} collection`);
+      }
     }
 
-    // 2. Users Collection with Hashed Passwords
+    // 1. Users Collection with Hashed Passwords
     const users = [
       {
+        _id: new ObjectId(), // Create ObjectId for each user
         username: "user1",
         password: "1234", // Plain text password to be hashed
         firstname: "Jonas123",
         lastname: "Sajonas",
         email: "sajonasj@example.com",
         roles: ["super"],
-        groupMemberships: [
-          { groupId: "group1_id", role: "admin" },
-          { groupId: "group2_id", role: "user" },
-        ],
+        groupMemberships: [], // Will be updated later
       },
       {
+        _id: new ObjectId(),
         username: "sajonasj",
         password: "1234",
         firstname: "Jonas2",
         lastname: "Sajonas2",
         email: "sajonasj@example.com",
         roles: ["super"],
-        groupMemberships: [{ groupId: "group1_id", role: "admin" }],
+        groupMemberships: [],
       },
       {
+        _id: new ObjectId(),
         username: "user2",
         password: "1234",
         firstname: "",
@@ -60,6 +61,7 @@ async function main() {
         groupMemberships: [],
       },
       {
+        _id: new ObjectId(),
         username: "user3",
         password: "1234",
         firstname: "",
@@ -84,75 +86,95 @@ async function main() {
     );
 
     // Insert hashed users into the collection
-    await usersCollection.insertMany(hashedUsers);
+    await db.collection("users").insertMany(hashedUsers);
     console.log("Users collection initialized with hashed passwords");
 
-    // The rest of the collections...
-    // 3. Groups Collection (you can add a similar drop statement if needed)
-    const groupsCollection = db.collection("groups");
-    await groupsCollection.insertMany([
+    // Prepare user IDs for later use
+    const user1Id = users[0]._id;
+    const user2Id = users[2]._id;
+    const user3Id = users[3]._id;
+
+    // 2. Groups Collection
+    const groups = [
       {
+        _id: new ObjectId(), // Create ObjectId for each group
         name: "The Only Group One",
         description: "A group for general discussions and announcements.",
-        ownerId: "user1_id", // Replace with the actual ObjectId if users have already been created
-        admins: ["user1_id"],
-        members: ["user1_id", "user2_id"],
+        ownerId: user1Id,
+        admins: [user1Id],
+        members: [user1Id, user2Id],
         channels: [
           {
-            channelId: "channel1_id",
+            channelId: new ObjectId(),
             name: "General",
             description: "A channel for general discussions.",
           },
           {
-            channelId: "channel2_id",
+            channelId: new ObjectId(),
             name: "Announcements",
             description: "A channel for important announcements and updates.",
           },
         ],
       },
       {
+        _id: new ObjectId(),
         name: "wdwd",
         description: "asdad",
-        ownerId: "user1_id",
-        admins: ["user1_id"],
+        ownerId: user1Id,
+        admins: [user1Id],
         members: [],
         channels: [],
       },
-    ]);
+    ];
 
+    await db.collection("groups").insertMany(groups);
     console.log("Groups collection initialized");
 
+    // Prepare group IDs for later use
+    const group1Id = groups[0]._id;
+
+    // 3. Update Group Memberships for Users
+    await db.collection("users").updateOne(
+      { _id: user1Id },
+      { $set: { groupMemberships: [group1Id] } } // Add user1 to group1
+    );
+
+    await db.collection("users").updateOne(
+      { _id: user2Id },
+      { $set: { groupMemberships: [group1Id] } } // Add user2 to group1
+    );
+
+    console.log("Updated user group memberships");
+
     // 4. Channels Collection
-    const channelsCollection = db.collection("channels");
-    await channelsCollection.insertMany([
+    await db.collection("channels").insertMany([
       {
-        groupId: "group1_id",
+        groupId: group1Id,
         name: "General",
         description: "A channel for general discussions.",
-        users: ["user1_id", "user2_id", "user3_id"],
+        users: [user1Id, user2Id, user3Id],
       },
       {
-        groupId: "group1_id",
+        groupId: group1Id,
         name: "Announcements",
         description: "A channel for important announcements and updates.",
-        users: ["user1_id", "user3_id"],
+        users: [user1Id, user3Id],
       },
     ]);
 
     console.log("Channels collection initialized");
 
     // 5. Messages Collection
-    const messagesCollection = db.collection("messages");
-    await messagesCollection.insertMany([
+    await db.collection("messages").insertMany([
       {
-        channelId: "channel1_id",
-        userId: "user1_id",
+        channelId: groups[0].channels[0].channelId,
+        userId: user1Id,
         text: "Welcome to the General channel!",
         timestamp: new Date("2024-09-01T10:00:00Z"),
       },
       {
-        channelId: "channel1_id",
-        userId: "admin2_id",
+        channelId: groups[0].channels[0].channelId,
+        userId: user2Id,
         text: "Hello everyone, let's keep this channel for general discussions.",
         timestamp: new Date("2024-09-01T10:05:00Z"),
       },
@@ -160,33 +182,29 @@ async function main() {
 
     console.log("Messages collection initialized");
 
-      // 6. Join Requests Collection
-  const joinRequestsCollection = db.collection("joinRequests");
-  await joinRequestsCollection.insertMany([
-    {
-      groupId: "group1_id",
-      userId: "user3_id",
-      status: "pending",
-      requestDate: new Date(),
-    },
-    {
-      groupId: "group2_id",
-      userId: "user2_id",
-      status: "approved",
-      requestDate: new Date(),
-    },
-  ]);
+    // 6. Join Requests Collection
+    await db.collection("joinRequests").insertMany([
+      {
+        groupId: group1Id,
+        userId: user3Id,
+        status: "pending",
+        requestDate: new Date(),
+      },
+      {
+        groupId: groups[1]._id,
+        userId: user2Id,
+        status: "approved",
+        requestDate: new Date(),
+      },
+    ]);
 
-  console.log("Join requests collection initialized");
+    console.log("Join requests collection initialized");
 
-  
   } catch (err) {
     console.error("Error connecting to MongoDB or inserting documents", err);
   } finally {
     await client.close();
   }
-
-
 }
 
 main().catch(console.error);
