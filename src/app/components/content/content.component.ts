@@ -29,7 +29,7 @@ export class ContentComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private toastr: ToastrService
-  ) {}
+  ) { }
 
   // Load groups and users on component initialization; reroutes to login if not logged in
   ngOnInit(): void {
@@ -67,32 +67,43 @@ export class ContentComponent implements OnInit {
     const groupMemberships = JSON.parse(sessionStorage.getItem('groupMemberships') || '[]'); // Parse stored JSON string to array
 
 
-  // Create currentUser object with the information from session storage
-  const user: User = {
-    id: '', // Optional, since MongoDB will generate this, if required.
-    username: username as string,
-    firstname: firstname as string,
-    lastname: lastname as string,
-    email: email as string,
-    roles: roles,
-    groups: groupMemberships,
-  };
+    // Create currentUser object with the information from session storage
+    const user: User = {
+      id: '', // Optional, since MongoDB will generate this, if required.
+      username: username as string,
+      firstname: firstname as string,
+      lastname: lastname as string,
+      email: email as string,
+      roles: roles,
+      groups: groupMemberships,
+    };
 
-  // Assigning the currentUser from session storage data
-  this.currentUser = user;
+    // Assigning the currentUser from session storage data
+    this.currentUser = user;
   }
 
-  // Check if the current user is an admin in the selected group
+  // Check if the current user is an admin in the selected group or a super user
   isAdmin(): boolean {
-    if (!this.selectedGroup || !this.currentUser) return false;
-    return this.selectedGroup.admins.includes(this.currentUser.username);
+    if (!this.selectedGroup || !this.currentUser) return false; // Ensure both are defined
+    return (
+      this.currentUser.roles.includes('super') ||
+      (this.selectedGroup.admins?.includes(this.currentUser.username) ?? false)
+    );
   }
 
-  // Check if the current user is a user in the selected group
+
+  // Check if the current user is a user in the selected group or a super user
+  // Check if the current user is a user in the selected group or a super user
   isUser(): boolean {
-    if (!this.selectedGroup || !this.currentUser) return false;
-    return this.selectedGroup.users.includes(this.currentUser.username);
+    if (!this.selectedGroup || !this.currentUser) return false; // Ensure both are defined
+    return (
+      this.currentUser.roles.includes('super') ||
+      (this.selectedGroup.users?.includes(this.currentUser.username) ?? false)
+    );
   }
+
+
+
 
   // Sets the selected channel
   selectChannel(channel: Channel): void {
