@@ -1,4 +1,4 @@
-// server/newroutes/showAllGroups.js
+// C:\Users\jonas\Code\prog_repos\TeamYaaper\server\newroutes\show\showAllGroups.js
 
 module.exports = function (db, app) {
   // Fetch All Groups

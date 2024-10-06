@@ -8,8 +8,9 @@
         <div class="card mb-3">
             <div class="card-header gradient-custom py-2 d-flex justify-content-between align-items-center">
                 <h5 class="mb-0">Users</h5>
-                <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addUserModal"><span
-                        class="material-symbols-outlined">person_add</span></button>
+                <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                    <span class="material-symbols-outlined">person_add</span>
+                </button>
             </div>
             <table class="table table-sm table-bordered mb-0">
                 <thead class="table-light">
@@ -27,14 +28,10 @@
                         <td>{{ user.roles.join(', ') }}</td>
                         <td class="btn-center">
                             <button class="btn btn-primary btn-sm me-1" (click)="makeSuper(user)">
-                                <span class="material-symbols-outlined">
-                                    arrow_upward
-                                </span>
+                                <span class="material-symbols-outlined">arrow_upward</span>
                             </button>
                             <button class="btn btn-warning btn-sm me-1" (click)="removeSuper(user)">
-                                <span class="material-symbols-outlined">
-                                    arrow_downward
-                                </span>
+                                <span class="material-symbols-outlined">arrow_downward</span>
                             </button>
                             <button class="btn btn-danger btn-sm" (click)="deleteUser(user)">
                                 <span class="material-symbols-outlined">delete_forever</span>
@@ -71,7 +68,7 @@
                             <!-- Admins Management -->
                             <div class="input-group td-limiter">
                                 <input type="text" class="form-control form-control-sm"
-                                    [(ngModel)]="adminInputs[group.id]" placeholder="Add Username">
+                                    [(ngModel)]="adminInputs[group._id || 'undefined']" placeholder="Add Username">
                                 <button class="btn btn-sm btn-primary" (click)="addAdminToGroup(group)">
                                     <span class="material-symbols-outlined">person_add</span>
                                 </button>
@@ -85,12 +82,11 @@
                                     </button>
                                 </li>
                             </ul>
-                        </td>
-                        <td class="td-limiter">
+
                             <!-- Users Management -->
                             <div class="input-group td-limiter">
                                 <input type="text" class="form-control form-control-sm"
-                                    [(ngModel)]="userInputs[group.id]" placeholder="Add Username">
+                                    [(ngModel)]="userInputs[group._id || 'undefined']" placeholder="Add Username">
                                 <button class="btn btn-sm btn-primary" (click)="addUserToGroup(group)">
                                     <span class="material-symbols-outlined">person_add</span>
                                 </button>
@@ -104,6 +100,7 @@
                                     </button>
                                 </li>
                             </ul>
+
                         </td>
                         <td class="btn-container">
                             <button class="btn btn-danger btn-sm" (click)="deleteGroup(group)">
@@ -114,15 +111,16 @@
                 </tbody>
             </table>
         </div>
+
+
     </section>
 
     <!-- Footer Component -->
     <app-footer></app-footer>
 </main>
 
-<!-- Parent component HTML (e.g., dashboard.component.html) -->
+<!-- Add User Modal -->
 <app-modal [title]="'Add New User'" [modalId]="'addUserModal'" (save)="saveUser()">
-    <!-- Modal content -->
     <div modal-body>
         <div class="mb-3">
             <label for="username" class="form-label">Username</label>
@@ -135,9 +133,8 @@
     </div>
 </app-modal>
 
-<!-- Parent component HTML (e.g., dashboard.component.html) -->
+<!-- Add Group Modal -->
 <app-modal [title]="'Add New Group'" [modalId]="'addGroupModal'" (save)="saveGroup()">
-    <!-- Modal content -->
     <div modal-body>
         <div class="mb-3">
             <label for="groupName" class="form-label">Group Name</label>

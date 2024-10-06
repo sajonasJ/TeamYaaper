@@ -3,18 +3,18 @@ import { HttpClient } from '@angular/common/http';
 import { BACKEND_URL, httpOptions } from '../../constants';
 import { User, Group } from '../../models/dataInterfaces';
 import { ToastrService } from 'ngx-toastr';
+import { GroupService } from '../../services/group.service';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.css',
+  styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent implements OnInit {
   users: User[] = [];
-  admins: User[] = [];
   groups: Group[] = [];
   newUserForGroup: string = '';
-  newAdminForGroup: string = '';
   newUsername: string = '';
   newPassword: string = '';
   newGroupName: string = '';
@@ -23,243 +23,189 @@ export class DashboardComponent implements OnInit {
   adminInputs: { [key: string]: string } = {};
   userInputs: { [key: string]: string } = {};
 
-  constructor(private httpClient: HttpClient, private toastr: ToastrService) {}
+  constructor(
+    private toastr: ToastrService,
+    private groupService: GroupService,
+    private userService: UserService
+  ) {}
 
-  // Load users and groups when the component is initialized
   ngOnInit(): void {
     this.loadUsers();
     this.loadGroups();
     this.loadCurrentUser();
   }
 
-  // Load the current user from session storage
   loadCurrentUser(): void {
     this.currentUser = sessionStorage.getItem('username');
   }
 
-  // Load users from the backend
   loadUsers(): void {
-    this.httpClient
-      .post<User[]>(`${BACKEND_URL}/loginRoute`, {}, httpOptions)
-      .subscribe(
-        (data) => {
-          this.users = data;
-        },
-        (error) => {
-          console.error('Error loading users:', error);
-          this.toastr.error('Failed to load users. Please try again.', 'Error');
-        }
-      );
+    this.userService.getUsers().subscribe(
+      (data) => {
+        this.users = data;
+        this.mapUserDetailsToGroups(); // After loading users, map the user details to the groups
+      },
+      (error) => {
+        console.error('Error loading users:', error);
+        this.toastr.error('Failed to load users. Please try again.', 'Error');
+      }
+    );
   }
 
-  // Load groups from the backend
   loadGroups(): void {
-    this.httpClient
-      .post<Group[]>(`${BACKEND_URL}/groupRoute`, {}, httpOptions)
-      .subscribe(
-        (data) => {
-          this.groups = data;
-          this.updateSessionStorage();
-        },
-        (error) => console.error('Error loading groups:', error)
-      );
+    this.groupService.getGroups().subscribe(
+      (data) => {
+        this.groups = data;
+        // Initialize adminInputs and userInputs for each group
+        this.groups.forEach((group) => {
+          const groupId = group._id || 'undefined';
+          this.adminInputs[groupId] = ''; // Initialize with an empty string
+          this.userInputs[groupId] = ''; // Initialize with an empty string
+        });
+        this.mapUserDetailsToGroups(); // Map user details to groups after loading groups
+      },
+      (error) => {
+        console.error('Error loading groups:', error);
+        this.toastr.error('Failed to load groups. Please try again.', 'Error');
+      }
+    );
   }
 
-  // Make a user a superuser
-  makeSuper(user: User): void {
-    if (!user.roles.includes('super')) {
-      user.roles.push('super');
-      this.updateUser(user);
-      this.toastr.success(
-        'User ugraded to Super User successfully!',
-        'Success'
-      );
-    } else {
-      this.toastr.error('User is already a superuser.', 'Error');
-    }
+  // Utility function to map user/admin IDs in the groups to their corresponding usernames
+// Utility function to map user/admin IDs in the groups to their corresponding usernames
+mapUserDetailsToGroups(): void {
+  if (this.groups.length && this.users.length) {
+    this.groups.forEach((group) => {
+      // Ensure `admins` and `users` are arrays
+      if (!Array.isArray(group.admins)) {
+        group.admins = [];
+      }
+      if (!Array.isArray(group.users)) {
+        group.users = [];
+      }
+
+      // Map IDs to usernames
+      group.admins = group.admins.map((adminId) => this.getUsernameById(adminId));
+      group.users = group.users.map((userId) => this.getUsernameById(userId));
+    });
+  }
+}
+
+
+  // Get username by user ID
+  getUsernameById(userId: string): string {
+    const user = this.users.find((user) => user._id === userId);
+    return user ? user.username : `Unknown (${userId})`; // Return userId if no match found for better traceability
   }
 
-  // Remove superuser role from a user
-  removeSuper(user: User): void {
-    const roleIndex = user.roles.indexOf('super');
+  saveUser(): void {
+    if (this.newUsername && this.newPassword) {
+      const newUser = {
+        username: this.newUsername,
+        password: this.newPassword,
+      };
 
-    if (roleIndex !== -1) {
-      user.roles.splice(roleIndex, 1);
-      this.updateUser(user);
-      this.toastr.success('SuperUser role removed successfully!', 'Success');
-    } else {
-      this.toastr.error('User is not a SuperUser.', 'Error');
-    }
-  }
-
-  // Update user in the backend
-  updateUser(user: User): void {
-    this.httpClient
-      .post<User[]>(`${BACKEND_URL}/loginRoute`, user, httpOptions)
-      .subscribe(
-        (response) => {
-          this.loadUsers();
-          this.toastr.success('User updated successfully!', 'Success');
+      this.userService.addUser(newUser).subscribe(
+        (response: any) => {
+          if (response.ok) {
+            this.toastr.success('User added successfully!', 'Success');
+            this.loadUsers();
+            this.newUsername = '';
+            this.newPassword = '';
+          } else {
+            this.toastr.error('Failed to add user. Please try again.', 'Error');
+          }
         },
         (error) => {
-          console.error('Error updating user:', error);
-          this.toastr.error(
-            'Failed to update user. Please try again.',
-            'Error'
-          );
+          console.error('Error adding user:', error);
+          this.toastr.error('Failed to add user. Please try again.', 'Error');
         }
       );
+    } else {
+      this.toastr.error('Please fill in both username and password.', 'Error');
+    }
   }
 
-  //delete user from the backend
+  saveGroup(): void {
+    if (this.newGroupName && this.newGroupDescription) {
+      const newGroup: Group = {
+        name: this.newGroupName,
+        description: this.newGroupDescription,
+        admins: [],
+        users: [],
+        channels: [],
+      };
+
+      this.groupService.addGroup(newGroup).subscribe(
+        (response) => {
+          this.toastr.success('Group added successfully!', 'Success');
+          this.loadGroups();
+          this.newGroupName = '';
+          this.newGroupDescription = '';
+        },
+        (error) => {
+          console.error('Error adding group:', error);
+          this.toastr.error('Failed to add group. Please try again.', 'Error');
+        }
+      );
+    } else {
+      this.toastr.error(
+        'Please fill in both group name and description.',
+        'Error'
+      );
+    }
+  }
+
+  makeSuper(user: User): void {
+    this.userService.makeSuperUser(user.username).subscribe(
+      (response) => {
+        this.toastr.success('User promoted to superuser!', 'Success');
+        this.loadUsers();
+      },
+      (error) => {
+        console.error('Error making user super:', error);
+        this.toastr.error('Failed to promote user. Please try again.', 'Error');
+      }
+    );
+  }
+
+  removeSuper(user: User): void {
+    this.userService.removeSuperUser(user.username).subscribe(
+      (response) => {
+        this.toastr.success('Superuser role removed successfully!', 'Success');
+        this.loadUsers();
+      },
+      (error) => {
+        console.error('Error removing super role:', error);
+        this.toastr.error(
+          'Failed to remove super role. Please try again.',
+          'Error'
+        );
+      }
+    );
+  }
+
   deleteUser(user: User): void {
     const confirmDelete = confirm(
       `Are you sure you want to delete the user "${user.username}"?`
     );
     if (!confirmDelete) return;
 
-    this.httpClient
-      .post(
-        `${BACKEND_URL}/delUserRoute`,
-        { username: user.username },
-        httpOptions
-      )
-      .subscribe(
-        (response: any) => {
-          if (response.ok) {
-            this.toastr.success('User deleted successfully!', 'Success');
-            this.loadUsers();
-          } else {
-            this.toastr.error(
-              'Failed to delete user. Please try again.',
-              'Error'
-            );
-          }
-        },
-        (error) => {
-          console.error('Error deleting user:', error);
-          this.toastr.error(
-            'Failed to delete user. Please try again.',
-            'Error'
-          );
-        }
-      );
-  }
-
-  // Function to open modal and prepare for adding new group
-  addNewGroup(): void {
-    this.newGroupName = '';
-    this.newGroupDescription = '';
-  }
-
-  // Function to save a new group
-  saveGroup(): void {
-    if (this.newGroupName && this.newGroupDescription) {
-      const groupExists = this.groups.some(
-        (group) => group.name.toLowerCase() === this.newGroupName.toLowerCase()
-      );
-
-      if (groupExists) {
-        this.toastr.error(
-          'A group with this name already exists. Please choose a different name.',
-          'Error'
-        );
-        return;
+    this.userService.deleteUser(user.username).subscribe(
+      (response) => {
+        this.toastr.success('User deleted successfully!', 'Success');
+        this.loadUsers();
+      },
+      (error) => {
+        console.error('Error deleting user:', error);
+        this.toastr.error('Failed to delete user. Please try again.', 'Error');
       }
-
-      const newGroup: Group = {
-        id: this.generateUniqueId(),
-        name: this.newGroupName,
-        description: this.newGroupDescription,
-        channels: [],
-        admins: this.currentUser ? [this.currentUser] : [],
-        users: [],
-      };
-
-      this.updateGroupDB(newGroup);
-      this.toastr.success('Group added successfully!', 'Success');
-    } else {
-      this.toastr.error(
-        'Please fill in both the group name and description.',
-        'Error'
-      );
-    }
-  }
-
-  // Delete a group from the backend
-  deleteGroup(group: Group): void {
-    const confirmDelete = confirm(
-      `Are you sure you want to delete the group "${group.name}"?`
     );
-    if (!confirmDelete) return;
-    this.groups = this.groups.filter((g) => g.id !== group.id);
-    this.httpClient
-      .post(`${BACKEND_URL}/delGroupRoute`, { id: group.id }, httpOptions)
-      .subscribe(
-        (response: any) => {
-          if (response.ok) {
-            this.toastr.success('Group deleted successfully!', 'Success');
-            this.updateSessionStorage();
-            this.loadGroups();
-          } else {
-            this.toastr.error(
-              'Failed to delete group. Please try again.',
-              'Error'
-            );
-            this.loadGroups();
-          }
-        },
-        (error) => {
-          console.error('Error deleting group:', error);
-          this.toastr.error(
-            'Failed to delete group. Please retry again.',
-            'Error'
-          );
-          this.loadGroups();
-        }
-      );
   }
 
-  // Helper method to get the role of a user in a specific group
-  getUserRoleInGroup(group: Group, username: string): string {
-    if (group.admins.includes(username)) return 'admin';
-    if (group.users.includes(username)) return 'user';
-    return 'none';
-  }
-
-  // Add user to a specific group using map-based input storage
-  addUserToGroup(group: Group): void {
-    const newUserUsername = this.userInputs[group.id];
-
-    if (!newUserUsername) {
-      this.toastr.error('Please enter a username.', 'Error');
-      return;
-    }
-
-    const userExists = this.users.some(
-      (user) => user.username === newUserUsername
-    );
-
-    if (!userExists) {
-      this.toastr.error('User does not exist.', 'Error');
-      return;
-    }
-
-    if (!group.users.includes(newUserUsername)) {
-      group.users.push(newUserUsername);
-      this.updateGroupDB(group);
-      this.updateSessionStorage();
-      this.toastr.success('User added successfully!', 'Success');
-      this.userInputs[group.id] = ''; // Clear input after adding
-    } else {
-      this.toastr.error('User already in group.', 'Error');
-    }
-  }
-
-  // Add user to a specific group
   addAdminToGroup(group: Group): void {
-    const newAdminUsername = this.adminInputs[group.id];
-
+    const groupId = group._id || 'undefined';
+    const newAdminUsername = this.adminInputs[groupId];
     if (!newAdminUsername) {
       this.toastr.error('Please enter a username.', 'Error');
       return;
@@ -268,7 +214,6 @@ export class DashboardComponent implements OnInit {
     const userExists = this.users.some(
       (user) => user.username === newAdminUsername
     );
-
     if (!userExists) {
       this.toastr.error('User does not exist.', 'Error');
       return;
@@ -277,126 +222,86 @@ export class DashboardComponent implements OnInit {
     if (!group.admins.includes(newAdminUsername)) {
       group.admins.push(newAdminUsername);
       this.updateGroupDB(group);
-      this.toastr.success('Admin added successfully!', 'Success');
-      this.adminInputs[group.id] = '';
+      this.adminInputs[groupId] = ''; // Clear the input field
     } else {
-      this.toastr.error('Admin already in group.', 'Error');
+      this.toastr.error('User is already an admin.', 'Error');
     }
   }
 
-  // Delete a user from a group
-  deleteUserFromGroup(group: Group, username: string): void {
-    const index = group.users.indexOf(username);
-    if (index !== -1) {
-      group.users.splice(index, 1);
-      this.updateGroupDB(group);
-      this.updateSessionStorage();
-      this.loadGroups();
-      this.toastr.success('User removed uccessfully!', 'Success');
-    }
-  }
-
-  // Delete a user from a group
   deleteAdminFromGroup(group: Group, username: string): void {
     const index = group.admins.indexOf(username);
     if (index !== -1) {
       group.admins.splice(index, 1);
       this.updateGroupDB(group);
-      this.loadGroups();
-      this.toastr.success('Admin removed uccessfully!', 'Success');
     }
   }
 
-  // Update group in the backend
-  updateGroupDB(group: Group): void {
-    this.httpClient
-      .post<Group>(`${BACKEND_URL}/groupRoute`, group, httpOptions)
-      .subscribe(
-        (response) => {
-          this.loadGroups();
-        },
-        (error) => {
-          this.toastr.error(
-            'Failed to update group. Please try again.',
-            'Error'
-          );
-        }
-      );
-  }
-
-  // Update group in the frontend
-  updateSessionStorage(): void {
-    sessionStorage.setItem('allGroups', JSON.stringify(this.groups));
-  }
-
-  // Add new user to the backend
-  saveUser(): void {
-    if (this.newUsername && this.newPassword) {
-      const newUser = {
-        username: this.newUsername,
-        password: this.newPassword,
-        newUser: true,
-      };
-
-      this.httpClient
-        .post(`${BACKEND_URL}/saveUserRoute`, newUser, httpOptions)
-        .subscribe((response: any) => {
-          if (response.ok) {
-            this.saveUserData();
-            this.toastr.success('User saved successfully!', 'Success');
-          } else {
-            this.toastr.error('Duplicate username. Please try again.', 'Error');
-          }
-        });
-    } else {
-      this.toastr.error('Failed to add user. Please try again.', 'Error');
+  addUserToGroup(group: Group): void {
+    const groupId = group._id || 'undefined';
+    const newUserUsername = this.userInputs[groupId];
+    if (!newUserUsername) {
+      this.toastr.error('Please enter a username.', 'Error');
+      return;
     }
-  }
 
-  // Save user data to the backend
-  saveUserData(): void {
-    const newUserData = {
-      id: this.generateMaxId(),
-      username: this.newUsername,
-      firstname: '',
-      lastname: '',
-      email: '',
-      roles: [],
-      groups: {},
-    };
-
-    this.httpClient
-      .post(`${BACKEND_URL}/loginRoute`, newUserData, httpOptions)
-      .subscribe((response: any) => {
-        if (response.ok) {
-          this.toastr.success('User data saved successfully!', 'Success');
-          this.newUsername = '';
-          this.newPassword = '';
-          this.loadUsers();
-        } else {
-          this.toastr.error(
-            'Failed to add user credentials. Please try again.',
-            'Error'
-          );
-        }
-      });
-  }
-
-  // Generate a new user ID
-  generateMaxId(): string {
-    if (this.users.length === 0) {
-      return '1';
-    }
-    const maxId = Math.max(...this.users.map((user) => +user.id));
-    return (maxId + 1).toString();
-  }
-
-  // Generate a new group ID
-  generateUniqueId(): string {
-    const maxId = this.groups.reduce(
-      (max, group) => Math.max(max, +group.id),
-      0
+    const userExists = this.users.some(
+      (user) => user.username === newUserUsername
     );
-    return (maxId + 1).toString();
+    if (!userExists) {
+      this.toastr.error('User does not exist.', 'Error');
+      return;
+    }
+
+    if (!group.users.includes(newUserUsername)) {
+      group.users.push(newUserUsername);
+      this.updateGroupDB(group);
+      this.userInputs[groupId] = ''; // Clear the input field
+    } else {
+      this.toastr.error('User is already in the group.', 'Error');
+    }
+  }
+
+  deleteUserFromGroup(group: Group, username: string): void {
+    const index = group.users.indexOf(username);
+    if (index !== -1) {
+      group.users.splice(index, 1);
+      this.updateGroupDB(group);
+    }
+  }
+
+  deleteGroup(group: Group): void {
+    if (!group._id) {
+      this.toastr.error('Group ID is missing. Cannot proceed.', 'Error');
+      return;
+    }
+
+    const confirmDelete = confirm(
+      `Are you sure you want to delete the group "${group.name}"?`
+    );
+    if (!confirmDelete) return;
+
+    this.groupService.deleteGroup(group._id).subscribe(
+      (response) => {
+        this.toastr.success('Group deleted successfully!', 'Success');
+        this.loadGroups();
+      },
+      (error) => {
+        console.error('Error deleting group:', error);
+        this.toastr.error('Failed to delete group. Please try again.', 'Error');
+      }
+    );
+  }
+
+  updateGroupDB(group: Group): void {
+    this.groupService.updateGroup(group).subscribe(
+      (response) => {
+        this.toastr.success('Group updated successfully!', 'Success');
+        this.loadGroups(); // Refresh the groups
+      },
+      (error) => {
+        console.error('Error updating group:', error);
+        this.toastr.error('Failed to update group. Please try again.', 'Error');
+      }
+    );
   }
 }

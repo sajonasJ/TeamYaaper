@@ -50,7 +50,6 @@ export class SideNavComponent implements OnInit {
     }
 
     const newGroup: Group = {
-      id: '',
       name: this.newGroupName,
       description: this.newGroupDescription,
       admins: [], // Add current user/admins as needed
@@ -60,8 +59,8 @@ export class SideNavComponent implements OnInit {
 
     this.groupService.addGroup(newGroup).subscribe(
       (response: any) => {
-        if (response.ok) {
-          this.groups.push(response.group);
+        if (response && response._id) {
+          this.groups.push(response);
           this.toastr.success('Group added successfully', 'Success');
           this.newGroupName = ''; // Clear the input fields
           this.newGroupDescription = '';

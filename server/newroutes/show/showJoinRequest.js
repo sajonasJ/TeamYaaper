@@ -1,6 +1,6 @@
 // server/newroutes/show/getJoinRequests.js
 module.exports = function (db, app) {
-    app.get('/getJoinRequests/:groupId', async (req, res) => {
+    app.get('/getJoinRequest/:groupId', async (req, res) => {
       const { groupId } = req.params;
   
       try {

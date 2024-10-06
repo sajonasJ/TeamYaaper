@@ -1,4 +1,4 @@
-// server/verify.js
+//C:\Users\jonas\Code\prog_repos\TeamYaaper\server\newroutes\show\verify.js
 const bcrypt = require("bcrypt");
 
 module.exports = function (db, app) {

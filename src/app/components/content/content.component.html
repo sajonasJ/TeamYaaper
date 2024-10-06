@@ -1,28 +1,33 @@
 <section class="sub-container">
+  <!-- Placeholder when no group is selected -->
   <div *ngIf="!selectedGroup" class="placeholder-message">
     <div class="p-m">
       <h2>No Group Selected</h2>
       <p>Please select a group to view its channels and messages.</p>
     </div>
   </div>
+
+  <!-- Group details and channels when a group is selected -->
   <div class="channel-container" *ngIf="selectedGroup">
-    <div *ngIf="selectedGroup" class="group-header container">
+    <div class="group-header container">
       <h2>Group: "{{ selectedGroup.name }}"</h2>
       <p>Description: {{ selectedGroup.description }}</p>
+
+      <!-- Admin Controls -->
       <div class="admin-ctrl" *ngIf="isAdmin()">
         <p>Admin Controls</p>
         <div class="ctrl-sim">
           <div class="ctrl-sim-btn">
             <div class="input-group" style="width: auto;">
-              <!-- Group Admin Controls -->
+              <!-- Group Admin Controls to add a user to the group -->
               <input type="text" class="form-control form-control-sm"
-                [(ngModel)]="userInputs['group-' + selectedGroup.id]" placeholder="Add Username">
+                [(ngModel)]="userInputs['group-' + selectedGroup._id]" placeholder="Add Username">
 
-              <button class="btn btn-sm btn-warning ms-2">
-                <span class="material-symbols-outlined">flag</span>
+              <button class="btn btn-sm btn-warning ms-2" (click)="addUserToGroup(selectedGroup)">
+                <span class="material-symbols-outlined">person_add</span> <!-- Changed to add user functionality -->
               </button>
-              <button class="btn btn-sm btn-danger ms-2">
-                <span class="material-symbols-outlined">block</span>
+              <button class="btn btn-sm btn-danger ms-2" (click)="deleteGroup(selectedGroup)">
+                <span class="material-symbols-outlined">delete_forever</span> <!-- Changed to delete group functionality -->
               </button>
               <app-settings></app-settings>
             </div>
@@ -30,42 +35,44 @@
         </div>
       </div>
 
+      <!-- Channels Section -->
       <div class="channel-container-btn">
         <h3>&#64;Channels</h3>
         <div class="ctrl-sim-btn" *ngIf="isAdmin()">
           <button class="btn btn-success btn-sm custom-btn-height" data-bs-toggle="modal"
             data-bs-target="#channelModal">
-            <span class="material-symbols-outlined">add</span>
+            <span class="material-symbols-outlined">add</span> <!-- Add channel button -->
           </button>
         </div>
       </div>
     </div>
-    <!-- Show request button only if the user is not part of the group -->
+
+    <!-- Request to Join Button (only if user is not in the group) -->
     <button class="btn btn-sm btn-primary ms-1" *ngIf="!isUser()">
       Request to Join
     </button>
+
+    <!-- List Channels if the user is part of the group -->
     <ul class="list-group" *ngIf="isUser()">
-      <!-- List channels and provide a delete button for each -->
-      <li class="list-group-item clickable" *ngFor="let channel of selectedGroup.channels "
+      <li class="list-group-item clickable" *ngFor="let channel of selectedGroup.channels"
         (click)="selectChannel(channel)">
         # {{ channel.name }}
-        <button class="btn btn-sm btn-danger ms-1" *ngIf="isAdmin()">
-          <span class="material-symbols-outlined">delete</span>
+        <button class="btn btn-sm btn-danger ms-1" *ngIf="isAdmin()" (click)="deleteChannel(channel, selectedGroup)">
+          <span class="material-symbols-outlined">delete</span> <!-- Delete channel button -->
         </button>
       </li>
     </ul>
   </div>
 
-
   <!-- Message Container -->
   <div class="message-container" *ngIf="selectedChannel">
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h4 class="mb-0"># {{ selectedChannel.name }}</h4>
-
     </div>
 
-
     <p>-{{ selectedChannel.description }}</p>
+
+    <!-- List Messages -->
     <div class="messages-list">
       <div class="message-card card mb-2" *ngFor="let message of selectedChannel.messages">
         <div class="card-body">
@@ -80,8 +87,6 @@
                 Date: {{ message.timestamp | date:'dd/MM/yy' }}
               </p>
             </div>
-            <div>
-            </div>
           </div>
         </div>
       </div>
@@ -89,7 +94,7 @@
   </div>
 </section>
 
-<!-- Modal -->
+<!-- Modal to Add New Channel -->
 <app-modal [title]="'Add New Channel'" [modalId]="'channelModal'" (save)="addNewChannel()">
   <div modal-body>
     <div class="mb-3">

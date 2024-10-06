@@ -1,4 +1,4 @@
-// Import MongoClient from the mongodb package
+//C:\Users\jonas\Code\prog_repos\TeamYaaper\app.js = absolute path
 const { MongoClient } = require('mongodb');
 
 // Connection URL

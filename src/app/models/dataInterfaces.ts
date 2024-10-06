@@ -14,7 +14,7 @@ export interface Message {
 }
 
 export interface Group {
-  id: string;
+  _id?: string;
   name: string;
   description: string;
   admins: string[]; // Array of user IDs or usernames who are admins
@@ -24,7 +24,7 @@ export interface Group {
 }
 
 export interface User {
-  id: string;
+  _id?: string;
   username: string;
   firstname: string;
   lastname: string;
@@ -35,7 +35,7 @@ export interface User {
 }
 
 export interface JoinRequest {
-  id: string;
+  _id?: string;
   groupId: string;
   userId: string;
   status: 'pending' | 'approved' | 'rejected';

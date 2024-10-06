@@ -1,4 +1,4 @@
-// server/newroutes/show/showUser.js
+// C:\Users\jonas\Code\prog_repos\TeamYaaper\server\newroutes\show\showUser.js
 
 module.exports = function (db, app) {
   app.get("/users", async (req, res) => {

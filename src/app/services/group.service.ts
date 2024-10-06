@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Group } from '../models/dataInterfaces';
-import { BACKEND_URL } from '../constants';
-import { httpOptions } from '../constants';
+import { BACKEND_URL, httpOptions } from '../constants';
 
 @Injectable({
   providedIn: 'root',
@@ -18,10 +17,7 @@ export class GroupService {
 
   // Fetch a specific group by its ID from the backend
   getGroupById(groupId: string): Observable<Group> {
-    return this.httpClient.get<Group>(
-      `${BACKEND_URL}/groups/${groupId}`,
-      httpOptions
-    );
+    return this.httpClient.get<Group>(`${BACKEND_URL}/groups/${groupId}`, httpOptions);
   }
 
   // Add a new group
@@ -29,12 +25,26 @@ export class GroupService {
     return this.httpClient.post(`${BACKEND_URL}/allGroups`, group, httpOptions);
   }
 
-  // Add this to your GroupService
+  // Update an existing group by its MongoDB _id
   updateGroup(group: Group): Observable<any> {
-    return this.httpClient.put(
-      `${BACKEND_URL}/allGroups/${group.id}`,
-      group,
-      httpOptions
-    );
+    return this.httpClient.put(`${BACKEND_URL}/allGroups/${group._id}`, group, httpOptions);
+  }
+
+  // Add an admin to a group
+  addAdminToGroup(groupId: string, adminUsername: string): Observable<any> {
+    return this.httpClient.put(`${BACKEND_URL}/groups/${groupId}/admin`, { username: adminUsername }, httpOptions);
+  }
+
+  // Remove an admin from a group
+  removeAdminFromGroup(groupId: string, adminUsername: string): Observable<any> {
+    return this.httpClient.delete(`${BACKEND_URL}/groups/${groupId}/admin`, {
+      headers: httpOptions.headers,
+      body: { username: adminUsername },
+    });
+  }
+
+  // Delete a group by its MongoDB _id
+  deleteGroup(groupId: string): Observable<any> {
+    return this.httpClient.delete(`${BACKEND_URL}/groups/${groupId}`, httpOptions);
   }
 }
