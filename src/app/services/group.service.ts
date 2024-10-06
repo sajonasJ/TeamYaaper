@@ -28,7 +28,7 @@ export class GroupService {
 
   // Add a new group
   addGroup(group: Group): Observable<any> {
-    return this.httpClient.post(`${BACKEND_URL}/allGroups`, group, httpOptions);
+    return this.httpClient.post(`${BACKEND_URL}/groups/add`, group, httpOptions);
   }
 
   // Update an existing group by its MongoDB _id
@@ -65,7 +65,7 @@ export class GroupService {
   // Delete a group by its MongoDB _id
   deleteGroup(groupId: string): Observable<any> {
     return this.httpClient.delete(
-      `${BACKEND_URL}/groups/${groupId}`,
+      `${BACKEND_URL}/deleteGroup/${groupId}`,
       httpOptions
     );
   }

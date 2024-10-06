@@ -46,7 +46,6 @@ export class DashboardComponent implements OnInit {
         this.mapUserDetailsToGroups(); // After loading users, map the user details to the groups
       },
       (error) => {
-        console.error('Error loading users:', error);
         this.toastr.error('Failed to load users. Please try again.', 'Error');
       }
     );
@@ -65,32 +64,32 @@ export class DashboardComponent implements OnInit {
         this.mapUserDetailsToGroups(); // Map user details to groups after loading groups
       },
       (error) => {
-        console.error('Error loading groups:', error);
         this.toastr.error('Failed to load groups. Please try again.', 'Error');
       }
     );
   }
 
   // Utility function to map user/admin IDs in the groups to their corresponding usernames
-// Utility function to map user/admin IDs in the groups to their corresponding usernames
-mapUserDetailsToGroups(): void {
-  if (this.groups.length && this.users.length) {
-    this.groups.forEach((group) => {
-      // Ensure `admins` and `users` are arrays
-      if (!Array.isArray(group.admins)) {
-        group.admins = [];
-      }
-      if (!Array.isArray(group.users)) {
-        group.users = [];
-      }
+  // Utility function to map user/admin IDs in the groups to their corresponding usernames
+  mapUserDetailsToGroups(): void {
+    if (this.groups.length && this.users.length) {
+      this.groups.forEach((group) => {
+        // Ensure `admins` and `users` are arrays
+        if (!Array.isArray(group.admins)) {
+          group.admins = [];
+        }
+        if (!Array.isArray(group.users)) {
+          group.users = [];
+        }
 
-      // Map IDs to usernames
-      group.admins = group.admins.map((adminId) => this.getUsernameById(adminId));
-      group.users = group.users.map((userId) => this.getUsernameById(userId));
-    });
+        // Map IDs to usernames
+        group.admins = group.admins.map((adminId) =>
+          this.getUsernameById(adminId)
+        );
+        group.users = group.users.map((userId) => this.getUsernameById(userId));
+      });
+    }
   }
-}
-
 
   // Get username by user ID
   getUsernameById(userId: string): string {
@@ -117,8 +116,22 @@ mapUserDetailsToGroups(): void {
           }
         },
         (error) => {
-          console.error('Error adding user:', error);
-          this.toastr.error('Failed to add user. Please try again.', 'Error');
+          // Handle the 409 Conflict error specifically
+          if (error.status === 409) {
+            if (error.error && error.error.message) {
+              // If the backend sends a message field, use it
+              this.toastr.error(error.error.message, 'Conflict');
+            } else {
+              // Fallback error message
+              this.toastr.error(
+                'User already exists. Please choose a different username.',
+                'Conflict'
+              );
+            }
+          } else {
+            // Handle any other errors
+            this.toastr.error('Failed to add user. Please try again.', 'Error');
+          }
         }
       );
     } else {
@@ -281,18 +294,34 @@ mapUserDetailsToGroups(): void {
     );
     if (!confirmDelete) return;
 
+    // Call the groupService to delete the group
     this.groupService.deleteGroup(group._id).subscribe(
       (response) => {
         this.toastr.success('Group deleted successfully!', 'Success');
-        this.loadGroups();
+        this.loadGroups(); // Refresh the list of groups after deletion
       },
       (error) => {
         console.error('Error deleting group:', error);
-        this.toastr.error('Failed to delete group. Please try again.', 'Error');
+
+        // Handle different errors based on status code
+        if (error.status === 400) {
+          this.toastr.error('Invalid Group ID. Please try again.', 'Error');
+        } else if (error.status === 404) {
+          this.toastr.error('Group not found. Unable to delete.', 'Error');
+        } else if (error.status === 500) {
+          this.toastr.error(
+            'An error occurred while deleting the group.',
+            'Error'
+          );
+        } else {
+          this.toastr.error(
+            'Failed to delete group. Please try again.',
+            'Error'
+          );
+        }
       }
     );
   }
-
   updateGroupDB(group: Group): void {
     console.log('Sending updated group data:', group); // Add this log to inspect the payload
     this.groupService.updateGroup(group).subscribe(
@@ -306,5 +335,4 @@ mapUserDetailsToGroups(): void {
       }
     );
   }
-  
 }

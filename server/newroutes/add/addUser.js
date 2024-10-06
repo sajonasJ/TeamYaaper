@@ -1,8 +1,8 @@
 // server/newroutes/add/addUser.js - To add a new user
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
 
-module.exports = function(db, app) {
-  app.post('/addUser', async (req, res) => {
+module.exports = function (db, app) {
+  app.post("/addUser", async (req, res) => {
     if (!req.body) {
       return res.sendStatus(400);
     }
@@ -15,7 +15,9 @@ module.exports = function(db, app) {
       // Check if user already exists
       const userExists = await usersCollection.findOne({ username: username });
       if (userExists) {
-        return res.status(409).send({ ok: false, message: "User already exists" });
+        return res
+          .status(409)
+          .send({ ok: false, message: "User already exists" });
       }
 
       // Hash the password
@@ -26,13 +28,12 @@ module.exports = function(db, app) {
         username: username,
         passwordHash: passwordHash,
         roles: [],
-        groupMemberships: []
+        groupMemberships: [],
       };
 
       await usersCollection.insertOne(newUser);
       res.status(201).send({ ok: true, message: "User added successfully" });
     } catch (err) {
-      console.error("Error adding user:", err);
       res.status(500).send({ ok: false, message: "Internal Server Error" });
     }
   });
