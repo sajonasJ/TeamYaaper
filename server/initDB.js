@@ -159,13 +159,8 @@ async function main() {
     ]);
 
     console.log("Messages collection initialized");
-  } catch (err) {
-    console.error("Error connecting to MongoDB or inserting documents", err);
-  } finally {
-    await client.close();
-  }
 
-  // 6. Join Requests Collection
+      // 6. Join Requests Collection
   const joinRequestsCollection = db.collection("joinRequests");
   await joinRequestsCollection.insertMany([
     {
@@ -183,6 +178,15 @@ async function main() {
   ]);
 
   console.log("Join requests collection initialized");
+
+  
+  } catch (err) {
+    console.error("Error connecting to MongoDB or inserting documents", err);
+  } finally {
+    await client.close();
+  }
+
+
 }
 
 main().catch(console.error);
