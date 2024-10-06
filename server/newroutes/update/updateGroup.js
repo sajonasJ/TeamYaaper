@@ -21,7 +21,7 @@ module.exports = function (db, app) {
 
     try {
       const groupsCollection = db.collection("groups");
-      
+
       // Log the payload for debugging purposes
       console.log("Payload received for updating group:", updatedGroup);
 

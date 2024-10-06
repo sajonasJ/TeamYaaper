@@ -95,7 +95,7 @@ mapUserDetailsToGroups(): void {
   // Get username by user ID
   getUsernameById(userId: string): string {
     const user = this.users.find((user) => user._id === userId);
-    return user ? user.username : `Unknown (${userId})`; // Return userId if no match found for better traceability
+    return user ? user.username : userId; // Return userId if no match found for better traceability
   }
 
   saveUser(): void {
@@ -221,6 +221,7 @@ mapUserDetailsToGroups(): void {
 
     if (!group.admins.includes(newAdminUsername)) {
       group.admins.push(newAdminUsername);
+      group.users.push(newAdminUsername);
       this.updateGroupDB(group);
       this.adminInputs[groupId] = ''; // Clear the input field
     } else {
@@ -293,6 +294,7 @@ mapUserDetailsToGroups(): void {
   }
 
   updateGroupDB(group: Group): void {
+    console.log('Sending updated group data:', group); // Add this log to inspect the payload
     this.groupService.updateGroup(group).subscribe(
       (response) => {
         this.toastr.success('Group updated successfully!', 'Success');
@@ -304,4 +306,5 @@ mapUserDetailsToGroups(): void {
       }
     );
   }
+  
 }
