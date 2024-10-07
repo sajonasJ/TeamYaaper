@@ -1,14 +1,21 @@
 // C:\Users\jonas\Code\prog_repos\TeamYaaper\server\server.js = absolute path
 const express = require("express");
-const cors = require("cors");
-const { main, closeConnection } = require("../app"); // Import the main function from app.js
+const cors = require("cors"); // Import the main function from app.js
 const app = express();
+const path = require("path");
+const { main, closeConnection } = require("../app");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // CORS Middleware Configuration
 app.use(cors());
+
+app.use('/profile-pictures', express.static(path.join(__dirname, '../public/profile-pictures')));
+
+// const chatUploadFolder = path.join(__dirname, '../../../public/chat-images');
+// app.use('/chat-images', express.static(path.join(__dirname, '../public/chat-images')));
+
 
 let db;
 
@@ -33,6 +40,8 @@ async function startServer() {
     require("./newroutes/add/addSuperUser")(db, app);
     require("./newroutes/add/addUser")(db, app);
     // require("./newroutes/add/addUserGroup")(db, app);
+    const addImageRoutes = require("./newroutes/add/addImage")(db);
+    app.use("/api", addImageRoutes);
 
     //Delete Routes
     // require("./newroutes/delete/deleteAdminGroup")(db, app);
@@ -47,7 +56,7 @@ async function startServer() {
     require("./newroutes/show/showAllUsers")(db, app);
     require("./newroutes/show/showChannel")(db, app);
     require("./newroutes/show/showChat")(db, app);
-    require("./newroutes/show/showGroup")(db, app);
+    require("./newroutes/show/showgroup")(db, app);
     require("./newroutes/show/showJoinRequest")(db, app);
     require("./newroutes/show/showUser")(db, app);
     require("./newroutes/show/verify")(db, app);
@@ -59,7 +68,6 @@ async function startServer() {
     require("./newroutes/update/updateJoinRequest")(db, app);
     require("./newroutes/update/updateUser")(db, app);
 
-    
     // Start listening on port 3000
     app.listen(3000, () => {
       console.log("Server running on port 3000...");

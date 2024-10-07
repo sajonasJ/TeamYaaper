@@ -36,7 +36,10 @@ module.exports = function (db, app) {
         email: user.email,
         roles: user.roles,
         groupMemberships: user.groupMemberships,
-        ok: true,
+        profilePictureUrl: user.profilePictureUrl
+        ? `http://localhost:3000${user.profilePictureUrl}`
+        : "https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp", // Default image if not available
+      ok: true,
       };
 
       res.status(200).send(userData);
