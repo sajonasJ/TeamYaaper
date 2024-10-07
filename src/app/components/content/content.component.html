@@ -1,6 +1,6 @@
 <section class="sub-container">
   <!-- Placeholder when no group is selected -->
-  <div *ngIf="!selectedGroup" class="placeholder-message">
+  <div *ngIf="!selectedGroup && !showSettings" class="placeholder-message">
     <div class="p-m">
       <h2>No Group Selected</h2>
       <p>Please select a group to view its channels and messages.</p>
@@ -8,64 +8,47 @@
   </div>
 
   <!-- Group details and channels when a group is selected -->
-  <div class="channel-container" *ngIf="selectedGroup">
+  <div class="channel-container" *ngIf="selectedGroup && !showSettings">
     <div class="group-header container">
       <h2>Group: "{{ selectedGroup.name }}"</h2>
       <p>Description: {{ selectedGroup.description }}</p>
 
-      <!-- Admin Controls -->
-      <div class="admin-ctrl" *ngIf="isAdmin()">
-        <p>Admin Controls</p>
-        <div class="ctrl-sim">
-          <div class="ctrl-sim-btn">
-            <div class="input-group" style="width: auto;">
-              <!-- Group Admin Controls to add a user to the group -->
-              <input type="text" class="form-control form-control-sm"
-                [(ngModel)]="userInputs['group-' + selectedGroup._id]" placeholder="Add Username">
-
-              <button class="btn btn-sm btn-warning ms-2" (click)="addUserToGroup(selectedGroup)">
-                <span class="material-symbols-outlined">person_add</span> <!-- Changed to add user functionality -->
-              </button>
-              <button class="btn btn-sm btn-danger ms-2" (click)="deleteGroup(selectedGroup)">
-                <span class="material-symbols-outlined">delete_forever</span> <!-- Changed to delete group functionality -->
-              </button>
-              <app-settings></app-settings>
-            </div>
-          </div>
-        </div>
-      </div>
+      <!-- Button to Navigate to Settings -->
+      <button class="btn btn-sm btn-primary ms-1" (click)="toSettings()">
+        <i class="bi bi-three-dots"></i> Settings
+      </button>
 
       <!-- Channels Section -->
-      <div class="channel-container-btn">
+      <div class="channel-container-btn mt-3">
         <h3>&#64;Channels</h3>
         <div class="ctrl-sim-btn" *ngIf="isAdmin()">
           <button class="btn btn-success btn-sm custom-btn-height" data-bs-toggle="modal"
             data-bs-target="#channelModal">
-            <span class="material-symbols-outlined">add</span> <!-- Add channel button -->
+            <span class="material-symbols-outlined">add</span>
           </button>
         </div>
       </div>
     </div>
 
     <!-- Request to Join Button (only if user is not in the group) -->
-    <button class="btn btn-sm btn-primary ms-1" *ngIf="!isUser()">
+    <button class="btn btn-sm btn-primary ms-1 mt-3" *ngIf="!isUser()">
       Request to Join
     </button>
 
     <!-- List Channels if the user is part of the group -->
-    <ul class="list-group" *ngIf="isUser()">
+    <ul class="list-group mt-3" *ngIf="isUser()">
       <li class="list-group-item clickable" *ngFor="let channel of selectedGroup.channels"
         (click)="selectChannel(channel)">
         # {{ channel.name }}
         <button class="btn btn-sm btn-danger ms-1" *ngIf="isAdmin()" (click)="deleteChannel(channel, selectedGroup)">
-          <span class="material-symbols-outlined">delete</span> <!-- Delete channel button -->
+          <span class="material-symbols-outlined">delete</span>
         </button>
       </li>
     </ul>
   </div>
 
   <!-- Message Container -->
-  <div class="message-container" *ngIf="selectedChannel">
+  <div class="message-container mt-4" *ngIf="selectedChannel && !showSettings">
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h4 class="mb-0"># {{ selectedChannel.name }}</h4>
     </div>
@@ -92,18 +75,7 @@
       </div>
     </div>
   </div>
-</section>
 
-<!-- Modal to Add New Channel -->
-<app-modal [title]="'Add New Channel'" [modalId]="'channelModal'" (save)="addNewChannel()">
-  <div modal-body>
-    <div class="mb-3">
-      <label for="channelName" class="form-label">Channel Name</label>
-      <input type="text" class="form-control" id="channelName" [(ngModel)]="newChannelName">
-    </div>
-    <div class="mb-3">
-      <label for="channelDescription" class="form-label">Channel Description</label>
-      <textarea class="form-control" id="channelDescription" [(ngModel)]="newChannelDescription"></textarea>
-    </div>
-  </div>
-</app-modal>
+  <!-- Settings Component -->
+  <app-settings *ngIf="showSettings && selectedGroup" [selectedGroup]="selectedGroup" (close)="closeSettings()"></app-settings>
+</section>

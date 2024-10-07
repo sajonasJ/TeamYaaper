@@ -16,6 +16,8 @@ export class ContentComponent implements OnInit {
   @Input() selectedGroup: Group | null = null;
   users: User[] = [];
   groups: Group[] = [];
+  showSettings: boolean = false;
+
   selectedChannel: Channel | null = null;
 
   newChannelName: string = '';
@@ -54,6 +56,7 @@ export class ContentComponent implements OnInit {
       }
     );
   }
+
 
   // Load current user from session storage
   loadCurrentUser(): void {
@@ -210,5 +213,15 @@ export class ContentComponent implements OnInit {
   resetNewChannelForm(): void {
     this.newChannelName = '';
     this.newChannelDescription = '';
+  }
+
+  toSettings(): void {
+    if (this.selectedGroup) {
+      this.showSettings = true;
+    }
+  }
+
+  closeSettings(): void {
+    this.showSettings = false;
   }
 }

@@ -6,6 +6,7 @@ import { AccountComponent } from './pages/account/account.component';
 import { WelcomeComponent } from './pages/welcome/welcome.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
+
 const routes: Routes = [
   { path: '', redirectTo: '/welcome', pathMatch: 'full' },
   { path: 'home', component: HomeComponent },
