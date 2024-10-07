@@ -1,5 +1,3 @@
-// File: updateUser.js
-
 const { ObjectId } = require('mongodb'); // Import ObjectId to handle MongoDB IDs
 
 module.exports = function (db, app) {
@@ -8,13 +6,19 @@ module.exports = function (db, app) {
     const userId = req.params.userId;
     const updatedUserData = req.body;
 
+    console.log('Received PUT request to update user');
+    console.log('User ID:', userId);
+    console.log('Updated User Data:', updatedUserData);
+
     // Validate the provided user ID
     if (!ObjectId.isValid(userId)) {
+      console.error('Invalid User ID:', userId);
       return res.status(400).send({ message: 'Invalid User ID.' });
     }
 
     try {
       // Connect to the "users" collection in the database
+      console.log('Connecting to the "users" collection');
       const usersCollection = db.collection('users');
 
       // Prepare the fields that need to be updated
@@ -38,17 +42,24 @@ module.exports = function (db, app) {
         updateFields.groups = updatedUserData.groups; // Array of group IDs or names
       }
 
+      console.log('Fields to be updated:', updateFields);
+
       // Perform the update operation
       const result = await usersCollection.updateOne(
         { _id: new ObjectId(userId) },
         { $set: updateFields }
       );
 
+      // Log the result of the update operation
+      console.log('Update result:', result);
+
       // Check if the update was successful
       if (result.modifiedCount === 1) {
-        res.status(200).send({ message: 'User updated successfully' });
+        console.log('User updated successfully for ID:', userId);
+        res.status(200).send({ ok: true, message: 'User updated successfully' });
       } else {
-        res.status(404).send({ message: 'User not found. Unable to update.' });
+        console.warn('User not found or no changes made for ID:', userId);
+        res.status(404).send({ ok: false, message: 'User not found. Unable to update.' });
       }
 
     } catch (error) {

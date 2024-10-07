@@ -17,7 +17,6 @@ export class UserService {
     return this.httpClient.get<User[]>(`${BACKEND_URL}/allUsers`, httpOptions);
   }
 
-  
   // Add a new user to the backend
   addUser(newUser: { username: string; password: string }): Observable<any> {
     return this.httpClient.post(`${BACKEND_URL}/addUser`, newUser, httpOptions);
@@ -45,6 +44,22 @@ export class UserService {
   deleteUser(username: string): Observable<any> {
     return this.httpClient.delete(
       `${BACKEND_URL}/users/${username}`,
+      httpOptions
+    );
+  }
+
+  // Fetch a user by ID
+  getUserById(userId: string): Observable<User> {
+    return this.httpClient.get<User>(
+      `${BACKEND_URL}/users/${userId}`,
+      httpOptions
+    );
+  }
+  // Update an existing user by ID
+  updateUser(user: User): Observable<any> {
+    return this.httpClient.put(
+      `${BACKEND_URL}/updateUser/${user._id}`, // Use `_id` to target the correct user
+      user,
       httpOptions
     );
   }

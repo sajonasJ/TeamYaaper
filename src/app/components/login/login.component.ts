@@ -34,6 +34,7 @@ export class LoginComponent {
         (response: any) => {
           if (response.ok) {
             // Store user information in session storage
+            sessionStorage.setItem('id', response.id);
             sessionStorage.setItem('username', response.username);
             sessionStorage.setItem('firstname', response.firstname);
             sessionStorage.setItem('lastname', response.lastname);
