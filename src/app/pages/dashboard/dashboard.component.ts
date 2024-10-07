@@ -5,6 +5,7 @@ import { User, Group } from '../../models/dataInterfaces';
 import { ToastrService } from 'ngx-toastr';
 import { GroupService } from '../../services/group.service';
 import { UserService } from '../../services/user.service';
+import * as bootstrap from 'bootstrap';
 
 @Component({
   selector: 'app-dashboard',
@@ -22,6 +23,9 @@ export class DashboardComponent implements OnInit {
   currentUser: string | null = null;
   adminInputs: { [key: string]: string } = {};
   userInputs: { [key: string]: string } = {};
+
+  deleteEntity: User | Group | null = null; // To track which entity is to be deleted
+  isUserDeletion: boolean = false; // To differentiate between user and group deletion
 
   constructor(
     private toastr: ToastrService,
@@ -199,21 +203,8 @@ export class DashboardComponent implements OnInit {
   }
 
   deleteUser(user: User): void {
-    const confirmDelete = confirm(
-      `Are you sure you want to delete the user "${user.username}"?`
-    );
-    if (!confirmDelete) return;
-
-    this.userService.deleteUser(user.username).subscribe(
-      (response) => {
-        this.toastr.success('User deleted successfully!', 'Success');
-        this.loadUsers();
-      },
-      (error) => {
-        console.error('Error deleting user:', error);
-        this.toastr.error('Failed to delete user. Please try again.', 'Error');
-      }
-    );
+    // Set the entity to be deleted and show the confirmation modal
+    this.confirmDeleteUser(user);
   }
 
   addAdminToGroup(group: Group): void {
@@ -283,44 +274,80 @@ export class DashboardComponent implements OnInit {
     }
   }
 
+  // Trigger the delete confirmation modal for a user
+  confirmDeleteUser(user: User): void {
+    this.deleteEntity = user;
+    this.isUserDeletion = true;
+    this.showDeleteConfirmationModal();
+  }
+
+  // Trigger the delete confirmation modal for a group
+  confirmDeleteGroup(group: Group): void {
+    this.deleteEntity = group;
+    this.isUserDeletion = false;
+    this.showDeleteConfirmationModal();
+  }
+
+  // Show the modal for delete confirmation
+  showDeleteConfirmationModal(): void {
+    const modalElement = document.getElementById('confirmDeleteModal');
+    if (modalElement) {
+      const modal = new bootstrap.Modal(modalElement);
+      modal.show();
+    }
+  }
+
+  // Confirm deletion from the modal
+  onConfirmDelete(): void {
+    if (this.deleteEntity) {
+      if (this.isUserDeletion) {
+        this.userService
+          .deleteUser((this.deleteEntity as User).username)
+          .subscribe(
+            () => {
+              this.toastr.success('User deleted successfully!', 'Success');
+              this.loadUsers();
+            },
+            (error) => {
+              console.error('Error deleting user:', error);
+              this.toastr.error(
+                'Failed to delete user. Please try again.',
+                'Error'
+              );
+            }
+          );
+      } else {
+        this.groupService
+          .deleteGroup((this.deleteEntity as Group)._id!)
+          .subscribe(
+            () => {
+              this.toastr.success('Group deleted successfully!', 'Success');
+              this.loadGroups();
+            },
+            (error) => {
+              console.error('Error deleting group:', error);
+              this.toastr.error(
+                'Failed to delete group. Please try again.',
+                'Error'
+              );
+            }
+          );
+      }
+    }
+
+    // Reset the delete state
+    this.deleteEntity = null;
+    this.isUserDeletion = false;
+  }
+
   deleteGroup(group: Group): void {
     if (!group._id) {
       this.toastr.error('Group ID is missing. Cannot proceed.', 'Error');
       return;
     }
 
-    const confirmDelete = confirm(
-      `Are you sure you want to delete the group "${group.name}"?`
-    );
-    if (!confirmDelete) return;
-
-    // Call the groupService to delete the group
-    this.groupService.deleteGroup(group._id).subscribe(
-      (response) => {
-        this.toastr.success('Group deleted successfully!', 'Success');
-        this.loadGroups(); // Refresh the list of groups after deletion
-      },
-      (error) => {
-        console.error('Error deleting group:', error);
-
-        // Handle different errors based on status code
-        if (error.status === 400) {
-          this.toastr.error('Invalid Group ID. Please try again.', 'Error');
-        } else if (error.status === 404) {
-          this.toastr.error('Group not found. Unable to delete.', 'Error');
-        } else if (error.status === 500) {
-          this.toastr.error(
-            'An error occurred while deleting the group.',
-            'Error'
-          );
-        } else {
-          this.toastr.error(
-            'Failed to delete group. Please try again.',
-            'Error'
-          );
-        }
-      }
-    );
+    // Set the entity to be deleted and show the confirmation modal
+    this.confirmDeleteGroup(group);
   }
   updateGroupDB(group: Group): void {
     console.log('Sending updated group data:', group); // Add this log to inspect the payload
