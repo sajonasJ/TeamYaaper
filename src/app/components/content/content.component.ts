@@ -6,6 +6,7 @@ import { httpOptions, BACKEND_URL } from '../../constants';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import * as bootstrap from 'bootstrap';
 
 @Component({
   selector: 'app-content',
@@ -19,6 +20,7 @@ export class ContentComponent implements OnInit {
   showSettings: boolean = false;
 
   selectedChannel: Channel | null = null;
+  channelToDelete: Channel | null = null;
 
   newChannelName: string = '';
   newChannelDescription: string = '';
@@ -43,6 +45,24 @@ export class ContentComponent implements OnInit {
       }
     });
   }
+
+ 
+      // Show delete confirmation modal
+  // Show delete confirmation modal
+  showDeleteConfirmationModal(): void {
+    const modalElement = document.getElementById('confirmDeleteModal');
+    if (modalElement) {
+      const confirmDeleteModal = new bootstrap.Modal(modalElement);
+      confirmDeleteModal.show();
+    }
+  }
+
+ // Trigger delete confirmation for a channel
+ confirmDeleteChannel(channel: Channel): void {
+  this.channelToDelete = channel;
+  this.showDeleteConfirmationModal();
+}
+
 
   // Load all groups from the backend using GroupService
   loadGroups(): void {
@@ -126,18 +146,26 @@ export class ContentComponent implements OnInit {
     }
   }
 
+   // Confirm delete action for a channel
+   onConfirmDelete(): void {
+    if (this.channelToDelete && this.selectedGroup) {
+      this.deleteChannel(this.channelToDelete);
+    }
+
+    // Reset the delete state
+    this.channelToDelete = null;
+  }
+
   // Delete a channel from the selected group
-  deleteChannel(channel: Channel, group: Group): void {
-    if (!group || !channel) return;
+  deleteChannel(channel: Channel): void {
+    if (!this.selectedGroup) return;
 
-    const confirmDelete = confirm(`Are you sure you want to delete the channel "${channel.name}"?`);
-    if (!confirmDelete) return;
-
-    // Filter out the channel to be deleted
-    group.channels = group.channels.filter((ch) => ch.name !== channel.name);
+    this.selectedGroup.channels = this.selectedGroup.channels.filter(
+      (ch) => ch.name !== channel.name
+    );
 
     // Update the group in the backend after channel removal
-    this.updateGroupDB(group);
+    this.updateGroupDB(this.selectedGroup);
   }
 
   // Delete a group
@@ -165,10 +193,9 @@ export class ContentComponent implements OnInit {
     this.groupService.updateGroup(groupObj).subscribe(
       () => {
         this.toastr.success('Group updated successfully', 'Success');
-        this.loadGroups(); // Reload groups to ensure local state is in sync with the server
+        this.loadGroups(); 
       },
       (error) => {
-        console.error('Error updating group:', error);
         this.toastr.error('Failed to update group. Please try again.', 'Error');
       }
     );
