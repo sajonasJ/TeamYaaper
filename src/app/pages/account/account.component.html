@@ -9,13 +9,18 @@
         <div class="col col-lg-6 mb-4 mb-lg-0">
           <div class="card mb-3 card-ext">
             <div class="row g-0">
-              <!-- Avatar and User Basic Info -->
-              <div class="col-md-4 gradient-custom text-center text-white profile-ext">
-                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp" alt="Avatar"
-                  class="img-fluid my-5 img-ext" />
+
+
+
+
+              <div class="col-md-4 gradient-custom text-center text-white profile-ext position-relative">
+                <img [src]="profilePictureUrl" alt="Avatar" class="img-fluid my-5 img-ext rounded-circle" />
+                <button class="badge-btn btn btn-outline-warning" data-bs-toggle="modal"
+                  data-bs-target="#uploadProfilePictureModal">
+                  <i class="bi bi-three-dots"></i>
+                </button>
                 <h5>{{ username }}</h5>
                 <p>Account Details</p>
-                <i class="far fa-edit mb-5"></i>
               </div>
 
               <!-- Account Information Section -->
@@ -50,8 +55,6 @@
                       <input type="email" id="email" [(ngModel)]="email" class="form-control" />
                     </div>
 
-                  
-
                     <!-- Save and Cancel Buttons -->
                     <div class="d-flex justify-content-center mt-4">
                       <button class="btn btn-primary me-2" (click)="onSave()">Save</button>
@@ -79,8 +82,6 @@
                       <span class="text-muted ms-2">{{ email }}</span>
                     </div>
 
-                
-
                     <!-- Role Display (Only if the user has 'super' role) -->
                     <div class="mb-3" *ngIf="roles.includes('super')">
                       <label class="fw-bold">Role:</label>
@@ -89,11 +90,11 @@
                       </div>
                     </div>
 
-
                     <!-- Update, Cancel, and Delete Buttons -->
                     <div class="d-flex justify-content-end mt-4">
                       <button class="btn btn-outline-primary me-2" (click)="onUpdate()">Update</button>
-                      <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">Delete</button>
+                      <button class="btn btn-outline-danger" data-bs-toggle="modal"
+                        data-bs-target="#confirmDeleteModal">Delete</button>
                     </div>
                   </ng-template>
                 </div>
@@ -106,12 +107,38 @@
   </section>
 
   <app-footer></app-footer>
-
-  
 </main>
 
+<!-- Modal for Uploading Profile Picture -->
+<div class="modal fade" id="uploadProfilePictureModal" tabindex="-1" aria-labelledby="uploadProfilePictureModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="uploadProfilePictureModalLabel">Upload Profile Picture</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- File Input for Profile Picture -->
+        <input type="file" (change)="onFileSelected($event)" accept="image/*" class="form-control-file mb-3" />
+
+        <!-- Image Preview -->
+        <div *ngIf="selectedFile">
+          <img [src]="profilePictureUrl" alt="Selected Image" class="img-fluid img-preview" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" (click)="uploadProfilePicture()" data-bs-dismiss="modal"
+          *ngIf="selectedFile">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Confirm Delete Modal -->
-<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel"
+  aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">

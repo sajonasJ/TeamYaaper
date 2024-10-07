@@ -43,8 +43,7 @@
 }
 
 .profile-ext {
-    border-top-left-radius: .5rem;
-    border-bottom-left-radius: .5rem;
+    position: relative;
 }
 
 .ac-info {
@@ -52,5 +51,26 @@
 }
 
 .img-ext {
-    width: 80px;
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
 }
+
+.badge-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #333;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+

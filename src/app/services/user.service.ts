@@ -62,5 +62,15 @@ export class UserService {
       user,
       httpOptions
     );
+
+    
+  }
+
+  // Upload profile picture method
+  uploadProfilePicture(file: File, userId: string): Observable<any> {
+    const formData = new FormData();
+    formData.append('profilePicture', file);
+    return this.httpClient.post(`${BACKEND_URL}/api/uploadProfilePicture/${userId}`, formData);
+
   }
 }

@@ -32,6 +32,7 @@ export interface User {
   roles: string[]; // e.g., ['admin', 'user']
   groups: string[];
   joinRequests?: string[]; // Optional: Array of IDs of the groups that the user has requested to join
+  profilePicture?: String, 
 }
 
 export interface JoinRequest {

@@ -21,6 +21,9 @@ export class AccountComponent implements OnInit {
   roles: string[] = [];
   groups: string[] = []; 
   isEditMode: boolean = false;
+  profilePictureUrl: string | ArrayBuffer | null = '';
+  selectedFile: File | null = null;
+
 
   constructor(
     private router: Router,
@@ -49,8 +52,44 @@ export class AccountComponent implements OnInit {
     this.email = sessionStorage.getItem('email') || '';
     this.roles = JSON.parse(sessionStorage.getItem('roles') || '[]');
     this.groups = JSON.parse(sessionStorage.getItem('groups') || '[]'); // Load groups from session storage
+    this.profilePictureUrl = sessionStorage.getItem('profilePicture');
 
   }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      this.selectedFile = input.files[0];
+      
+      // Show a preview of the selected file
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.profilePictureUrl = reader.result;
+      };
+      reader.readAsDataURL(this.selectedFile);
+    }
+  }
+
+  uploadProfilePicture(): void {
+    if (this.selectedFile && this.id) {
+        this.userService.uploadProfilePicture(this.selectedFile, this.id).subscribe(
+            (response) => {
+                if (response.ok) {
+                    this.toastr.success('Profile picture updated successfully!', 'Success');
+                    this.profilePictureUrl = `http://localhost:3000${response.imageUrl}`;
+                    sessionStorage.setItem('profilePicture', this.profilePictureUrl);
+                } else {
+                    this.toastr.error('Failed to update profile picture.', 'Error');
+                }
+            },
+            (error) => {
+                this.toastr.error('Failed to upload profile picture. Please try again.', 'Error');
+            }
+        );
+    }
+}
+
+
 
   // Join first and last name
   get fullName(): string {
@@ -75,6 +114,7 @@ export class AccountComponent implements OnInit {
       email: this.email,
       roles: this.roles,
       groups: this.groups,
+
     };
 
     this.userService.updateUser(updatedUser).subscribe(
