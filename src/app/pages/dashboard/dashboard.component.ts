@@ -25,8 +25,8 @@ export class DashboardComponent implements OnInit {
   adminInputs: { [key: string]: string } = {};
   userInputs: { [key: string]: string } = {};
 
-  deleteEntity: User | Group | null = null; // To track which entity is to be deleted
-  isUserDeletion: boolean = false; // To differentiate between user and group deletion
+  deleteEntity: User | Group | null = null;
+  isUserDeletion: boolean = false;
 
   constructor(
     private toastr: ToastrService,

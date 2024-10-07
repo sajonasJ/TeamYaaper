@@ -2,6 +2,7 @@ import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { Group } from '../../models/dataInterfaces';
 import { GroupService } from '../../services/group.service';
 import { ToastrService } from 'ngx-toastr';
+import { UtilsService } from '../../shared/utils.service';
 
 @Component({
   selector: 'app-side-nav',
@@ -10,18 +11,21 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class SideNavComponent implements OnInit {
   groups: Group[] = [];
-  newGroupName: string = ''; // Property to bind the group name input
-  newGroupDescription: string = ''; // Property to bind the group description input
+  newGroupName: string = '';
+  newGroupDescription: string = '';
+  currentUser: string | null = null;
 
   @Output() groupSelected = new EventEmitter<Group>();
 
   constructor(
     private groupService: GroupService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private utilsService: UtilsService 
   ) {}
 
   ngOnInit(): void {
     this.loadGroups();
+    this.currentUser = this.utilsService.loadCurrentUser();
   }
 
   // Load groups from the backend
@@ -31,7 +35,6 @@ export class SideNavComponent implements OnInit {
         this.groups = groups;
       },
       (error) => {
-        console.error('Error loading groups', error);
         this.toastr.error('Failed to load groups. Please try again.', 'Error');
       }
     );
@@ -42,36 +45,34 @@ export class SideNavComponent implements OnInit {
     this.groupSelected.emit(group);
   }
 
-  // Add a new group by calling the GroupService
-  addGroup(): void {
-    if (!this.newGroupName || !this.newGroupDescription) {
-      this.toastr.error('Group name and description are required', 'Error');
-      return;
-    }
 
-    const newGroup: Group = {
-      name: this.newGroupName,
-      description: this.newGroupDescription,
-      admins: [], // Add current user/admins as needed
-      users: [],
-      channels: [],
-    };
+  saveGroup(): void {
+    if (this.newGroupName && this.newGroupDescription) {
+      const newGroup: Group = {
+        name: this.newGroupName,
+        description: this.newGroupDescription,
+        admins: [this.currentUser!], // Add current user as admin
+        users: [this.currentUser!], 
+        channels: [],
+      };
 
-    this.groupService.addGroup(newGroup).subscribe(
-      (response: any) => {
-        if (response && response._id) {
-          this.groups.push(response);
-          this.toastr.success('Group added successfully', 'Success');
-          this.newGroupName = ''; // Clear the input fields
+      this.groupService.addGroup(newGroup).subscribe(
+        (response) => {
+          this.toastr.success('Group added successfully!', 'Success');
+          this.loadGroups();
+          this.newGroupName = '';
           this.newGroupDescription = '';
-        } else {
-          this.toastr.error(response.message || 'Failed to add group', 'Error');
+        },
+        (error) => {
+          console.error('Error adding group:', error);
+          this.toastr.error('Failed to add group. Please try again.', 'Error');
         }
-      },
-      (error) => {
-        console.error('Error adding group:', error);
-        this.toastr.error('An error occurred while adding the group.', 'Error');
-      }
-    );
+      );
+    } else {
+      this.toastr.error(
+        'Please fill in both group name and description.',
+        'Error'
+      );
+    }
   }
 }

@@ -9,7 +9,7 @@
 
   <!-- Group details and channels when a group is selected -->
   <div class="channel-container" *ngIf="selectedGroup && !showSettings">
-    <div class="group-header container">
+    <div class="group-header container pb-0">
       <h2>Group: "{{ selectedGroup.name }}"</h2>
       <p>Description: {{ selectedGroup.description }}</p>
 
@@ -36,7 +36,7 @@
     </button>
 
     <!-- List Channels if the user is part of the group -->
-    <ul class="list-group mt-3" *ngIf="isUser()">
+    <ul class="list-group" *ngIf="isUser()">
       <li class="list-group-item clickable" *ngFor="let channel of selectedGroup?.channels" (click)="selectChannel(channel)">
         # {{ channel.name }}
         <button class="btn btn-sm btn-danger ms-1" *ngIf="isAdmin()" (click)="confirmDeleteChannel(channel)">

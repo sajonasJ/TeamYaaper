@@ -1,78 +1,89 @@
 <div class="settings-container">
-    <button class="btn btn-secondary" (click)="closeSettings()">Close Settings</button>
-    <h3 class="fw-bold">Group Settings: "{{ selectedGroup?.name }}"</h3>
-    <section class="mt-4">
-      <div *ngIf="isAdmin" class="admin-ctrl mb-4">
-        <p class="fw-bold">Admin Controls</p>
-        <div class="ctrl-sim d-flex flex-wrap">
-          <input
-            type="text"
-            class="form-control form-control-sm me-2"
-            [(ngModel)]="userInputs['group-' + selectedGroup?._id]"
-            placeholder="Add Username"
-          >
-          <button class="btn btn-warning btn-sm me-2" (click)="addUserToGroup()">
-            <span class="material-symbols-outlined">person_add</span>
-          </button>
-          <button class="btn btn-danger btn-sm me-2" (click)="deleteGroup()">
-            <span class="material-symbols-outlined">delete_forever</span>
-          </button>
-          <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#settingsModal">
-            <i class="bi bi-gear-fill"></i> Settings
-          </button>
+    <div class="card m-3 shadow-lg">
+        <div class="card-header d-flex flex-column">
+            <div class=" d-flex justify-content-end">
+                <button class="btn btn-outline-danger btn-sm d-flex justify-self-end"
+                    (click)="closeSettings()">Close</button>
+            </div>
+            <h3 class="fw-bold">Group Settings: "{{ selectedGroup?.name }}"</h3>
+            <section class="mt-4">
+
+                    <!-- Requests Section -->
+                    <h4 class="fw-bold">Requests to Join:</h4>
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center"
+                            *ngFor="let admin of groupAdmins">
+                            {{ admin.username }}
+                            <button class="btn btn-danger btn-sm" (click)="removeMember(admin)">
+                                Remove
+                            </button>
+                        </li>
+                    </ul>
+
+                <!-- Admins Section -->
+                <h4 class="fw-bold">Admins:</h4>
+                <ul class="list-group">
+                    <li class="list-group-item d-flex justify-content-between align-items-center"
+                        *ngFor="let admin of groupAdmins">
+                        {{ admin.username }}
+                        <button class="btn btn-danger btn-sm" (click)="removeMember(admin)">
+                            Remove
+                        </button>
+                    </li>
+                </ul>
+
+                <!-- Members Section -->
+                <h4 class="fw-bold">Members:</h4>
+                <ul class="list-group">
+                    <li class="list-group-item d-flex justify-content-between align-items-center"
+                        *ngFor="let member of groupMembers">
+                        {{ member.username }}
+                        <button class="btn btn-danger btn-sm" (click)="removeMember(member)">
+                            Remove
+                        </button>
+                    </li>
+                </ul>
+
+            </section>
+
+            <!-- Channels Section -->
+            <section class="mt-4">
+                <h4 class="fw-bold">Channels</h4>
+                <ul class="list-group">
+                    <li class="list-group-item" *ngFor="let channel of selectedGroup?.channels">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span># {{ channel.name }}</span>
+                            <button class="btn btn-danger btn-sm ms-2" (click)="deleteChannel(channel)">
+                                Delete
+                            </button>
+                        </div>
+                        <ul class="list-group ms-3 mt-2">
+                            <li class="list-group-item" *ngFor="let user of channel.users">
+                                {{ user }}
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
         </div>
-      </div>
-  
-      <!-- Group Members Section -->
-      <h4 class="fw-bold">Members</h4>
-      <ul class="list-group">
-        <li class="list-group-item d-flex justify-content-between align-items-center"
-            *ngFor="let member of groupMembers">
-          {{ member.firstname }} {{ member.lastname }} ({{ member.roles.join(', ') }})
-          <button class="btn btn-danger btn-sm" (click)="removeMember(member)">
-            Remove
-          </button>
-        </li>
-      </ul>
-    </section>
-  
-    <!-- Channels Section -->
-    <section class="mt-4">
-      <h4 class="fw-bold">Channels</h4>
-      <ul class="list-group">
-        <li class="list-group-item" *ngFor="let channel of selectedGroup?.channels">
-          <div class="d-flex justify-content-between align-items-center">
-            <span># {{ channel.name }}</span>
-            <button class="btn btn-danger btn-sm ms-2" (click)="deleteChannel(channel)">
-              Delete
-            </button>
-          </div>
-          <ul class="list-group ms-3 mt-2">
-            <li class="list-group-item" *ngFor="let user of channel.users">
-              {{ user }}
-            </li>
-          </ul>
-        </li>
-      </ul>
-    </section>
-  </div>
-  
-  <!-- Settings Modal -->
-  <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="settingsModalLabel">Group Settings</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+        <!-- Settings Modal -->
+        <div class="modal fade" id="settingsModal" tabindex="-1" aria-labelledby="settingsModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="settingsModalLabel">Group Settings</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Settings content for group configurations, etc.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Save changes</button>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="modal-body">
-          <p>Settings content for group configurations, etc.</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
-        </div>
-      </div>
     </div>
-  </div>
-  
