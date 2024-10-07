@@ -4,6 +4,7 @@ import { AuthService } from '../../services/auth.service';
 import { UserService } from '../../services/user.service';
 import { ToastrService } from 'ngx-toastr';
 import { User } from '../../models/dataInterfaces';
+import * as bootstrap from 'bootstrap';
 
 @Component({
   selector: 'app-account',
@@ -62,10 +63,8 @@ export class AccountComponent implements OnInit {
   }
 
   // Save user data
-  // Save user data using UserService
-  onSave(): void {
-    console.log("User ID:", this.id);
 
+  onSave(): void {
 
     // Prepare updated user data
     const updatedUser: User = {
@@ -75,16 +74,12 @@ export class AccountComponent implements OnInit {
       lastname: this.lastname,
       email: this.email,
       roles: this.roles,
-      groups: this.groups, // Include groups in the updated user data
+      groups: this.groups,
     };
-    const updateUrl = `http://localhost:3000/updateUser/${this.id}`;
-    console.log("Request URL:", updateUrl);
-    
-
 
     this.userService.updateUser(updatedUser).subscribe(
       (response) => {
-        if (response.ok) { // Check if response is valid and successful
+        if (response.ok) { 
           this.toastr.success('User data updated successfully!', 'Success');
           this.isEditMode = false;
           this.updateSessionStorage(updatedUser);
@@ -107,12 +102,8 @@ export class AccountComponent implements OnInit {
     this.isEditMode = false;
   }
 
-  // Delete user account
-  onDelete(): void {
-    if (confirm('Are you sure you want to delete this account?')) {
-      this.toastr.error('Delete functionality not implemented yet.');
-    }
-  }
+
+
   updateSessionStorage(updatedUser: User): void {
     sessionStorage.setItem('id', updatedUser._id ?? '');
     sessionStorage.setItem('username', updatedUser.username);
@@ -126,5 +117,36 @@ export class AccountComponent implements OnInit {
   // Display groups by object keys
   objectKeys(obj: any): string[] {
     return Object.keys(obj);
+  }
+   // Show the delete confirmation modal
+   showDeleteConfirmationModal(): void {
+    const modalElement = document.getElementById('confirmDeleteModal');
+    if (modalElement) {
+      const confirmDeleteModal = new bootstrap.Modal(modalElement);
+      confirmDeleteModal.show();
+    }
+  }
+
+    // Trigger the delete confirmation modal for a user
+    confirmDeleteUser(): void {
+      this.showDeleteConfirmationModal();
+    }
+  
+  // Delete user account
+  onDelete(): void {
+    if (this.id) {
+      this.userService.deleteUser(this.username).subscribe(
+        () => {
+          this.toastr.success('Account deleted successfully.', 'Success');
+          this.authservice.logout(); // Log out the user after deleting the account
+          this.router.navigate(['/login']);
+        },
+        (error) => {
+          this.toastr.error('Failed to delete account. Please try again.', 'Error');
+        }
+      );
+    } else {
+      this.toastr.error('User ID is missing. Cannot delete account.', 'Error');
+    }
   }
 }

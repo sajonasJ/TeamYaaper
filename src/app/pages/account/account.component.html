@@ -93,7 +93,7 @@
                     <!-- Update, Cancel, and Delete Buttons -->
                     <div class="d-flex justify-content-end mt-4">
                       <button class="btn btn-outline-primary me-2" (click)="onUpdate()">Update</button>
-                      <button class="btn btn-outline-danger" (click)="onDelete()">Delete</button>
+                      <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">Delete</button>
                     </div>
                   </ng-template>
                 </div>
@@ -106,4 +106,25 @@
   </section>
 
   <app-footer></app-footer>
+
+  
 </main>
+
+<!-- Confirm Delete Modal -->
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmDeleteModalLabel">Confirm Deletion</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete your account?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger" (click)="onDelete()" data-bs-dismiss="modal">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
