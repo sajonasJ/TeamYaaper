@@ -5,6 +5,7 @@ import { User, Group } from '../../models/dataInterfaces';
 import { ToastrService } from 'ngx-toastr';
 import { GroupService } from '../../services/group.service';
 import { UserService } from '../../services/user.service';
+import { UtilsService } from '../../shared/utils.service';
 import * as bootstrap from 'bootstrap';
 
 @Component({
@@ -30,24 +31,21 @@ export class DashboardComponent implements OnInit {
   constructor(
     private toastr: ToastrService,
     private groupService: GroupService,
-    private userService: UserService
+    private userService: UserService,
+    private utilsService: UtilsService 
   ) {}
 
   ngOnInit(): void {
     this.loadUsers();
     this.loadGroups();
-    this.loadCurrentUser();
-  }
-
-  loadCurrentUser(): void {
-    this.currentUser = sessionStorage.getItem('username');
+    this.currentUser = this.utilsService.loadCurrentUser();
   }
 
   loadUsers(): void {
     this.userService.getUsers().subscribe(
       (data) => {
         this.users = data;
-        this.mapUserDetailsToGroups(); // After loading users, map the user details to the groups
+        this.mapUserDetailsToGroups();
       },
       (error) => {
         this.toastr.error('Failed to load users. Please try again.', 'Error');
@@ -62,10 +60,10 @@ export class DashboardComponent implements OnInit {
         // Initialize adminInputs and userInputs for each group
         this.groups.forEach((group) => {
           const groupId = group._id || 'undefined';
-          this.adminInputs[groupId] = ''; // Initialize with an empty string
-          this.userInputs[groupId] = ''; // Initialize with an empty string
+          this.adminInputs[groupId] = '';
+          this.userInputs[groupId] = '';
         });
-        this.mapUserDetailsToGroups(); // Map user details to groups after loading groups
+        this.mapUserDetailsToGroups();
       },
       (error) => {
         this.toastr.error('Failed to load groups. Please try again.', 'Error');
@@ -73,32 +71,8 @@ export class DashboardComponent implements OnInit {
     );
   }
 
-  // Utility function to map user/admin IDs in the groups to their corresponding usernames
-  // Utility function to map user/admin IDs in the groups to their corresponding usernames
   mapUserDetailsToGroups(): void {
-    if (this.groups.length && this.users.length) {
-      this.groups.forEach((group) => {
-        // Ensure `admins` and `users` are arrays
-        if (!Array.isArray(group.admins)) {
-          group.admins = [];
-        }
-        if (!Array.isArray(group.users)) {
-          group.users = [];
-        }
-
-        // Map IDs to usernames
-        group.admins = group.admins.map((adminId) =>
-          this.getUsernameById(adminId)
-        );
-        group.users = group.users.map((userId) => this.getUsernameById(userId));
-      });
-    }
-  }
-
-  // Get username by user ID
-  getUsernameById(userId: string): string {
-    const user = this.users.find((user) => user._id === userId);
-    return user ? user.username : userId; // Return userId if no match found for better traceability
+    this.groups = this.utilsService.mapUserDetailsToGroups(this.groups, this.users);
   }
 
   saveUser(): void {
@@ -107,33 +81,19 @@ export class DashboardComponent implements OnInit {
         username: this.newUsername,
         password: this.newPassword,
       };
-
+  
       this.userService.addUser(newUser).subscribe(
-        (response: any) => {
-          if (response.ok) {
-            this.toastr.success('User added successfully!', 'Success');
-            this.loadUsers();
-            this.newUsername = '';
-            this.newPassword = '';
-          } else {
-            this.toastr.error('Failed to add user. Please try again.', 'Error');
-          }
+        () => {
+          this.toastr.success('User added successfully!', 'Success');
+          this.loadUsers();
+          this.newUsername = '';
+          this.newPassword = '';
         },
         (error) => {
-          // Handle the 409 Conflict error specifically
           if (error.status === 409) {
-            if (error.error && error.error.message) {
-              // If the backend sends a message field, use it
-              this.toastr.error(error.error.message, 'Conflict');
-            } else {
-              // Fallback error message
-              this.toastr.error(
-                'User already exists. Please choose a different username.',
-                'Conflict'
-              );
-            }
+            const errorMessage = error.error?.message || 'User already exists. Please choose a different username.';
+            this.toastr.error(errorMessage, 'Conflict');
           } else {
-            // Handle any other errors
             this.toastr.error('Failed to add user. Please try again.', 'Error');
           }
         }
@@ -142,6 +102,7 @@ export class DashboardComponent implements OnInit {
       this.toastr.error('Please fill in both username and password.', 'Error');
     }
   }
+  
 
   saveGroup(): void {
     if (this.newGroupName && this.newGroupDescription) {
@@ -203,43 +164,38 @@ export class DashboardComponent implements OnInit {
   }
 
   deleteUser(user: User): void {
-    // Set the entity to be deleted and show the confirmation modal
     this.confirmDeleteUser(user);
   }
 
   addAdminToGroup(group: Group): void {
-    const groupId = group._id || 'undefined';
+    if (!group._id) {
+      this.toastr.error('Group ID is missing. Cannot proceed.', 'Error');
+      return;
+    }
+    const groupId = group._id;
     const newAdminUsername = this.adminInputs[groupId];
     if (!newAdminUsername) {
       this.toastr.error('Please enter a username.', 'Error');
       return;
     }
 
-    const userExists = this.users.some(
-      (user) => user.username === newAdminUsername
-    );
-    if (!userExists) {
+    if (!this.utilsService.userExists(this.users || [], newAdminUsername)) {
       this.toastr.error('User does not exist.', 'Error');
       return;
     }
+    
 
-    if (!group.admins.includes(newAdminUsername)) {
-      group.admins.push(newAdminUsername);
-      group.users.push(newAdminUsername);
+    if (!this.utilsService.adminInGroup(group, newAdminUsername)) {
+      group = this.utilsService.addUserToGroup(group, newAdminUsername, 'admin');
       this.updateGroupDB(group);
-      this.adminInputs[groupId] = ''; // Clear the input field
+      this.adminInputs[groupId] = '';
     } else {
       this.toastr.error('User is already an admin.', 'Error');
     }
   }
 
-  deleteAdminFromGroup(group: Group, username: string): void {
-    const index = group.admins.indexOf(username);
-    if (index !== -1) {
-      group.admins.splice(index, 1);
-      this.updateGroupDB(group);
-    }
-  }
+ 
+  
 
   addUserToGroup(group: Group): void {
     const groupId = group._id || 'undefined';
@@ -249,29 +205,27 @@ export class DashboardComponent implements OnInit {
       return;
     }
 
-    const userExists = this.users.some(
-      (user) => user.username === newUserUsername
-    );
-    if (!userExists) {
+    if (!this.utilsService.userExists(this.users, newUserUsername)) {
       this.toastr.error('User does not exist.', 'Error');
       return;
     }
-
-    if (!group.users.includes(newUserUsername)) {
-      group.users.push(newUserUsername);
+14
+    if (!this.utilsService.userInGroup(group, newUserUsername)) {
+      group = this.utilsService.addUserToGroup(group, newUserUsername, 'user');
       this.updateGroupDB(group);
-      this.userInputs[groupId] = ''; // Clear the input field
+      this.userInputs[groupId] = '';
     } else {
       this.toastr.error('User is already in the group.', 'Error');
     }
   }
 
   deleteUserFromGroup(group: Group, username: string): void {
-    const index = group.users.indexOf(username);
-    if (index !== -1) {
-      group.users.splice(index, 1);
-      this.updateGroupDB(group);
-    }
+    group.users = this.utilsService.removeUserFromList(group.users, username);
+    this.updateGroupDB(group);
+  }
+  deleteAdminFromGroup(group: Group, username: string): void {
+    group.admins = this.utilsService.removeUserFromList(group.admins, username);
+    this.updateGroupDB(group);
   }
 
   // Trigger the delete confirmation modal for a user
@@ -288,57 +242,59 @@ export class DashboardComponent implements OnInit {
     this.showDeleteConfirmationModal();
   }
 
-  // Show the modal for delete confirmation
   showDeleteConfirmationModal(): void {
-    const modalElement = document.getElementById('confirmDeleteModal');
-    if (modalElement) {
-      const modal = new bootstrap.Modal(modalElement);
-      modal.show();
-    }
+    this.utilsService.showDeleteConfirmationModal('confirmDeleteModal');
   }
+  
 
   // Confirm deletion from the modal
   onConfirmDelete(): void {
     if (this.deleteEntity) {
       if (this.isUserDeletion) {
-        this.userService
-          .deleteUser((this.deleteEntity as User).username)
-          .subscribe(
-            () => {
-              this.toastr.success('User deleted successfully!', 'Success');
-              this.loadUsers();
-            },
-            (error) => {
-              console.error('Error deleting user:', error);
-              this.toastr.error(
-                'Failed to delete user. Please try again.',
-                'Error'
-              );
-            }
-          );
+        const usernameToDelete = (this.deleteEntity as User).username;
+  
+        // Step 1: Delete the user
+        this.userService.deleteUser(usernameToDelete).subscribe(
+          () => {
+            this.toastr.success('User deleted successfully!', 'Success');
+            // Step 2: Remove the user from any groups
+            this.groups.forEach(group => {
+              if (group.admins.includes(usernameToDelete)) {
+                group.admins = this.utilsService.removeUserFromList(group.admins, usernameToDelete);
+              }
+              if (group.users.includes(usernameToDelete)) {
+                group.users = this.utilsService.removeUserFromList(group.users, usernameToDelete);
+              }
+              this.updateGroupDB(group);
+            });
+            // Step 3: Reload users and groups
+            this.loadUsers();
+            this.loadGroups();
+          },
+          (error) => {
+            this.toastr.error('Failed to delete user. Please try again.', 'Error');
+          }
+        );
       } else {
-        this.groupService
-          .deleteGroup((this.deleteEntity as Group)._id!)
-          .subscribe(
-            () => {
-              this.toastr.success('Group deleted successfully!', 'Success');
-              this.loadGroups();
-            },
-            (error) => {
-              console.error('Error deleting group:', error);
-              this.toastr.error(
-                'Failed to delete group. Please try again.',
-                'Error'
-              );
-            }
-          );
+        // Handle group deletion
+        this.groupService.deleteGroup((this.deleteEntity as Group)._id!).subscribe(
+          () => {
+            this.toastr.success('Group deleted successfully!', 'Success');
+            this.loadGroups();
+          },
+          (error) => {
+            this.toastr.error('Failed to delete group. Please try again.', 'Error');
+          }
+        );
       }
     }
-
+  
     // Reset the delete state
     this.deleteEntity = null;
     this.isUserDeletion = false;
   }
+  
+  
 
   deleteGroup(group: Group): void {
     if (!group._id) {
@@ -346,7 +302,6 @@ export class DashboardComponent implements OnInit {
       return;
     }
 
-    // Set the entity to be deleted and show the confirmation modal
     this.confirmDeleteGroup(group);
   }
   updateGroupDB(group: Group): void {
@@ -357,7 +312,6 @@ export class DashboardComponent implements OnInit {
         this.loadGroups(); // Refresh the groups
       },
       (error) => {
-        console.error('Error updating group:', error);
         this.toastr.error('Failed to update group. Please try again.', 'Error');
       }
     );

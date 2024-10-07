@@ -42,25 +42,25 @@ export class GroupService {
     );
   }
 
-  // Add an admin to a group
-  addAdminToGroup(groupId: string, adminUsername: string): Observable<any> {
-    return this.httpClient.put(
-      `${BACKEND_URL}/groups/${groupId}/admin`,
-      { username: adminUsername },
-      httpOptions
-    );
-  }
+  // // Add an admin to a group
+  // addAdminToGroup(groupId: string, adminUsername: string): Observable<any> {
+  //   return this.httpClient.put(
+  //     `${BACKEND_URL}/groups/${groupId}/admin`,
+  //     { username: adminUsername },
+  //     httpOptions
+  //   );
+  // }
 
-  // Remove an admin from a group
-  removeAdminFromGroup(
-    groupId: string,
-    adminUsername: string
-  ): Observable<any> {
-    return this.httpClient.delete(`${BACKEND_URL}/groups/${groupId}/admin`, {
-      headers: httpOptions.headers,
-      body: { username: adminUsername },
-    });
-  }
+  // // Remove an admin from a group
+  // removeAdminFromGroup(
+  //   groupId: string,
+  //   adminUsername: string
+  // ): Observable<any> {
+  //   return this.httpClient.delete(`${BACKEND_URL}/groups/${groupId}/admin`, {
+  //     headers: httpOptions.headers,
+  //     body: { username: adminUsername },
+  //   });
+  // }
 
   // Delete a group by its MongoDB _id
   deleteGroup(groupId: string): Observable<any> {
