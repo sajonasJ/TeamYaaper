@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sign-up',
@@ -8,16 +8,42 @@ import { Router } from '@angular/router';
   styleUrl: './sign-up.component.css',
 })
 export class SignUpComponent implements OnInit {
-  constructor(private router: Router, private toastr: ToastrService) {}
+  isSignIn = false;
 
-  // if the user accidentally loads the sign-up page, redirect them to the login page
-  // and display an error message
-  ngOnInit(): void {
-    this.router.navigate(['/login']);
-    this.toastr.error('Sign-up form not implemented yet.', 'Error');
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private toastr: ToastrService
+  ) {}
+
+  ngOnInit() {
+    this.route.queryParams.subscribe((params) => {
+      // If the URL does not contain 'signup' as a query parameter, switch to sign-in form
+      if (params['signup']) {
+        this.isSignIn = false;
+      } else {
+        this.isSignIn = true;
+      }
+    });
   }
 
-  // Not functional yet, still need to implement the form
+  // Methods to switch between Sign In and Sign Up
+  switchToSignUp(): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { signup: true },
+    });
+  }
+
+  switchToSignIn(): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { signup: null },
+      queryParamsHandling: 'merge',
+    });
+  }
+
+  // Dummy onSubmit method to be implemented
   onSubmit(signupForm: any) {
     if (signupForm.valid) {
       console.log('Form Submitted', signupForm.value);

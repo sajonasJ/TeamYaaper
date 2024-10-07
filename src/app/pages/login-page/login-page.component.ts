@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login-page',
@@ -17,29 +16,30 @@ export class LoginPageComponent implements OnInit {
     private toastr: ToastrService
   ) {}
 
-  //switch to sign-up form when the user clicks the sign-up button
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {
+      // If the URL contains 'signup' as a query parameter, switch to sign-up form
       if (params['signup']) {
-        this.switchToSignUp();
+        this.isSignIn = false;
       } else {
-        this.switchToSignIn();
+        this.isSignIn = true;
       }
     });
   }
 
-  //boolean switch to sign-up form
-  switchToSignUp() {
-    this.isSignIn = false;
+  // Methods to switch between Sign In and Sign Up
+  switchToSignUp(): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { signup: true },
+    });
   }
 
-  //boolean switch to sign-in form
-  switchToSignIn() {
-    this.isSignIn = true;
-  }
-
-  //toast message when the user clicks the sign-up button
-  toastShow() {
-    this.toastr.error('Sign-up form not implemented yet.', 'Error');
+  switchToSignIn(): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { signup: null }, // Clear the signup query param
+      queryParamsHandling: 'merge',
+    });
   }
 }
