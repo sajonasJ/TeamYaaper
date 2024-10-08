@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors"); // Import the main function from app.js
 const app = express();
 const path = require("path");
+const http = require("http").Server(app);
 const { main, closeConnection } = require("../app");
 
 app.use(express.json());
@@ -11,11 +12,17 @@ app.use(express.urlencoded({ extended: true }));
 // CORS Middleware Configuration
 app.use(cors());
 
-app.use('/profile-pictures', express.static(path.join(__dirname, '../public/profile-pictures')));
+app.use(
+  "/profile-pictures",
+  express.static(path.join(__dirname, "../public/profile-pictures"))
+);
 
 // const chatUploadFolder = path.join(__dirname, '../../../public/chat-images');
 // app.use('/chat-images', express.static(path.join(__dirname, '../public/chat-images')));
 
+const PORT = 3000;
+const server = require("./listen.js");
+const sockets = require("./sockets.js");
 
 let db;
 
@@ -68,10 +75,8 @@ async function startServer() {
     require("./newroutes/update/updateJoinRequest")(db, app);
     require("./newroutes/update/updateUser")(db, app);
 
-    // Start listening on port 3000
-    app.listen(3000, () => {
-      console.log("Server running on port 3000...");
-    });
+    // setup socket
+    sockets.connect(io, PORT);
   } catch (error) {
     console.error("Failed to start server:", error);
   }
@@ -88,3 +93,4 @@ process.on("SIGINT", async () => {
 });
 
 startServer();
+server.listen(http, PORT);
