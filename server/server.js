@@ -5,6 +5,12 @@ const app = express();
 const path = require("path");
 const http = require("http").Server(app);
 const { main, closeConnection } = require("../app");
+const io = require ('socket.io')(http,{
+  cors:{
+      origin:"http://localhost:4200",
+      methods: ["GET", "POST"],
+  }
+})
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

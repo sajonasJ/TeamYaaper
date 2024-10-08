@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { User, Group, Channel } from '../../models/dataInterfaces';
+import { User, Group, Channel, Message } from '../../models/dataInterfaces';
 import { GroupService } from '../../services/group.service';
 import { HttpClient } from '@angular/common/http';
 import { httpOptions, BACKEND_URL } from '../../constants';
@@ -7,6 +7,7 @@ import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { JoinRequestService } from '../../services/join-request.service';
+import { SocketService } from '../../services/socket.service';
 import * as bootstrap from 'bootstrap';
 
 @Component({
@@ -20,7 +21,7 @@ export class ContentComponent implements OnInit {
   groups: Group[] = [];
   showSettings: boolean = false;
 
-  selectedChannel: Channel | null = null;
+  selectedChannel: Channel | null = null;  // Now it includes name, description, and messages
   channelToDelete: Channel | null = null;
 
   newChannelName: string = '';
@@ -28,9 +29,13 @@ export class ContentComponent implements OnInit {
   userInputs: { [key: string]: string } = {};
   currentUser: User | null = null;
 
+  newMessage: string = '';
+  messages: Message[] = [];
+  ioConnection: any;
+
   constructor(
     private groupService: GroupService,
-    private httpClient: HttpClient,
+    private socketService: SocketService,
     private authService: AuthService,
     private router: Router,
     private toastr: ToastrService,
@@ -44,6 +49,7 @@ export class ContentComponent implements OnInit {
       } else {
         this.loadGroups();
         this.loadCurrentUser();
+        this.initIoConnection();
       }
     });
   }
@@ -54,6 +60,50 @@ export class ContentComponent implements OnInit {
       this.loadCurrentUser();
       this.closeSettings();
     }
+  }
+  private initIoConnection() {
+    this.socketService.initSocket();
+  
+    this.ioConnection = this.socketService.onMessage().subscribe((message: Message) => {
+      console.log('Message received:', message);
+  
+      if (this.selectedChannel) {
+        console.log('Pushing to selectedChannel.messages:', message);
+        this.selectedChannel.messages.push(message); // Add message to the selected channel
+      } else {
+        console.log('Pushing to messages array:', message);
+        this.messages.push(message); // Default case, store in local messages array
+      }
+  
+      // Check the current state of the messages array
+      console.log('Updated messages array:', this.messages);
+    });
+  }
+  
+
+  // content.component.ts
+  public chat(event: Event) {
+    event.preventDefault(); // Prevent form submit from reloading the page
+
+    if (!this.currentUser || !this.newMessage) {
+      return; // Make sure there is a current user and a message to send
+    }
+
+    // Create the Message object
+    const message: Message = {
+      senderId: this.currentUser._id!,
+      name: this.currentUser.username!,
+      text: this.newMessage,
+      timestamp: new Date(),
+    };
+    console.log('Message received:', message); // Check this to ensure proper structure
+
+    // Send the message via the socket service
+    this.socketService.send(message);
+    console.log('Message received:', message); // Check this to ensure proper structure
+
+    // Clear the input after sending
+    this.newMessage = '';
   }
 
   showDeleteConfirmationModal(): void {
@@ -73,16 +123,20 @@ export class ContentComponent implements OnInit {
       );
       return;
     }
-  
+
     const groupId = this.selectedGroup._id;
-  
+
     // Ensure `groupId` is defined before making the API call
     if (!groupId) {
-      this.toastr.error('Invalid group ID. Please select a valid group.', 'Error');
+      this.toastr.error(
+        'Invalid group ID. Please select a valid group.',
+        'Error'
+      );
       return;
     }
-  
-    this.joinRequestService.addJoinRequest(groupId, this.currentUser._id)
+
+    this.joinRequestService
+      .addJoinRequest(groupId, this.currentUser._id)
       .subscribe(
         (response) => {
           if (response.ok) {
@@ -106,7 +160,6 @@ export class ContentComponent implements OnInit {
         }
       );
   }
-  
 
   // Trigger delete confirmation for a channel
   confirmDeleteChannel(channel: Channel): void {

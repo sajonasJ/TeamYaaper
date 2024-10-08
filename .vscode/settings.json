@@ -1,2 +1,4 @@
 {
+    "workbench.editor.pinnedTabSizing": "shrink",
+    "workbench.editor.tabSizing": "shrink"
 }

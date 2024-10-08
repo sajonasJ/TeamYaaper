@@ -25,7 +25,7 @@
 
       <!-- Channels Section -->
       <div class="channel-container-btn mt-3">
-        <h3>&#64;Channels</h3>
+        <h5>&#64;Channels</h5>
         <div class="ctrl-sim-btn" *ngIf="isAdmin()">
           <button class="btn btn-success btn-sm d-flex justify-content-center align-items-center" data-bs-toggle="modal"
             data-bs-target="#channelModal">
@@ -60,27 +60,56 @@
       <h4 class="mb-0"># {{ selectedChannel.name }}</h4>
     </div>
 
-    <p>-{{ selectedChannel.description }}</p>
+    <p class="mx-4">Description: {{ selectedChannel.description }}</p>
 
-    <!-- List Messages -->
-    <div class="messages-list">
-      <div class="message-card card mb-2" *ngFor="let message of selectedChannel.messages">
-        <div class="card-body">
-          <h5 class="card-title">{{ message.name }}</h5>
-          <p class="card-text">{{ message.text }}</p>
-          <div class="d-flex justify-content-between align-items-end">
-            <div>
-              <p class="card-text small mb-0">
-                Time: {{ message.timestamp | date:'hh:mm a z' }}
-              </p>
-              <p class="card-text small mb-0">
-                Date: {{ message.timestamp | date:'dd/MM/yy' }}
-              </p>
+    <!-- Display Messages -->
+    <div class="container-fluid p-0 mt-4">
+      <h5 class=" mb-4">Messages:</h5>
+      <div class="messages-list">
+        <!-- Iterate over each message in the messages array -->
+        <div class="card mb-2 rounded-bottom" *ngFor="let message of selectedChannel?.messages">
+          <div class="card-header bg-warning">
+            <p class="card-title m-0">{{ message.name }}</p>
+          </div>
+          <div class="card-body p-1 rounded-bottom">
+            <div class="p-2">
+              <p class="card-text">{{ message.text }}</p>
             </div>
+            <div class="d-flex justify-content-end align-items-end">
+              <div class="me-2">
+                <p class="card-text small mb-0">
+                  Time: {{ message.timestamp | date:'hh:mm a' }}
+                </p>
+                <p class="card-text small mb-0">
+                  Date: {{ message.timestamp | date:'dd/MM/yy' }}
+                </p>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
     </div>
+
+
+
+    <!-- Message Form -->
+    <div class="mt-4">
+      <form class="mb-3" (submit)="chat($event)">
+        <div class="form-group mb-2">
+          <label for="newMessage" class="form-label">New Message</label>
+          <input type="text" [(ngModel)]="newMessage" name="newMessage" id="newMessage" class="form-control"
+            placeholder="Type your message here">
+        </div>
+
+        <div class="form-group">
+          <button type="submit" class="btn btn-primary w-100">Send</button>
+        </div>
+      </form>
+    </div>
+
+
+
   </div>
 
   <!-- Settings Component -->
