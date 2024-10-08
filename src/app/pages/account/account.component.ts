@@ -76,8 +76,7 @@ export class AccountComponent implements OnInit {
             (response) => {
                 if (response.ok) {
                     this.toastr.success('Profile picture updated successfully!', 'Success');
-                    this.profilePictureUrl = `http://localhost:3000${response.imageUrl}`;
-                    sessionStorage.setItem('profilePicture', this.profilePictureUrl);
+                    sessionStorage.setItem('profilePicture', response.imageUrl);
                 } else {
                     this.toastr.error('Failed to update profile picture.', 'Error');
                 }

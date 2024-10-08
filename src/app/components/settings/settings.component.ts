@@ -48,6 +48,7 @@ export class SettingsComponent implements OnInit, OnChanges {
     if (changes['selectedGroup'] && changes['selectedGroup'].currentValue) {
       this.loadGroupData();
       this.loadJoinRequests();
+      this.loadAllUsers();
     }
   }
 
@@ -76,7 +77,7 @@ export class SettingsComponent implements OnInit, OnChanges {
       this.joinRequestService.getJoinRequests(this.selectedGroup._id).subscribe(
         (requests) => {
           console.log('Join requests response:', requests);
-
+  
           // The response is already an array, so we can assign it directly
           this.joinRequests = requests.map((request) => ({
             ...request,
@@ -84,7 +85,7 @@ export class SettingsComponent implements OnInit, OnChanges {
             firstname: request.userDetails?.firstname || '',
             lastname: request.userDetails?.lastname || '',
           }));
-
+  
           console.log('Processed join requests:', this.joinRequests);
         },
         (error) => {
@@ -97,6 +98,7 @@ export class SettingsComponent implements OnInit, OnChanges {
       );
     }
   }
+  
 
   // Approve a join request and add the user to the group by username
   approveJoinRequest(request: JoinRequest): void {
@@ -107,13 +109,13 @@ export class SettingsComponent implements OnInit, OnChanges {
 
     // Make sure userDetails exists on the request object
     const username = request.userDetails?.username;
-    if (!username) {
+    if (!request._id) {
       this.toastr.error('Username is missing for the join request.', 'Error');
       return;
     }
     console.log('Approving join request for:', username);
 
-    if (request._id) {
+    if (request.username) {
       this.updateJoinRequest(request._id, 'approved');
     } else {
       console.error('Request ID is undefined, cannot approve the request.');
@@ -148,7 +150,7 @@ export class SettingsComponent implements OnInit, OnChanges {
           status,
         });
         this.toastr.success('Request updated successfully.', 'Success');
-        this.loadJoinRequests(); // Reload requests to reflect the changes
+        this.loadJoinRequests();
       },
       (error) => {
         console.error(

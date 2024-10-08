@@ -16,8 +16,8 @@ export class JoinRequestService {
   }
 
   // Add a new join request
-  addJoinRequest(groupId: string, userId: string): Observable<any> {
-    return this.http.post(`${BACKEND_URL}/addJoinRequest`, { groupId, userId });
+  addJoinRequest(groupId: string, username: string): Observable<any> {
+    return this.http.post(`${BACKEND_URL}/addJoinRequest`, { groupId, username });
   }
 
 // Update a join request (for approving or rejecting)

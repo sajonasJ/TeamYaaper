@@ -52,7 +52,7 @@ module.exports = function (db) {
             }
 
             const oldPath = file.filepath;
-            const fileName = new Date().toISOString().replace(/:/g, '-') + '-' + file.originalFilename; // Replace ':' to make it a valid filename
+            const fileName = new Date().toISOString().replace(/:/g, '-') + '-' + file.originalFilename;
             const newPath = path.join(uploadFolder, fileName);
 
             // Use copyFile instead of rename and remove the original file
@@ -72,7 +72,7 @@ module.exports = function (db) {
 
                 console.log("File moved successfully to:", newPath);
 
-                const imageUrl = `/profile-pictures/${fileName}`; // This is the path where the image is stored, accessible from the public directory
+                const imageUrl = `http://localhost:3000/profile-pictures/${fileName}`;
 
                 try {
                     // Update the user's profile picture URL in the database

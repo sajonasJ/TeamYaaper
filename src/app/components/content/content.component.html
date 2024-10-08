@@ -66,9 +66,15 @@
       <h5 class=" mb-4">Messages:</h5>
       <div class="messages-list">
         <!-- Iterate over each message in the messages array -->
-        <div class="card mb-2 rounded-bottom" *ngFor="let message of selectedChannel?.messages">
-          <div class="card-header bg-warning">
-            <p class="card-title m-0">{{ message.name }}</p>
+        <div class="card mb-2 rounded-bottom p-0" *ngFor="let message of selectedChannel?.messages">
+          <div class="card-header p-2 bg-warning d-flex flex-row justify-content-start align-items-center">
+            <img
+            [src]="userMap[message.userId].profilePictureUrl || 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3.webp'"
+              alt="Selected Image"
+              class=" rounded-circle p-0 overflow-hidden" 
+              style="width: 45px; height: 45px;" />
+  
+            <p class="card-title m-0 ps-2"><strong>{{ message.name }}</strong></p>
           </div>
           <div class="card-body p-1 rounded-bottom">
             <div class="p-2">

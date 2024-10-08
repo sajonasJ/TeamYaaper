@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { JoinRequestService } from '../../services/join-request.service';
 import { SocketService } from '../../services/socket.service';
+import { UserService } from '../../services/user.service';
 import * as bootstrap from 'bootstrap';
 
 @Component({
@@ -18,6 +19,7 @@ import * as bootstrap from 'bootstrap';
 export class ContentComponent implements OnInit {
   @Input() selectedGroup: Group | null = null;
   users: User[] = [];
+  userMap: { [key: string]: User } = {};
   groups: Group[] = [];
   showSettings: boolean = false;
 
@@ -40,7 +42,8 @@ export class ContentComponent implements OnInit {
     private router: Router,
     private toastr: ToastrService,
     private joinRequestService: JoinRequestService,
-    private httpClient: HttpClient
+    private httpClient: HttpClient,
+    private userService: UserService
   ) {}
 
   ngOnInit(): void {
@@ -51,6 +54,7 @@ export class ContentComponent implements OnInit {
         this.loadGroups();
         this.loadCurrentUser();
         this.initIoConnection();
+        this.loadUsers();
       }
     });
   }
@@ -67,6 +71,28 @@ export class ContentComponent implements OnInit {
           console.error('Error loading chat history:', error);
         }
       );
+  }
+  loadUsers(): void {
+    this.userService.getUsers().subscribe(
+      (data: User[]) => {
+        this.users = data;
+
+        // Create a userMap with defined _id or id
+        this.userMap = data.reduce((map, user) => {
+          const userId = user._id || user.id;
+          if (userId) {
+            map[userId] = user;
+          }
+          return map;
+        }, {} as { [key: string]: User });
+
+        console.log('Loaded users:', this.users);
+        console.log('User map:', this.userMap);
+      },
+      (error) => {
+        this.toastr.error('Failed to load users. Please try again.', 'Error');
+      }
+    );
   }
 
   // Updated selectChannel method to use channel name
@@ -101,7 +127,10 @@ export class ContentComponent implements OnInit {
         if (this.selectedChannel) {
           console.log('Pushing to selectedChannel.messages:', message);
           this.selectedChannel.messages.push(message);
-          this.loadChatHistory(this.selectedGroup!._id!, this.selectedChannel.name);
+          this.loadChatHistory(
+            this.selectedGroup!._id!,
+            this.selectedChannel.name
+          );
         } else {
           console.log('Pushing to messages array:', message);
           this.messages.push(message);
@@ -128,7 +157,7 @@ export class ContentComponent implements OnInit {
     const message: any = {
       groupId: this.selectedGroup._id,
       channelName: this.selectedChannel.name,
-      name:this.currentUser.username,
+      name: this.currentUser.username,
       userId: this.currentUser._id,
       text: this.newMessage,
       timestamp: new Date(),
@@ -149,7 +178,11 @@ export class ContentComponent implements OnInit {
 
   // Function to send a join request
   requestToJoin(): void {
-    if (!this.selectedGroup || !this.currentUser || !this.currentUser._id) {
+    if (
+      !this.selectedGroup ||
+      !this.currentUser ||
+      !this.currentUser.username
+    ) {
       this.toastr.error(
         'You need to select a group and be logged in to send a join request.',
         'Error'
@@ -168,8 +201,9 @@ export class ContentComponent implements OnInit {
       return;
     }
 
+    // Send the `username` instead of `userId`
     this.joinRequestService
-      .addJoinRequest(groupId, this.currentUser._id)
+      .addJoinRequest(groupId, this.currentUser.username)
       .subscribe(
         (response) => {
           if (response.ok) {
@@ -220,6 +254,7 @@ export class ContentComponent implements OnInit {
     const firstname = sessionStorage.getItem('firstname');
     const lastname = sessionStorage.getItem('lastname');
     const email = sessionStorage.getItem('email');
+    const profilePictureUrl = sessionStorage.getItem('profilePicture');
     const roles = JSON.parse(sessionStorage.getItem('roles') || '[]');
     const groupMemberships = JSON.parse(
       sessionStorage.getItem('groupMemberships') || '[]'
@@ -234,6 +269,7 @@ export class ContentComponent implements OnInit {
       lastname: lastname || '',
       email: email || '',
       roles: roles,
+      profilePictureUrl: profilePictureUrl || '',
       groups: groupMemberships,
     };
   }

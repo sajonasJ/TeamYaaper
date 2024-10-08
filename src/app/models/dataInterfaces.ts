@@ -9,6 +9,7 @@ export interface Channel {
 
 export interface Message {
   _id?: string;
+  userId: string;
   senderId: string;
   name: string;
   text: string;
@@ -20,10 +21,10 @@ export interface Group {
   _id?: string;
   name: string;
   description: string;
-  admins: string[]; // Array of user IDs or usernames who are admins
-  users: string[]; // Array of user IDs or usernames who are users
-  channels: Channel[]; // Array of Channel objects
-  joinRequests?: JoinRequest[]; // Optional: Array of join requests for this group
+  admins: string[];
+  users: string[];
+  channels: Channel[];
+  joinRequests?: JoinRequest[];
 }
 
 export interface User {
@@ -33,13 +34,14 @@ export interface User {
   firstname: string;
   lastname: string;
   email: string;
-  roles: string[]; // e.g., ['admin', 'user']
+  roles: string[];
   groups: string[];
-  joinRequests?: string[]; // Optional: Array of IDs of the groups that the user has requested to join
-  profilePicture?: String, 
+  joinRequests?: string[]; 
+  profilePictureUrl?: String, 
 }
 
 export interface JoinRequest {
+  username: string;
   _id?: string;
   groupId: string;
   userId: string;

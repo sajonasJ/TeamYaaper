@@ -1,11 +1,11 @@
 module.exports = function (db, app) {
   app.post("/addJoinRequest", async (req, res) => {
-    const { groupId, userId } = req.body;
+    const { groupId, username } = req.body;
 
-    if (!groupId || !userId) {
+    if (!groupId || !username) {
       return res
         .status(400)
-        .send({ ok: false, message: "Invalid request data: missing groupId or userId." });
+        .send({ ok: false, message: "Invalid request data: missing groupId or username." });
     }
 
     try {
@@ -14,7 +14,7 @@ module.exports = function (db, app) {
       // Check if there's already a pending request
       const existingRequest = await joinRequestsCollection.findOne({
         groupId,
-        userId,
+        username,
         status: "pending",
       });
 
@@ -28,7 +28,7 @@ module.exports = function (db, app) {
       // Insert a new join request
       const result = await joinRequestsCollection.insertOne({
         groupId,
-        userId,
+        username,
         status: "pending",
         requestedAt: new Date(),
       });

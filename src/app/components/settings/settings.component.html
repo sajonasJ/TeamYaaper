@@ -13,15 +13,19 @@
                 <ul class="list-group">
                     <li class="list-group-item d-flex justify-content-between align-items-center"
                         *ngFor="let request of joinRequests">
-                        <!-- Display the username from the userDetails object -->
-                        {{ request.userDetails?.username || 'Unknown User' }}
+                        <!-- Directly display the processed username -->
+                        {{ request.username || 'Unknown User' }}
                         <div>
-                            <button class="btn btn-success btn-sm me-2"
-                                (click)="approveJoinRequest(request)">Approve</button>
-                            <button class="btn btn-danger btn-sm" (click)="rejectJoinRequest(request)">Reject</button>
+                            <button class="btn btn-success btn-sm me-2" (click)="approveJoinRequest(request)">
+                                Approve
+                            </button>
+                            <button class="btn btn-danger btn-sm" (click)="rejectJoinRequest(request)">
+                                Reject
+                            </button>
                         </div>
                     </li>
                 </ul>
+
 
 
 
