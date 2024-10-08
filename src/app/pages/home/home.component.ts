@@ -12,9 +12,8 @@ import { Subscription } from 'rxjs';
 })
 export class HomeComponent implements OnInit, OnDestroy {
   selectedGroup: Group | null = null;
-  private authSubscription: Subscription = new Subscription(); // Initialize the subscription safely
-  private groupSubscription: Subscription | null = null; // Subscription for group fetching
-
+  private authSubscription: Subscription = new Subscription();
+  private groupSubscription: Subscription | null = null;
   constructor(
     private router: Router,
     private authService: AuthService,
@@ -56,7 +55,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   // Set the selected group (can be used on group click)
   onGroupSelected(group: Group): void {
-    console.log("Selected group:", group);
     this.selectedGroup = group;
   }
 }

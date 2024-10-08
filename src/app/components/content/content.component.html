@@ -35,7 +35,7 @@
       </div>
     </div>
 
-    <!-- Request to Join Button (only if user is not in the group) -->
+    <!-- Request to Join Button -->
     <button class="btn btn-sm btn-primary ms-1 mt-3" *ngIf="!isUser()" (click)="requestToJoin()">
       Request to Join
     </button>
@@ -59,7 +59,6 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
       <h4 class="mb-0"># {{ selectedChannel.name }}</h4>
     </div>
-
     <p class="mx-4">Description: {{ selectedChannel.description }}</p>
 
     <!-- Display Messages -->
@@ -91,24 +90,20 @@
       </div>
     </div>
 
-
-
     <!-- Message Form -->
     <div class="mt-4">
       <form class="mb-3" (submit)="chat($event)">
         <div class="form-group mb-2">
           <label for="newMessage" class="form-label">New Message</label>
-          <input type="text" [(ngModel)]="newMessage" name="newMessage" id="newMessage" class="form-control"
-            placeholder="Type your message here">
+          <span class="d-flex flex-row">
+            <input type="text" [(ngModel)]="newMessage" name="newMessage" id="newMessage" class="form-control"
+              placeholder="Type your message here">
+            <button type="submit" class="btn btn-sm btn-primary">Send</button>
+          </span>
         </div>
 
-        <div class="form-group">
-          <button type="submit" class="btn btn-primary w-100">Send</button>
-        </div>
       </form>
     </div>
-
-
 
   </div>
 

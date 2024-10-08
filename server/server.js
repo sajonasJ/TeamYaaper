@@ -82,7 +82,7 @@ async function startServer() {
     require("./newroutes/update/updateUser")(db, app);
 
     // setup socket
-    sockets.connect(io, PORT);
+    sockets.connect(io, PORT, db); 
   } catch (error) {
     console.error("Failed to start server:", error);
   }

@@ -1,5 +1,6 @@
 export interface Channel {
   id?: string;
+  _id?: string;
   name: string;
   description: string;
   messages: Message[];
@@ -7,10 +8,12 @@ export interface Channel {
 }
 
 export interface Message {
+  _id?: string;
   senderId: string;
   name: string;
   text: string;
   timestamp: Date;
+  channelId?: string;
 }
 
 export interface Group {

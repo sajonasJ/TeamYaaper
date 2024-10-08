@@ -31,7 +31,7 @@ export class SocketService {
     return new Observable<Message>((observer) => {
       this.socket.on('message', (data: Message) => {
         console.log('Message received from server:', data);
-        observer.next(data); // Pass the Message object to subscribers
+        observer.next(data);
       });
     });
   }

@@ -21,7 +21,7 @@ export class ContentComponent implements OnInit {
   groups: Group[] = [];
   showSettings: boolean = false;
 
-  selectedChannel: Channel | null = null;  // Now it includes name, description, and messages
+  selectedChannel: Channel | null = null;
   channelToDelete: Channel | null = null;
 
   newChannelName: string = '';
@@ -39,7 +39,8 @@ export class ContentComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private toastr: ToastrService,
-    private joinRequestService: JoinRequestService
+    private joinRequestService: JoinRequestService,
+    private httpClient: HttpClient
   ) {}
 
   ngOnInit(): void {
@@ -54,6 +55,33 @@ export class ContentComponent implements OnInit {
     });
   }
 
+  loadChatHistory(groupId: string, channelName: string): void {
+    this.httpClient
+      .get<Message[]>(`${BACKEND_URL}/showChat/${groupId}/${channelName}`)
+      .subscribe(
+        (messages) => {
+          this.messages = messages;
+          console.log('Loaded chat history:', this.messages);
+        },
+        (error) => {
+          console.error('Error loading chat history:', error);
+        }
+      );
+  }
+
+  // Updated selectChannel method to use channel name
+  selectChannel(channel: Channel): void {
+    console.log('Selected channel:', channel);
+    this.selectedChannel = channel; // Set the selected channel
+
+    // Load messages for the selected channel by its name
+    if (this.selectedGroup && channel.name) {
+      this.loadChatHistory(this.selectedGroup._id!, channel.name);
+    } else {
+      console.error('No valid channel name or group ID found.');
+    }
+  }
+
   ngOnChanges(): void {
     if (this.selectedGroup) {
       this.loadGroups();
@@ -61,48 +89,53 @@ export class ContentComponent implements OnInit {
       this.closeSettings();
     }
   }
+
   private initIoConnection() {
     this.socketService.initSocket();
-  
-    this.ioConnection = this.socketService.onMessage().subscribe((message: Message) => {
-      console.log('Message received:', message);
-  
-      if (this.selectedChannel) {
-        console.log('Pushing to selectedChannel.messages:', message);
-        this.selectedChannel.messages.push(message); // Add message to the selected channel
-      } else {
-        console.log('Pushing to messages array:', message);
-        this.messages.push(message); // Default case, store in local messages array
-      }
-  
-      // Check the current state of the messages array
-      console.log('Updated messages array:', this.messages);
-    });
+
+    this.ioConnection = this.socketService
+      .onMessage()
+      .subscribe((message: Message) => {
+        console.log('Message received:', message);
+
+        if (this.selectedChannel) {
+          console.log('Pushing to selectedChannel.messages:', message);
+          this.selectedChannel.messages.push(message);
+          this.loadChatHistory(this.selectedGroup!._id!, this.selectedChannel.name);
+        } else {
+          console.log('Pushing to messages array:', message);
+          this.messages.push(message);
+        }
+
+        // Check the current state of the messages array
+        console.log('Updated messages array:', this.messages);
+      });
   }
-  
 
-  // content.component.ts
   public chat(event: Event) {
-    event.preventDefault(); // Prevent form submit from reloading the page
+    event.preventDefault();
 
-    if (!this.currentUser || !this.newMessage) {
-      return; // Make sure there is a current user and a message to send
+    if (
+      !this.currentUser ||
+      !this.newMessage ||
+      !this.selectedGroup ||
+      !this.selectedChannel
+    ) {
+      return; // Ensure all necessary data is available
     }
 
     // Create the Message object
-    const message: Message = {
-      senderId: this.currentUser._id!,
-      name: this.currentUser.username!,
+    const message: any = {
+      groupId: this.selectedGroup._id,
+      channelName: this.selectedChannel.name,
+      name:this.currentUser.username,
+      userId: this.currentUser._id,
       text: this.newMessage,
       timestamp: new Date(),
     };
-    console.log('Message received:', message); // Check this to ensure proper structure
 
-    // Send the message via the socket service
+    console.log('Sending message:', message);
     this.socketService.send(message);
-    console.log('Message received:', message); // Check this to ensure proper structure
-
-    // Clear the input after sending
     this.newMessage = '';
   }
 
@@ -221,11 +254,6 @@ export class ContentComponent implements OnInit {
       this.currentUser.roles.includes('super') ||
       (this.selectedGroup.users?.includes(this.currentUser.username) ?? false)
     );
-  }
-
-  // Sets the selected channel
-  selectChannel(channel: Channel): void {
-    this.selectedChannel = channel;
   }
 
   // Add a new channel to the selected group

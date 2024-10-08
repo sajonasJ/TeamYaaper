@@ -1,62 +1,39 @@
-// File: addChat.js
+//C:\Users\jonas\Code\prog_repos\TeamYaaper\server\newroutes\add\addChat.js
+
+const { ObjectId } = require('mongodb'); // Import ObjectId to handle MongoDB IDs
 
 module.exports = function (db, app) {
-  // Endpoint to add a new chat message to a channel in a group
-  app.post("/addChat", async (req, res) => {
-    if (
-      !req.body ||
-      !req.body.groupId ||
-      !req.body.channelId ||
-      !req.body.message
-    ) {
-      return res
-        .status(400)
-        .send({
-          message:
-            "Invalid request. Group ID, Channel ID, and message are required.",
-        });
+  // POST endpoint to add a new chat message to the "messages" collection
+  app.post('/addChat', async (req, res) => {
+    const { channelId, senderId, name, text, timestamp } = req.body;
+
+    // Validate the data
+    if (!ObjectId.isValid(channelId)) {
+      return res.status(400).send({ message: 'Invalid Channel ID.' });
+    }
+    if (!senderId || !name || !text || !timestamp) {
+      return res.status(400).send({ message: 'Missing required message data.' });
     }
 
-    const { groupId, channelId, message } = req.body;
-
     try {
-      // Connect to the "groups" collection in the database
-      const groupsCollection = db.collection("groups");
-
-      // Create a message object with the required details
-      const newMessage = {
-        senderId: message.senderId, // ID of the sender
-        name: message.name, // Sender's name (could be username or real name)
-        text: message.text, // The chat message
-        timestamp: new Date(), // Set the timestamp to the current date and time
+      // Create the message document to insert
+      const message = {
+        channelId: new ObjectId(channelId),  // Store channelId as ObjectId
+        senderId,
+        name,
+        text,
+        timestamp: new Date(timestamp),
       };
 
-      // Find the specific group and update the specified channel
-      const result = await groupsCollection.updateOne(
-        {
-          _id: new ObjectId(groupId), // Match the specific group by its ID
-          "channels.id": channelId, // Match the specific channel within the group by its ID
-        },
-        {
-          $push: { "channels.$.messages": newMessage }, // Push the new message to the "messages" array of the matched channel
-        }
-      );
+      // Insert the message into the "messages" collection
+      const messagesCollection = db.collection('messages');
+      const result = await messagesCollection.insertOne(message);
 
-      // Check if the update was successful
-      if (result.modifiedCount === 1) {
-        res.status(200).send({ message: "Chat message added successfully" });
-      } else {
-        res
-          .status(404)
-          .send({
-            message: "Group or Channel not found. Unable to add message.",
-          });
-      }
+      // Respond with success if insertion was successful
+      res.status(201).send({ message: 'Message saved successfully.', messageId: result.insertedId });
     } catch (error) {
-      console.error("Error adding chat message:", error);
-      res
-        .status(500)
-        .send({ message: "An error occurred while adding the chat message" });
+      console.error('Error saving chat message:', error);
+      res.status(500).send({ message: 'Failed to save chat message.' });
     }
   });
 };
