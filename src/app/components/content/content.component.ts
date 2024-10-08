@@ -48,8 +48,14 @@ export class ContentComponent implements OnInit {
     });
   }
 
-  // Show delete confirmation modal
-  // Show delete confirmation modal
+  ngOnChanges(): void {
+    if (this.selectedGroup) {
+      this.loadGroups();
+      this.loadCurrentUser();
+      this.closeSettings();
+    }
+  }
+
   showDeleteConfirmationModal(): void {
     const modalElement = document.getElementById('confirmDeleteModal');
     if (modalElement) {
@@ -253,40 +259,40 @@ export class ContentComponent implements OnInit {
     );
   }
 
-  // Add a new user to the selected group
-  addUserToGroup(group: Group): void {
-    const newUserUsername = this.userInputs['group-' + group._id];
-    if (!newUserUsername) {
-      this.toastr.error('Please enter a username.', 'Error');
-      return;
-    }
+  // // Add a new user to the selected group
+  // addUserToGroup(group: Group): void {
+  //   const newUserUsername = this.userInputs['group-' + group._id];
+  //   if (!newUserUsername) {
+  //     this.toastr.error('Please enter a username.', 'Error');
+  //     return;
+  //   }
 
-    // Check if the user exists in the system (backend check)
-    this.httpClient.get<User[]>(`${BACKEND_URL}/users`, httpOptions).subscribe(
-      (users) => {
-        const userExists = users.some(
-          (user) => user.username === newUserUsername
-        );
+  //   // Check if the user exists in the system (backend check)
+  //   this.httpClient.get<User[]>(`${BACKEND_URL}/users`, httpOptions).subscribe(
+  //     (users) => {
+  //       const userExists = users.some(
+  //         (user) => user.username === newUserUsername
+  //       );
 
-        if (!userExists) {
-          this.toastr.error('User does not exist.', 'Error');
-          return;
-        }
+  //       if (!userExists) {
+  //         this.toastr.error('User does not exist.', 'Error');
+  //         return;
+  //       }
 
-        if (!group.users.includes(newUserUsername)) {
-          group.users.push(newUserUsername);
-          this.updateGroupDB(group);
-          this.userInputs['group-' + group._id] = '';
-        } else {
-          this.toastr.error('User already in group.', 'Error');
-        }
-      },
-      (error) => {
-        console.error('Error loading users:', error);
-        this.toastr.error('Failed to load users. Please try again.', 'Error');
-      }
-    );
-  }
+  //       if (!group.users.includes(newUserUsername)) {
+  //         group.users.push(newUserUsername);
+  //         this.updateGroupDB(group);
+  //         this.userInputs['group-' + group._id] = '';
+  //       } else {
+  //         this.toastr.error('User already in group.', 'Error');
+  //       }
+  //     },
+  //     (error) => {
+  //       console.error('Error loading users:', error);
+  //       this.toastr.error('Failed to load users. Please try again.', 'Error');
+  //     }
+  //   );
+  // }
 
   // Reset the new channel form inputs
   resetNewChannelForm(): void {
