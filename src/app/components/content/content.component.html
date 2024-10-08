@@ -11,18 +11,23 @@
   <div class="channel-container" *ngIf="selectedGroup && !showSettings">
     <div class="group-header container pb-0">
       <h2>Group: "{{ selectedGroup.name }}"</h2>
-      <p>Description: {{ selectedGroup.description }}</p>
+      <div class="d-flex justify-content-between">
+        <p>Description: {{ selectedGroup.description }}</p>
 
-      <!-- Button to Navigate to Settings -->
-      <button class="btn btn-sm btn-primary ms-1" (click)="toSettings()">
-        <i class="bi bi-three-dots"></i> Settings
-      </button>
+        <!-- Button to Navigate to Settings -->
+        <div *ngIf="isAdmin()">
+          <button class="btn btn-sm btn-primary ms-1" (click)="toSettings()">
+            <i class="bi bi-three-dots"></i>
+          </button>
+        </div>
+      </div>
+
 
       <!-- Channels Section -->
       <div class="channel-container-btn mt-3">
         <h3>&#64;Channels</h3>
         <div class="ctrl-sim-btn" *ngIf="isAdmin()">
-          <button class="btn btn-success btn-sm custom-btn-height" data-bs-toggle="modal"
+          <button class="btn btn-success btn-sm d-flex justify-content-center align-items-center" data-bs-toggle="modal"
             data-bs-target="#channelModal">
             <span class="material-symbols-outlined">add</span>
           </button>
@@ -41,7 +46,7 @@
       <li class="list-group-item clickable" *ngFor="let channel of selectedGroup?.channels"
         (click)="selectChannel(channel)">
         # {{ channel.name }}
-        <button class="btn btn-sm btn-danger ms-1" *ngIf="isAdmin()" (click)="confirmDeleteChannel(channel)">
+        <button class="btn btn-sm btn-danger ms-1 d-flex justify-content-center align-items-center" *ngIf="isAdmin()" (click)="confirmDeleteChannel(channel)">
           <span class="material-symbols-outlined">delete</span>
         </button>
       </li>
