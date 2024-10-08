@@ -8,17 +8,23 @@
             <h3 class="fw-bold">Group Settings: "{{ selectedGroup?.name }}"</h3>
             <section class="mt-4">
 
-                    <!-- Requests Section -->
-                    <h4 class="fw-bold">Requests to Join:</h4>
-                    <ul class="list-group">
-                        <li class="list-group-item d-flex justify-content-between align-items-center"
-                            *ngFor="let admin of groupAdmins">
-                            {{ admin.username }}
-                            <button class="btn btn-danger btn-sm" (click)="removeMember(admin)">
-                                Remove
-                            </button>
-                        </li>
-                    </ul>
+                <!-- Requests Section -->
+                <h4 class="fw-bold">Requests to Join:</h4>
+                <ul class="list-group">
+                    <li class="list-group-item d-flex justify-content-between align-items-center"
+                        *ngFor="let request of joinRequests">
+                        <!-- Display the username from the userDetails object -->
+                        {{ request.userDetails?.username || 'Unknown User' }}
+                        <div>
+                            <button class="btn btn-success btn-sm me-2"
+                                (click)="approveJoinRequest(request)">Approve</button>
+                            <button class="btn btn-danger btn-sm" (click)="rejectJoinRequest(request)">Reject</button>
+                        </div>
+                    </li>
+                </ul>
+
+
+
 
                 <!-- Admins Section -->
                 <h4 class="fw-bold">Admins:</h4>

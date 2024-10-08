@@ -6,6 +6,7 @@ import { httpOptions, BACKEND_URL } from '../../constants';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { JoinRequestService } from '../../services/join-request.service';
 import * as bootstrap from 'bootstrap';
 
 @Component({
@@ -32,8 +33,9 @@ export class ContentComponent implements OnInit {
     private httpClient: HttpClient,
     private authService: AuthService,
     private router: Router,
-    private toastr: ToastrService
-  ) { }
+    private toastr: ToastrService,
+    private joinRequestService: JoinRequestService
+  ) {}
 
   ngOnInit(): void {
     this.authService.isLoggedIn.subscribe((loggedIn) => {
@@ -46,8 +48,7 @@ export class ContentComponent implements OnInit {
     });
   }
 
- 
-      // Show delete confirmation modal
+  // Show delete confirmation modal
   // Show delete confirmation modal
   showDeleteConfirmationModal(): void {
     const modalElement = document.getElementById('confirmDeleteModal');
@@ -57,12 +58,55 @@ export class ContentComponent implements OnInit {
     }
   }
 
- // Trigger delete confirmation for a channel
- confirmDeleteChannel(channel: Channel): void {
-  this.channelToDelete = channel;
-  this.showDeleteConfirmationModal();
-}
+  // Function to send a join request
+  requestToJoin(): void {
+    if (!this.selectedGroup || !this.currentUser || !this.currentUser._id) {
+      this.toastr.error(
+        'You need to select a group and be logged in to send a join request.',
+        'Error'
+      );
+      return;
+    }
+  
+    const groupId = this.selectedGroup._id;
+  
+    // Ensure `groupId` is defined before making the API call
+    if (!groupId) {
+      this.toastr.error('Invalid group ID. Please select a valid group.', 'Error');
+      return;
+    }
+  
+    this.joinRequestService.addJoinRequest(groupId, this.currentUser._id)
+      .subscribe(
+        (response) => {
+          if (response.ok) {
+            this.toastr.success('Join request sent successfully!', 'Success');
+          } else {
+            this.toastr.error(
+              response.message || 'Failed to send join request.',
+              'Error'
+            );
+          }
+        },
+        (error) => {
+          if (error.status === 400 && error.error?.message) {
+            this.toastr.error(error.error.message, 'Error');
+          } else {
+            this.toastr.error(
+              'An error occurred while sending the join request.',
+              'Error'
+            );
+          }
+        }
+      );
+  }
+  
 
+  // Trigger delete confirmation for a channel
+  confirmDeleteChannel(channel: Channel): void {
+    this.channelToDelete = channel;
+    this.showDeleteConfirmationModal();
+  }
 
   // Load all groups from the backend using GroupService
   loadGroups(): void {
@@ -77,27 +121,29 @@ export class ContentComponent implements OnInit {
     );
   }
 
-
   // Load current user from session storage
   loadCurrentUser(): void {
+    const id = sessionStorage.getItem('id'); // Update to match your storage key
     const username = sessionStorage.getItem('username');
     const firstname = sessionStorage.getItem('firstname');
     const lastname = sessionStorage.getItem('lastname');
     const email = sessionStorage.getItem('email');
     const roles = JSON.parse(sessionStorage.getItem('roles') || '[]');
-    const groupMemberships = JSON.parse(sessionStorage.getItem('groupMemberships') || '[]');
+    const groupMemberships = JSON.parse(
+      sessionStorage.getItem('groupMemberships') || '[]'
+    );
 
-    const user: User = {
-      _id: '',  // Optional, as MongoDB will generate this
-      username: username as string,
-      firstname: firstname as string,
-      lastname: lastname as string,
-      email: email as string,
+    // Populate the currentUser object
+    this.currentUser = {
+      id: id || '',
+      _id: id || '',
+      username: username || '',
+      firstname: firstname || '',
+      lastname: lastname || '',
+      email: email || '',
       roles: roles,
       groups: groupMemberships,
     };
-
-    this.currentUser = user;
   }
 
   // Check if the current user is an admin in the selected group or a super user
@@ -125,7 +171,11 @@ export class ContentComponent implements OnInit {
 
   // Add a new channel to the selected group
   addNewChannel(): void {
-    if (this.newChannelName && this.newChannelDescription && this.selectedGroup) {
+    if (
+      this.newChannelName &&
+      this.newChannelDescription &&
+      this.selectedGroup
+    ) {
       const newChannel: Channel = {
         name: this.newChannelName,
         description: this.newChannelDescription,
@@ -146,8 +196,8 @@ export class ContentComponent implements OnInit {
     }
   }
 
-   // Confirm delete action for a channel
-   onConfirmDelete(): void {
+  // Confirm delete action for a channel
+  onConfirmDelete(): void {
     if (this.channelToDelete && this.selectedGroup) {
       this.deleteChannel(this.channelToDelete);
     }
@@ -170,7 +220,9 @@ export class ContentComponent implements OnInit {
 
   // Delete a group
   deleteGroup(group: Group): void {
-    const confirmDelete = confirm(`Are you sure you want to delete the group "${group.name}"?`);
+    const confirmDelete = confirm(
+      `Are you sure you want to delete the group "${group.name}"?`
+    );
     if (!confirmDelete) return;
 
     this.groupService.deleteGroup(group._id!).subscribe(
@@ -193,7 +245,7 @@ export class ContentComponent implements OnInit {
     this.groupService.updateGroup(groupObj).subscribe(
       () => {
         this.toastr.success('Group updated successfully', 'Success');
-        this.loadGroups(); 
+        this.loadGroups();
       },
       (error) => {
         this.toastr.error('Failed to update group. Please try again.', 'Error');

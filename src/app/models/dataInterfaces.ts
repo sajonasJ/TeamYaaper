@@ -25,6 +25,7 @@ export interface Group {
 
 export interface User {
   _id?: string;
+  id?: string; 
   username: string;
   firstname: string;
   lastname: string;
@@ -41,4 +42,10 @@ export interface JoinRequest {
   userId: string;
   status: 'pending' | 'approved' | 'rejected';
   requestDate: Date;
+
+  userDetails?: {
+    username: string;
+    firstname: string;
+    lastname: string;
+  };
 }

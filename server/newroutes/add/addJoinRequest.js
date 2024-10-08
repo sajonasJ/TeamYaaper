@@ -1,4 +1,3 @@
-// server/newroutes/add/addJoinRequest.js
 module.exports = function (db, app) {
   app.post("/addJoinRequest", async (req, res) => {
     const { groupId, userId } = req.body;
@@ -6,7 +5,7 @@ module.exports = function (db, app) {
     if (!groupId || !userId) {
       return res
         .status(400)
-        .send({ ok: false, message: "Invalid request data" });
+        .send({ ok: false, message: "Invalid request data: missing groupId or userId." });
     }
 
     try {
@@ -20,25 +19,36 @@ module.exports = function (db, app) {
       });
 
       if (existingRequest) {
-        return res
-          .status(400)
-          .send({ ok: false, message: "Request already pending" });
+        return res.status(400).send({
+          ok: false,
+          message: "Join request already pending. Please wait for approval.",
+        });
       }
 
       // Insert a new join request
-      await joinRequestsCollection.insertOne({
+      const result = await joinRequestsCollection.insertOne({
         groupId,
         userId,
         status: "pending",
         requestedAt: new Date(),
       });
 
-      res
-        .status(200)
-        .send({ ok: true, message: "Join request submitted successfully" });
+      if (result.acknowledged) {
+        res
+          .status(200)
+          .send({ ok: true, message: "Join request submitted successfully." });
+      } else {
+        res
+          .status(500)
+          .send({ ok: false, message: "Failed to add join request." });
+      }
     } catch (err) {
       console.error("Error creating join request:", err);
-      res.status(500).send({ ok: false, message: "Internal Server Error" });
+      res.status(500).send({
+        ok: false,
+        message: "An error occurred while adding the join request.",
+        error: err.message,
+      });
     }
   });
 };

@@ -4,7 +4,14 @@
   box-sizing: border-box;
   height: 100%;
   overflow: hidden;
+
+  background-image: url('/pixel5.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
+
+
 
 .placeholder-message {
   background-image: url('/pixel5.jpg');
@@ -143,3 +150,4 @@
   padding: 0 10px;
   font-size: 0.875rem;
 }
+

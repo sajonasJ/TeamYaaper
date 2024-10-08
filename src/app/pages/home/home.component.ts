@@ -56,6 +56,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   // Set the selected group (can be used on group click)
   onGroupSelected(group: Group): void {
+    console.log("Selected group:", group);
     this.selectedGroup = group;
   }
 }

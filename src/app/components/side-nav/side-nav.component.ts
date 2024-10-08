@@ -51,11 +51,11 @@ export class SideNavComponent implements OnInit {
       const newGroup: Group = {
         name: this.newGroupName,
         description: this.newGroupDescription,
-        admins: [this.currentUser!], // Add current user as admin
+        admins: [this.currentUser!],
         users: [this.currentUser!], 
         channels: [],
       };
-
+      console.log('New group:', newGroup);
       this.groupService.addGroup(newGroup).subscribe(
         (response) => {
           this.toastr.success('Group added successfully!', 'Success');
