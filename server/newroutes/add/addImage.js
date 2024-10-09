@@ -1,5 +1,5 @@
 const express = require('express');
-const { IncomingForm } = require('formidable'); // Corrected import
+const { IncomingForm } = require('formidable');
 const fs = require('fs');
 const path = require('path');
 const { ObjectId } = require('mongodb');
@@ -9,7 +9,7 @@ const router = express.Router();
 module.exports = function (db) {
 
     router.post('/uploadProfilePicture/:userId', (req, res) => {
-        console.log("Received a request to upload profile picture"); // Log request received
+        console.log("Received a request to upload profile picture");
         const userId = req.params.userId;
 
         console.log(`User ID: ${userId}`);

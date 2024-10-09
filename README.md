@@ -1,303 +1,222 @@
-# Team Yaaper Chat Web Application
+# Student: Jonas Sajonas
 
-## Student Information
-
-- **Student:** Jonas Sajonas
-- **Student Number:** s5284977
+**Student Number**: s5284977
 
 ## Course Information
 
-- **Course:** Software Frameworks
-- **Course Number:** 3813ICT
+**Course**: Software Frameworks  
+**Course Number**: 3813ICT
 
-## Table of Contents
+---
 
-1. [Overview](#overview)
-2. [Git Repository Organization](#git-repository-organization)
-   - [Repository Structure](#repository-structure)
-   - [Update Frequency](#update-frequency)
-   - [Server/Front-end Separation](#serverfront-end-separation)
-3. [Data Structures](#data-structures)
-   - [Client-Side Data Structures](#client-side-data-structures)
-   - [Server-Side Data Structures](#server-side-data-structures)
-4. [Angular Architecture](#angular-architecture)
-   - [Components](#components)
-   - [Services](#services)
-   - [Models](#models)
-   - [Routes](#routes)
-5. [Node Server Architecture](#node-server-architecture)
-   - [Modules](#modules)
-   - [Functions](#functions)
-   - [Files](#files)
-   - [Global Variables](#global-variables)
-6. [Installation](#installation)
-7. [Usage](#usage)
+# Table of Contents
 
-## Overview
+1. [Organization of Git Repository and Usage](#organization-of-git-repository-and-usage)
+2. [Data Structures Used in the Client and Server](#data-structures-used-in-the-client-and-server)
+3. [Data Transfer](#data-transfer)
+4. [Responsibilities Between Client and Server](#responsibilities-between-client-and-server)
+5. [Routes, Parameters, Return Values, and Purpose](#routes-parameters-return-values-and-purpose)
+6. [Angular Architecture: Components, Services, Models, Routes](#angular-architecture-components-services-models-routes)
+7. [Interaction Between Client and Server](#interaction-between-client-and-server)
+8. [Usage](#usage)
 
-The project is a messaging application with real-time chat and video call capabilities, designed for gamers aged 15-30. The application features a dark theme with neon colors and belongs to the technology and communication sector. Planned functionalities include real-time chatting, video calls, sign-up, creating groups, and joining groups.
+---
 
-## Git Repository Organization
+# Organization of Git Repository and Usage
 
 ### Repository Structure
 
-- **Branches:**
-  - The Git repository currently has three branches: `origin`, `createserver`, and `addServerFunc`.
-  - The `origin` branch is the main branch where initial drafts and project requirements were added.
-  - The `createserver` branch was created to set up the server and ensure initial routes were functional.
-  - The `addServerFunc` branch focused on adding more complex server functions such as adding, updating, and deleting data.
-  - Small tasks like adding libraries, editing the UI, and fixing bugs were managed directly on the respective branches and merged back to `origin` once completed.
-
-### Update Frequency
-
-- Git commands like `git add` and `git commit` were used after completing each task or making significant progress.
-- Commits were also made whenever new libraries or packages were installed.
-- Commit messages were descriptive and provided a clear explanation of the changes made.
-
-### Server/Front-end Separation
-
-- The front end of the application is built using the Angular framework.
-- The server is located in the root folder of the Angular project `Team Yaaper`, ensuring both the front end and server have their own dependencies.
-- Communication between the front end and server is handled through `server.js`, which specifies the allowed and denied routes and connects the server to the route files.
-
-## Data Structures
-
-### Client-Side Data Structures
-
-The Users entity has the following properties. These properties are set for user account creation when the user signs up. The roles and groups properties are initially created as empty arrays and dictionaries. These need to be updated when the user is approved by the super user (web moderator) or the admin user (group creator). The roles array contains the 'super' property, which defines the super user account. The Super user has control over all other entities such as Users, Groups, Channels and Messages.
-
-
-#### User
-
-```typescript
-interface User {
-  id: string | number;
-  username: string;
-  firstname: string;
-  lastname: string;
-  email: string;
-  roles: string[];
-  groups: { [key: string]: string[] };
-}
-
-```
+The Git repository was initialized using the Angular CLI, which automatically created the folder structure for components, services, and pages. In addition to the default structure, custom folders such as `test`, `unitTest`, `integrationTest`, and `server` were added. These directories contain files for testing (unit and integration tests) and backend server logic. A separate `README2.md` was created to document the second phase of the project.
 
-The Group Entity provides a space for users to interact with each other. A user can create a group and becomes its admin. The group can be deleted and can have multiple admins and users.
+### Branching Strategy
 
-#### Group
+Since the project was developed by one person, a simple branching strategy was used. Each phase or significant feature received its own branch. For example, a `development-branch` was created at the start of phase 2, followed by another branch for testing. This allowed for incremental development and easy integration of features.
 
-```typescript
-interface  Group{
-  id: string;
-  name: string;
-  description: string;
-  admins: string[];
-  users: string[];
-  channels: Channel[];
-}
-```
-The channel entity is created within the group entity. Admins can create multiple channels, and their permission is required to grant access to each channel. Each channel can have multiple users interacting with one another.
+### Commits and Version Control
 
-```typescript
-interface Channel {
-  id: string;
-  name: string;
-  description: string;
-  messages: Message[];
-  users: string[];
-}
-```
-The Message entity contains the name of the person who posted it, along with the date and time of the message. This message can be added to the Channel, and it can be edited or deleted by the user.
+The project was version-controlled using Git and hosted on GitHub at [TeamYaaper Repository](https://github.com/sajonasJ/TeamYaaper). Commits were made at key milestones, such as after adding components, implementing features, fixing bugs, making UI changes, and at major checkpoints. Commit messages followed a convention that succinctly described the changes, such as "added functions to pages" or "UI fixes." This ensured that the commit history remained clear and informative.
 
-```typescript
-interface Message {
-  name: string;
-  text: string;
-  timestamp: Date;
-}
-```
-The Message entity contains the name of the person who posted it, along with the date and time of the message. This message can be added to the Channel, and it can be edited or deleted by the user.
+---
 
-##
-### Server-Side Data Structures
+# Data Structures Used in the Client and Server
 
-The server-side Data structure looks the same with Client-side data structure except it is more streamlined and compact. An additional data structure which is the Auth.json file is added.
+### Transition from JSON to MongoDB
 
-The Auth.json file contains the username and password of the users. User logins are verified using this data structure to either permit or deny a login request. When a user is created by the super user this is the file that is being updated to allow the user to login on the application.
+In phase one, JSON files were used to represent data. During phase two, the project transitioned to a full MongoDB implementation. The JSON data was converted into MongoDB collections, and bcrypt was used to hash user passwords. MongoDB collections were initialized using Node.js, and data was modeled through interfaces on the client side.
 
-##
-### Auth.json
+### MongoDB Collections and Schemas
 
-- **username**: The username of the user.
-- **password**: The password of the user.
+The project uses two main MongoDB collections:
 
-The Users.json file is the main data structure that holds a user's details on the server. When the user is created by the super user, the details are initially set to undefined or left blank, and it's up to the user to fill them in when they log in.
+- **User Collection**
+- **Group Collection**
 
-##
-### Users.json
+#### User Schema:
 
-- **id**: Unique identifier for the user.
-- **username**: The user's username for login.
-- **firstname**: The first name of the user.
-- **lastname**: The last name of the user.
-- **email**: The user's email address.
-- **groups**: A dictionary where keys represent group names, and values are lists of roles assigned within those groups.
-  - **group1**: "admin" role.
-  - **group2**: "user" role.
-- **roles**: A list of roles assigned to the user, such as "super".
+- `_id`: MongoDB `ObjectId`
+- `username`: String
+- `password`: String (stored as null after hashing with bcrypt)
+- `firstName`: String
+- `lastName`: String
+- `email`: String
+- `roles`: Array of strings (e.g., admin, user roles)
+- `groupMemberships`: Array of strings (group IDs)
+- `passwordHash`: String
+- `groups`: Array of strings (group IDs)
+- `profilePictureUrl`: String
 
-The GroupsDB.json file contains all the information regarding the groups, such as the channels, messages, users, and admins of the group. When a group is created, the creator is automatically assigned as the admin of the group, and a unique ID is generated for the group.
+#### Group Schema:
 
-##
-### Groups
+- `_id`: MongoDB `ObjectId`
+- `name`: String (group name)
+- `description`: String (group description)
+- `admins`: Array of strings (user IDs)
+- `users`: Array of strings (user IDs)
+- `channels`: Array of strings (channel IDs)
+- `createdAt`: String (timestamp)
 
-- **groups**: A list of groups where each group contains detailed information about its members, channels, and activities.
-  - **id**: Unique identifier for the group.
-  - **name**: Name of the group.
-  - **description**: Brief description of the group’s purpose.
-  - **admins**: List of usernames who have admin privileges in the group.
-  - **users**: List of all usernames who are members of the group.
-  - **channels**: A list of channels within the group.
-    - **id**: Unique identifier for the channel.
-    - **name**: Name of the channel.
-    - **description**: Brief description of the channel’s purpose.
-    - **messages**: A list of messages posted in the channel.
-      - **name**: Username of the message sender.
-      - **text**: Content of the message.
-      - **timestamp**: Time when the message was posted (in ISO 8601 format).
-    - **users**: List of usernames who are members of the channel.
+#### Channel Schema:
 
-## Angular Architecture
+- `name`: String
+- `description`: String
+- `messages`: Array of message IDs
+- `users`: Array of user IDs
 
-### Pages
+#### Message Schema:
 
-- **home**: This serves as the main page where the users can use the web application. It contains several components that interact with the users dynamically. It displays the groups, channels, and messages for the application.
+- `name`: String (message sender's name)
+- `text`: String (message content)
+- `timestamp`: String (time the message was sent)
 
-- **login-page**: This serves as a container page for the login of the user. It also has a planned functionality to swap with the sign-up component to allow users to sign up for the web application Team Yaaper.
+---
 
-- **account**: This page allows the users to view their details and edit their details. It can also show the list of user groups. There is a planned functionality to allow the user to delete themselves.
+# Data Transfer
 
-- **welcome**: This is the page that welcomes the user when they first browse through the site. It acts as the landing page for all users.
+- **Login Requests**: The client sends login credentials via a `POST` request to the server. Upon successful authentication, the server responds with the user’s details, which are stored in session storage for future reference.
+- **Fetching Groups**: The client uses a `GET` request to retrieve a list of groups that the authenticated user belongs to. The server responds with a JSON array of group data.
+- **Data Display Requests**: The client sends `GET` requests to display data such as group details, user profiles, or messages. The server responds with corresponding JSON data.
+- **Update Requests**: Updates to entities (e.g., user profiles, groups, channels) are handled via `PUT` requests. The server processes the update and returns a confirmation response.
+- **Delete Requests**: Deletions (e.g., users, groups) are handled via `DELETE` requests. The server confirms the deletion and returns a success message.
+- **Real-Time Messaging**: `socket.io` handles real-time communication. The server pushes new messages to connected clients, and the client instantly updates the chat interface.
+- **Image Uploads**: Image uploads are managed using the `formidable` package. The client sends the image via a `POST` request, and the server saves it, storing the file path in MongoDB.
 
-- **dashboard**: This page is for the super users - it only shows up if the user has a role of super user. This enables the super user to add and delete users, upgrade users to super user status, add groups, add users to become admins, and add users to groups.
+---
 
-### Components
+# Responsibilities Between Client and Server
 
-- **Header**: Shows the Logo and the Navigation of the project. Placed on top of all the pages.
+### Client-Side Responsibilities
 
-- **Footer**: Displays additional information for the user about the website. Placed at the bottom of all the pages.
+- **Static and Dynamic UI**: The client renders static pages and dynamically updates the UI based on user actions and data received from the server.
+- **Data Display and Logic**: The client manages the logic for displaying data retrieved from the server, including showing or hiding components based on the logged-in user’s role.
+- **Routing**: The client handles navigation between different pages, allowing users to switch between views (e.g., dashboard, group pages) through client-side routing.
+- **User-Specific Behavior**: Depending on the user’s status, the client shows appropriate components and data.
 
-- **modal**: This is a reusable component set up to allow usage in different scenarios. This is placed on the components that use a custom modal.
+### Server-Side Responsibilities
 
-- **side-nav**: This is the navigation that allows users to create a group and view an existing group on the home page. It also emits the group selected to the content component.
+- **Database Management (CRUD Operations)**: The server handles creating, reading, updating, and deleting (CRUD) operations for users, groups, and channels in MongoDB.
+- **Real-Time Communication**: The server manages real-time interactions through `socket.io`, facilitating live messaging and updates between users.
+- **Image Upload and Management**: The server processes image uploads using `formidable`, stores them, and handles routes for displaying images.
+- **API Endpoints**: The server exposes REST API routes that allow the client to fetch and manipulate data for user authentication, group and channel management, and messaging.
+- **Socket and MongoDB Integration**: The server saves messages and other real-time events to MongoDB for persistent storage of chat history.
 
-- **Content**: This component displays the groups, channels, and messages, and the view will vary based on the user's role. Functionalities also include adding channels and messages, adding users to groups and channels, deleting channels, and deleting the group.
+---
 
-- **login**: This component is the default component shown on the login-page. It allows the user to login to the web application.
+# Routes, Parameters, Return Values, and Purpose
 
-- **sign-up**: This component replaces the login component when triggered. It allows the users to sign up for the web application.
+| Route                             | Parameters                                | Return Values    | Purpose                                       |
+| --------------------------------- | ----------------------------------------- | ---------------- | --------------------------------------------- |
+| `/groups/:id/admin`               | `username`, `groupID`                     | Success or fail  | Add admins to a group                         |
+| `/groups/:groupId/channels`       | `groupID`, `channelName`                  | Success or fail  | Add channels to a group                       |
+| `/groups/:id/user`                | `groupID`, `username`                     | Success or fail  | Add users to a group                          |
+| `/addUser`                        | `username`, `password`, `firstName`, etc. | Success or fail  | Create a user                                 |
+| `/groups/add`                     | `name`, `description`, `admins`, etc.     | Success or fail  | Create a group                                |
+| `/uploadProfilePicture/:userId`   | `userID`, `imageFile`                     | Success or fail  | Upload user profile picture                   |
+| `/addJoinRequest`                 | `groupID`, `username`                     | Success or fail  | Add a join request to a group                 |
+| `/users/:username/makeSuper`      | `username`                                | Success or fail  | Promote a user to Super User                  |
+| `/deleteGroup/:groupId`           | `groupId`                                 | Success or fail  | Delete a group                                |
+| `/users/:username`                | `username`                                | Success or fail  | Delete a user                                 |
+| `/allUsers`                       | None                                      | User data        | Load all user data                            |
+| `/showChat/:groupId/:channelName` | `groupID`, `channelName`                  | Channel messages | Display all messages of a channel             |
+| `/verify`                         | `username`, `password`                    | User data        | Authenticate and return the current user data |
+| `/allGroups`                      | None                                      | Group data       | Fetch all groups                              |
+| `/allGroups/:id`                  | `groupId`, `updatedGroupData`             | Success or fail  | Update a group                                |
+| `/updateUser/:userId`             | `userID`, `updatedUserData`               | Success or fail  | Update user data                              |
 
+---
 
-### Services
+# Angular Architecture: Components, Services, Models, Routes
 
-- **`AuthService`**:  
-  Creates the login observable for the user, containing both login and logout functions to help authenticate the user.
+### Components:
 
-- **`GroupService`**:  
-  Currently, it only handles the loading of the users from the session storage. It can be called in other components to ensure consistent return values at all times.
+- **Content**: Displays data for the home page. Switches between other components for display.
+- **Side-nav**: Holds navigation for different groups, allows group creation, and emits the selected group to the Content component.
+- **Sign-up**: Allows users to sign up and log in automatically after successful registration.
+- **Login**: Handles user authentication and site navigation.
 
-### Models
+### Pages:
 
-The models describe the data structures for both the client side and the server side. The model file is named "dataInterface" as it holds interfaces for the project.
+- **Account Page**: Displays user data and allows profile picture changes.
+- **Dashboard Page**: Displays user and group data, allows creation of users and groups, and is the main control page for Super Users.
+- **Home Page**: Contains the side navigation and content, and is the main interaction page for users to chat.
 
-### Routes
+### Services:
 
-- **/authRoute**  
-  The system accepts a username and password on the login page. It then reads the `auth.json` file to check if the provided username and password are included in the database. If they are found, the system will respond by accessing the user data in the database and returning the corresponding user information as a response. If the user is not found, it will return false.
+- **authService**: Handles authentication controls.
+- **groupService**: Contains routes for group management.
+- **join-requestService**: Manages routes for group join requests.
+- **socketService**: Manages backend socket connections for chatting.
+- **userService**: Manages backend routes for user data.
 
-- **/loginRoute**  
-  The function accepts a user object with a required `id` and `username`. It then reads the user database. If there is an error, it returns an error message. If no `object.id` is sent in the request, it returns the full array of users as a response. If an `id` is included, it finds the index. If no matches are found, it adds the object to the database; otherwise, it updates the user in the database. When successful, it returns true and a success message.
+### Models:
 
-- **/saveUserRoute**  
-  The system accepts a request containing a username, password, and a `newUser` tag. If the `newUser` tag is present, the system reads the users array and checks for a matching username. If a match is found, it returns an error. If no match is found, it adds the username and password to the database for use as login authentication by the user. It then returns a response of true along with a relevant message.
+- **dataInterfaces**: Defines the schema for users, groups, messages, channels, and joinRequests.
 
-- **/delUserRoute**  
-  The system takes a username as input and then checks the user database to see if the username exists. If the username is not found, it returns a "not found" message.
+---
 
-  If the username is found, it removes the username from the user database and then updates the user database file. After that, it checks the authentication database to see if the username is listed there. If the username is found in the authentication database, it removes the data associated with the username and updates the `auth.json` file. The system returns an "OK" response if the process is successful, along with a message.
+# Interaction Between Client and Server
 
-- **/groupRoute**  
-  The function accepts a request body and parses the data. If there is no `request.body.id`, it returns all the groups as a response. If there is an `id` in the request, it formulates the group object, checks if the `id` is found. If found, it updates that group object; otherwise, it pushes the object at the end of the array. Finally, it sends back the groups as a response.
+The client and server interact via REST APIs and `socket.io` for real-time messaging.
 
-- **/delGroupRoute**  
-  It accepts an object with an ID in the request and reads the `groupDB` file. Then, it parses the request body and checks the group index to see if the group is in the database. If the group is found, it splices the index and writes it back accordingly to the `groupDB.json`.
+- **User Authentication**: The client sends login credentials via a `POST` request, and the server responds with user details, which are stored in session storage.
+- **Fetching Data**: The client sends `GET` requests to retrieve groups, channels, and user details, which are returned in JSON format and rendered by Angular components.
+- **Real-Time Messaging**: The server uses `socket.io` to push messages to connected clients, updating the chat interface instantly.
+- **CRUD Operations**: Actions like creating, reading, updating, and deleting users, groups, and channels are handled via `POST`, `GET`, `PUT`, and `DELETE` requests.
+- **Image Uploads**: Handled by the `formidable` package via `POST` requests, and stored paths are saved in MongoDB.
+- **Role Management**: The client adjusts UI based on user roles, and the server validates permissions for access control.
 
-### Files
+---
 
-- **`server.js`**:  
-  The main entry point of the server application. This file initializes the server, sets up middleware, and defines the base configuration for the server. It listens for incoming HTTP requests and routes them to the appropriate handler based on the defined routes. The `server.js` file is responsible for establishing the server environment, managing server-level configurations, and starting the server to listen on a specified port.
+# Usage
 
-- **`authRoute.js`**:  
-  Manages user authentication routes. This file contains the logic for handling authentication-related requests, such as logging in users and verifying credentials. It interacts with the `auth.json` file to check if the provided username and password match any existing records in the database. If a match is found, the route returns the corresponding user data; otherwise, it returns an error message indicating failed authentication.
+To set up and run the project:
 
-- **`delGroupRoute.js`**:  
-  Handles the deletion of groups from the system. This route processes requests to delete a group based on the provided group ID. It checks if the specified group exists in the `groupDB.json` file. If found, the group is removed, and the database is updated to reflect this change. The route ensures that all associated data, such as users and channels within the group, are correctly managed upon deletion.
-
-- **`delUserRoute.js`**:  
-  Manages the deletion of user accounts. This file contains the logic for removing a user from both the user database and the authentication database. It checks for the existence of the user in the database using the provided username. If the user is found, the file deletes the user data from the user database and updates the `auth.json` file to ensure the user can no longer log in. It returns appropriate messages based on the success or failure of these operations.
-
-- **`groupRoute.js`**:  
-  Handles requests related to group management, such as creating, updating, and retrieving group information. This route accepts various requests that include data about groups, such as group ID, name, description, and members. It processes these requests by either returning the full list of groups or performing updates to existing group data based on the provided information. This route plays a crucial role in managing group dynamics within the application.
-
-- **`loginRoute.js`**:  
-  Processes user login requests and manages user session data. This route handles the retrieval of user data based on the login credentials provided by the user. It checks the user database for matching credentials and either returns the user information or an error if the login attempt is unsuccessful. It ensures that users can access their accounts securely and reliably.
-
-- **`saveUserRoute.js`**:  
-  Manages the creation and updating of user accounts. This file contains the logic for adding new users to the database and updating existing user information. When a new user registers, this route validates the user data and ensures it does not conflict with existing records. If the user data is valid, it adds the new user to the user database and updates the authentication database to allow the user to log in.
-
-### Global Variables
-
-- **`BACKEND_URL`**:  
-  Holds the root URL of the project, which is used throughout the server and client applications to define the base endpoint for API requests and server interactions. This variable ensures that all parts of the application consistently reference the correct server location.
-
-- **`httpOptions`**:  
-  Holds the HTTP headers for the project, including content types, authorization tokens, and other necessary headers for secure and formatted HTTP requests. These headers are used by the client application to communicate with the server, ensuring that all requests are properly formatted and authorized.
-
-
-## Installation
+1. **Clone the repository**:
 
 ```bash
-git clone https://github.com/sajonasJ/TeamYaaper.git
-cd TeamYaaper
+git clone https://github.com/sajonasJ/TeamYaaper
+```
+
+2. **Install dependencies**:
+
+```bash
 npm install
 ```
+
+3. **Start the server (inside the server folder)**:
 
 ```bash
 cd server
 node server
 ```
-localhost:3000
+
+4. **Start the Angular project**:
+
 ```bash
-cd TeamYaaper
 ng serve --open
 ```
-localhost:4200
 
-## Additional Libraries Used
+5. **Run Unit Tests**:
 
-- **[ngx-toastr](https://www.npmjs.com/package/ngx-toastr)**: A library for displaying toast notifications in Angular applications.
-
-- **[Bootstrap](https://getbootstrap.com/)**: A popular front-end framework for developing responsive and mobile-first web applications.
-
-- **[Bootstrap Icons](https://icons.getbootstrap.com/)**: A comprehensive set of icons designed by Bootstrap. 
-
-- **[Google Material Icons](https://fonts.google.com/icons)**: A collection of material design icons provided by Google. 
-
-- **GitHub CLI**: A command-line interface for GitHub, allowing developers to manage their GitHub repositories, issues, pull requests, and more directly from the terminal. 
-
-- **Angular CLI**: The Angular Command Line Interface (CLI) is a tool to initialize, develop, scaffold, and maintain Angular applications.
-
----
-
-**Created by:** Jonas Sajonas
-
+```bash
+ng test
+```
