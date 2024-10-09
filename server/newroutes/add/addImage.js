@@ -4,15 +4,15 @@ const fs = require('fs');
 const path = require('path');
 const { ObjectId } = require('mongodb');
 
-const router = express.Router(); // Create a new Router instance
+const router = express.Router();
 
 module.exports = function (db) {
-    // Profile Picture Upload Endpoint
+
     router.post('/uploadProfilePicture/:userId', (req, res) => {
         console.log("Received a request to upload profile picture"); // Log request received
         const userId = req.params.userId;
 
-        console.log(`User ID: ${userId}`); // Log the user ID
+        console.log(`User ID: ${userId}`);
 
         // Validate User ID
         if (!ObjectId.isValid(userId)) {
@@ -20,7 +20,7 @@ module.exports = function (db) {
             return res.status(400).send({ message: "Invalid User ID." });
         }
 
-        // Define the upload folder for profile pictures
+ 
         const uploadFolder = path.join(__dirname, '../../../public/profile-pictures');
 
         // Ensure the upload directory exists
@@ -43,7 +43,7 @@ module.exports = function (db) {
             console.log("Fields:", fields);
             console.log("Files:", files);
 
-            // Handling the file
+
             const file = files.profilePicture instanceof Array ? files.profilePicture[0] : files.profilePicture;
 
             if (!file || !file.filepath) {
@@ -66,7 +66,7 @@ module.exports = function (db) {
                 fs.unlink(oldPath, (unlinkErr) => {
                     if (unlinkErr) {
                         console.error("Error deleting the temp file", unlinkErr);
-                        // Not sending a response here since the copying was successful
+
                     }
                 });
 
@@ -75,7 +75,6 @@ module.exports = function (db) {
                 const imageUrl = `http://localhost:3000/profile-pictures/${fileName}`;
 
                 try {
-                    // Update the user's profile picture URL in the database
                     const usersCollection = db.collection('users');
                     const result = await usersCollection.updateOne(
                         { _id: new ObjectId(userId) },

@@ -5,7 +5,7 @@ module.exports = function (db, app) {
   app.post("/addUser", async (req, res) => {
     console.log("Received POST request to add user");
 
-    // Check if request body is present
+
     if (!req.body) {
       console.error("No request body provided");
       return res.sendStatus(400);
@@ -23,7 +23,6 @@ module.exports = function (db, app) {
     try {
       const usersCollection = db.collection("users");
 
-      // Check if user already exists
       console.log("Checking if user already exists...");
       const userExists = await usersCollection.findOne({ username: username });
       if (userExists) {

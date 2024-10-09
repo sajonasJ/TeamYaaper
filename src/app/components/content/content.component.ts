@@ -59,6 +59,7 @@ export class ContentComponent implements OnInit {
     });
   }
 
+  // Load chat history for a group and channel
   loadChatHistory(groupId: string, channelName: string): void {
     this.httpClient
       .get<Message[]>(`${BACKEND_URL}/showChat/${groupId}/${channelName}`)
@@ -72,6 +73,8 @@ export class ContentComponent implements OnInit {
         }
       );
   }
+
+  // Load all users from the backend using UserService
   loadUsers(): void {
     this.userService.getUsers().subscribe(
       (data: User[]) => {
@@ -108,6 +111,7 @@ export class ContentComponent implements OnInit {
     }
   }
 
+  // Updated ngOnChanges method to load groups and current user
   ngOnChanges(): void {
     if (this.selectedGroup) {
       this.loadGroups();
@@ -116,6 +120,7 @@ export class ContentComponent implements OnInit {
     }
   }
 
+  // Initialize the socket connection
   private initIoConnection() {
     this.socketService.initSocket();
 
@@ -141,6 +146,7 @@ export class ContentComponent implements OnInit {
       });
   }
 
+  // Function to send a message in the public chat
   public chat(event: Event) {
     event.preventDefault();
 
@@ -168,6 +174,7 @@ export class ContentComponent implements OnInit {
     this.newMessage = '';
   }
 
+  // Function to show the delete confirmation modal
   showDeleteConfirmationModal(): void {
     const modalElement = document.getElementById('confirmDeleteModal');
     if (modalElement) {
@@ -249,7 +256,7 @@ export class ContentComponent implements OnInit {
 
   // Load current user from session storage
   loadCurrentUser(): void {
-    const id = sessionStorage.getItem('id'); // Update to match your storage key
+    const id = sessionStorage.getItem('id');
     const username = sessionStorage.getItem('username');
     const firstname = sessionStorage.getItem('firstname');
     const lastname = sessionStorage.getItem('lastname');
@@ -351,9 +358,9 @@ export class ContentComponent implements OnInit {
     this.groupService.deleteGroup(group._id!).subscribe(
       () => {
         this.toastr.success('Group deleted successfully', 'Success');
-        this.loadGroups(); // Reload groups to reflect the deletion
+        this.loadGroups();
         if (this.selectedGroup && this.selectedGroup._id === group._id) {
-          this.selectedGroup = null; // Reset selected group if it's deleted
+          this.selectedGroup = null;
         }
       },
       (error) => {
@@ -376,53 +383,20 @@ export class ContentComponent implements OnInit {
     );
   }
 
-  // // Add a new user to the selected group
-  // addUserToGroup(group: Group): void {
-  //   const newUserUsername = this.userInputs['group-' + group._id];
-  //   if (!newUserUsername) {
-  //     this.toastr.error('Please enter a username.', 'Error');
-  //     return;
-  //   }
-
-  //   // Check if the user exists in the system (backend check)
-  //   this.httpClient.get<User[]>(`${BACKEND_URL}/users`, httpOptions).subscribe(
-  //     (users) => {
-  //       const userExists = users.some(
-  //         (user) => user.username === newUserUsername
-  //       );
-
-  //       if (!userExists) {
-  //         this.toastr.error('User does not exist.', 'Error');
-  //         return;
-  //       }
-
-  //       if (!group.users.includes(newUserUsername)) {
-  //         group.users.push(newUserUsername);
-  //         this.updateGroupDB(group);
-  //         this.userInputs['group-' + group._id] = '';
-  //       } else {
-  //         this.toastr.error('User already in group.', 'Error');
-  //       }
-  //     },
-  //     (error) => {
-  //       console.error('Error loading users:', error);
-  //       this.toastr.error('Failed to load users. Please try again.', 'Error');
-  //     }
-  //   );
-  // }
-
   // Reset the new channel form inputs
   resetNewChannelForm(): void {
     this.newChannelName = '';
     this.newChannelDescription = '';
   }
 
+  // Open the settings component
   toSettings(): void {
     if (this.selectedGroup) {
       this.showSettings = true;
     }
   }
 
+  //close the settings component
   closeSettings(): void {
     this.showSettings = false;
   }

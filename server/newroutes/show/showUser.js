@@ -18,7 +18,6 @@ module.exports = function (db, app) {
         return res.status(404).send({ ok: false, message: "User not found" });
       }
 
-      // Send user data excluding sensitive information
       const { passwordHash, ...userData } = user;
       res.status(200).send(userData);
     } catch (err) {

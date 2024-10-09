@@ -4,8 +4,8 @@
     <!-- Username -->
     <div class="form-group mb-3">
       <label for="username" class="form-label">Username</label>
-      <input type="text" id="username" name="username" [(ngModel)]="newUsername" required minlength="4" class="form-control"
-        placeholder="Enter your username" #usernameRef="ngModel">
+      <input type="text" id="username" name="username" [(ngModel)]="newUsername" required minlength="4"
+        class="form-control" placeholder="Enter your username" #usernameRef="ngModel">
       <div *ngIf="signupForm.submitted && usernameRef.invalid" class="error">
         Username is required and must be at least 4 characters long.
       </div>
@@ -49,8 +49,8 @@
     <!-- Password -->
     <div class="form-group mb-3">
       <label for="password" class="form-label">Password</label>
-      <input type="password" id="password" name="password" [(ngModel)]="newPassword" required minlength="8" class="form-control"
-        placeholder="Enter your password" #passwordRef="ngModel">
+      <input type="password" id="password" name="password" [(ngModel)]="newPassword" required minlength="8"
+        class="form-control" placeholder="Enter your password" #passwordRef="ngModel">
       <div *ngIf="signupForm.submitted && passwordRef.invalid" class="error">
         Password is required and must be at least 8 characters long.
       </div>
@@ -59,9 +59,11 @@
     <!-- Verify Password -->
     <div class="form-group mb-4">
       <label for="verifyPassword" class="form-label">Verify Password</label>
-      <input type="password" id="verifyPassword" name="verifyPassword" [(ngModel)]="verifyPassword" required class="form-control"
-        placeholder="Re-enter your password" #verifyPasswordRef="ngModel">
-      <div *ngIf="signupForm.submitted && verifyPasswordRef.invalid || (signupForm.submitted && newPassword !== verifyPassword)" class="error">
+      <input type="password" id="verifyPassword" name="verifyPassword" [(ngModel)]="verifyPassword" required
+        class="form-control" placeholder="Re-enter your password" #verifyPasswordRef="ngModel">
+      <div
+        *ngIf="signupForm.submitted && verifyPasswordRef.invalid || (signupForm.submitted && newPassword !== verifyPassword)"
+        class="error">
         Passwords do not match.
       </div>
     </div>

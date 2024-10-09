@@ -12,10 +12,9 @@ describe('LoginPageComponent', () => {
   let mockToastr: jasmine.SpyObj<ToastrService>;
 
   beforeEach(async () => {
-    // Mocking the dependencies
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
     mockActivatedRoute = {
-      queryParams: of({ signup: 'true' })  // Simulate query param
+      queryParams: of({ signup: 'true' }) 
     };
     mockToastr = jasmine.createSpyObj('ToastrService', ['success', 'error']);
 
@@ -30,7 +29,7 @@ describe('LoginPageComponent', () => {
 
     fixture = TestBed.createComponent(LoginPageComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();  // Trigger ngOnInit
+    fixture.detectChanges();
   });
 
   // Test component creation
@@ -42,14 +41,14 @@ describe('LoginPageComponent', () => {
   it('should switch to sign-up mode when "signup" query param is present', () => {
     mockActivatedRoute.queryParams = of({ signup: 'true' });
     component.ngOnInit();
-    expect(component.isSignIn).toBeFalse();  // isSignIn should be false for sign-up
+    expect(component.isSignIn).toBeFalse();
   });
 
   // Test ngOnInit - Sign In mode (when "signup" query param is absent)
   it('should switch to sign-in mode when "signup" query param is absent', () => {
     mockActivatedRoute.queryParams = of({});
     component.ngOnInit();
-    expect(component.isSignIn).toBeTrue();  // isSignIn should be true for sign-in
+    expect(component.isSignIn).toBeTrue();
   });
 
   // Test switchToSignUp method

@@ -65,7 +65,7 @@ export class UserService {
   // Update an existing user by ID
   updateUser(user: User): Observable<any> {
     return this.httpClient.put(
-      `${BACKEND_URL}/updateUser/${user._id}`, // Use `_id` to target the correct user
+      `${BACKEND_URL}/updateUser/${user._id}`,
       user,
       httpOptions
     );

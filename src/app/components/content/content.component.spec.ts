@@ -11,7 +11,6 @@ import { of } from 'rxjs';
 import { UserService } from '../../services/user.service';
 import * as bootstrap from 'bootstrap';
 
-
 describe('ContentComponent', () => {
   let component: ContentComponent;
   let fixture: ComponentFixture<ContentComponent>;
@@ -24,16 +23,28 @@ describe('ContentComponent', () => {
   let mockUserService: jasmine.SpyObj<UserService>;
 
   beforeEach(async () => {
-    mockGroupService = jasmine.createSpyObj('GroupService', ['getGroups', 'updateGroup']);
+    mockGroupService = jasmine.createSpyObj('GroupService', [
+      'getGroups',
+      'updateGroup',
+    ]);
     mockAuthService = jasmine.createSpyObj('AuthService', ['isLoggedIn']);
-    mockSocketService = jasmine.createSpyObj('SocketService', ['initSocket', 'onMessage', 'send']);
-    mockToastrService = jasmine.createSpyObj('ToastrService', ['success', 'error']);
-    mockJoinRequestService = jasmine.createSpyObj('JoinRequestService', ['addJoinRequest']);
+    mockSocketService = jasmine.createSpyObj('SocketService', [
+      'initSocket',
+      'onMessage',
+      'send',
+    ]);
+    mockToastrService = jasmine.createSpyObj('ToastrService', [
+      'success',
+      'error',
+    ]);
+    mockJoinRequestService = jasmine.createSpyObj('JoinRequestService', [
+      'addJoinRequest',
+    ]);
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
     mockUserService = jasmine.createSpyObj('UserService', ['getUsers']);
 
     await TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],  // Use HttpClientTestingModule for HTTP requests
+      imports: [HttpClientTestingModule],
       declarations: [ContentComponent],
       providers: [
         { provide: GroupService, useValue: mockGroupService },
@@ -43,7 +54,7 @@ describe('ContentComponent', () => {
         { provide: JoinRequestService, useValue: mockJoinRequestService },
         { provide: Router, useValue: mockRouter },
         { provide: UserService, useValue: mockUserService },
-      ]
+      ],
     }).compileComponents();
   });
 
@@ -52,7 +63,7 @@ describe('ContentComponent', () => {
     component = fixture.componentInstance;
 
     // Mock AuthService's isLoggedIn observable
-    mockAuthService.isLoggedIn = of(true);  // Simulate that the user is logged in
+    mockAuthService.isLoggedIn = of(true); // Simulate that the user is logged in
   });
 
   // Test to check if the component is created successfully
@@ -76,7 +87,14 @@ describe('ContentComponent', () => {
   // Test loadGroups
   it('should load groups from GroupService', () => {
     const mockGroups = [
-      { _id: '1', name: 'Test Group', description: 'A test group', admins: [], users: [], channels: [] }
+      {
+        _id: '1',
+        name: 'Test Group',
+        description: 'A test group',
+        admins: [],
+        users: [],
+        channels: [],
+      },
     ];
     mockGroupService.getGroups.and.returnValue(of(mockGroups));
 
@@ -89,7 +107,15 @@ describe('ContentComponent', () => {
   // Test loadUsers
   it('should load users from UserService', () => {
     const mockUsers = [
-      { _id: '1', username: 'testUser', firstname: 'Test', lastname: 'User', email: 'test@example.com', roles: ['user'], groups: [] }
+      {
+        _id: '1',
+        username: 'testUser',
+        firstname: 'Test',
+        lastname: 'User',
+        email: 'test@example.com',
+        roles: ['user'],
+        groups: [],
+      },
     ];
     mockUserService.getUsers.and.returnValue(of(mockUsers));
 
@@ -101,11 +127,23 @@ describe('ContentComponent', () => {
 
   // Test selectChannel
   it('should select a channel and load chat history', () => {
-    const mockChannel = { name: 'general', description: 'General channel', messages: [], users: [] };
-    component.selectedGroup = { _id: '1', name: 'Test Group', description: '', admins: [], users: [], channels: [] };
+    const mockChannel = {
+      name: 'general',
+      description: 'General channel',
+      messages: [],
+      users: [],
+    };
+    component.selectedGroup = {
+      _id: '1',
+      name: 'Test Group',
+      description: '',
+      admins: [],
+      users: [],
+      channels: [],
+    };
 
     spyOn(component, 'loadChatHistory');
-    
+
     component.selectChannel(mockChannel);
 
     expect(component.selectedChannel).toEqual(mockChannel);
@@ -114,24 +152,48 @@ describe('ContentComponent', () => {
 
   // Test chat method
   it('should send a message through the SocketService', () => {
-    component.currentUser = { _id: '1', username: 'testUser', firstname: '', lastname: '', email: '', roles: [], groups: [] };
-    component.selectedGroup = { _id: '1', name: 'Test Group', description: '', admins: [], users: [], channels: [] };
-    component.selectedChannel = { name: 'general', description: '', messages: [], users: [] };
+    component.currentUser = {
+      _id: '1',
+      username: 'testUser',
+      firstname: '',
+      lastname: '',
+      email: '',
+      roles: [],
+      groups: [],
+    };
+    component.selectedGroup = {
+      _id: '1',
+      name: 'Test Group',
+      description: '',
+      admins: [],
+      users: [],
+      channels: [],
+    };
+    component.selectedChannel = {
+      name: 'general',
+      description: '',
+      messages: [],
+      users: [],
+    };
     component.newMessage = 'Hello World';
 
     component.chat(new Event('submit'));
 
-    expect(mockSocketService.send).toHaveBeenCalledWith(jasmine.objectContaining({
-      groupId: '1',
-      channelName: 'general',
-      name: 'testUser',
-      text: 'Hello World'
-    }));
+    expect(mockSocketService.send).toHaveBeenCalledWith(
+      jasmine.objectContaining({
+        groupId: '1',
+        channelName: 'general',
+        name: 'testUser',
+        text: 'Hello World',
+      })
+    );
   });
 
   // Test showDeleteConfirmationModal
   it('should show the delete confirmation modal', () => {
-    spyOn(document, 'getElementById').and.returnValue(document.createElement('div'));
+    spyOn(document, 'getElementById').and.returnValue(
+      document.createElement('div')
+    );
     spyOn(bootstrap.Modal.prototype, 'show');
 
     component.showDeleteConfirmationModal();

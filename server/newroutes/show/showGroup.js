@@ -3,13 +3,11 @@
 const { ObjectId } = require("mongodb");
 
 module.exports = function (db, app) {
-  // Fetch a Specific Group by ID
   app.get("/groups/:id", async (req, res) => {
     try {
       const groupId = req.params.id;
       const groupsCollection = db.collection("groups");
 
-      // Convert groupId to an ObjectId
       const group = await groupsCollection.findOne({
         _id: new ObjectId(groupId),
       });

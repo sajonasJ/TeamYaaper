@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HeaderComponent } from './header.component';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
-import { of } from 'rxjs';  // To mock observables
+import { of } from 'rxjs'; // To mock observables
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
@@ -12,7 +12,10 @@ describe('HeaderComponent', () => {
 
   beforeEach(async () => {
     // Create spies for AuthService and Router
-    mockAuthService = jasmine.createSpyObj('AuthService', ['isLoggedIn', 'logout']);
+    mockAuthService = jasmine.createSpyObj('AuthService', [
+      'isLoggedIn',
+      'logout',
+    ]);
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
     // Provide mock services in the test module
@@ -20,15 +23,15 @@ describe('HeaderComponent', () => {
       declarations: [HeaderComponent],
       providers: [
         { provide: AuthService, useValue: mockAuthService },
-        { provide: Router, useValue: mockRouter }
-      ]
+        { provide: Router, useValue: mockRouter },
+      ],
     }).compileComponents();
   });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(HeaderComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();  // Trigger initial data binding
+    fixture.detectChanges();
   });
 
   // Test if the component is created successfully
@@ -39,13 +42,13 @@ describe('HeaderComponent', () => {
   // Test ngOnInit
   it('should check if user is logged in and load roles if logged in', () => {
     // Mock AuthService.isLoggedIn observable
-    mockAuthService.isLoggedIn = of(true);  // Simulate the user being logged in
-    spyOn(component, 'loadUserRoles');  // Spy on loadUserRoles method
+    mockAuthService.isLoggedIn = of(true);
+    spyOn(component, 'loadUserRoles');
 
     component.ngOnInit();
 
-    expect(component.isLoggedIn).toBeTrue();  // Verify that isLoggedIn is true
-    expect(component.loadUserRoles).toHaveBeenCalled();  // Verify that loadUserRoles was called
+    expect(component.isLoggedIn).toBeTrue();
+    expect(component.loadUserRoles).toHaveBeenCalled();
   });
 
   // Test loadUserRoles
@@ -56,14 +59,14 @@ describe('HeaderComponent', () => {
 
     component.loadUserRoles();
 
-    expect(component.roles).toEqual(mockRoles);  // Verify that roles are loaded correctly
+    expect(component.roles).toEqual(mockRoles);
   });
 
   // Test logout
   it('should logout the user and navigate to login page', () => {
     component.logout();
 
-    expect(mockAuthService.logout).toHaveBeenCalled();  // Check if logout was called
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/login']);  // Check if navigation to login happened
+    expect(mockAuthService.logout).toHaveBeenCalled();
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/login']);
   });
 });

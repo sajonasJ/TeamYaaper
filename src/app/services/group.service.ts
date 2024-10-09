@@ -28,7 +28,11 @@ export class GroupService {
 
   // Add a new group
   addGroup(group: Group): Observable<any> {
-    return this.httpClient.post(`${BACKEND_URL}/groups/add`, group, httpOptions);
+    return this.httpClient.post(
+      `${BACKEND_URL}/groups/add`,
+      group,
+      httpOptions
+    );
   }
 
   // Update an existing group by its MongoDB _id

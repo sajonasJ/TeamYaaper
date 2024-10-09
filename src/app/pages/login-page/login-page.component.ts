@@ -18,7 +18,6 @@ export class LoginPageComponent implements OnInit {
 
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {
-      // If the URL contains 'signup' as a query parameter, switch to sign-up form
       if (params['signup']) {
         this.isSignIn = false;
       } else {
@@ -27,7 +26,7 @@ export class LoginPageComponent implements OnInit {
     });
   }
 
-  // Methods to switch between Sign In and Sign Up
+  // Methods to switch between Sign up, both keeps the query params
   switchToSignUp(): void {
     this.router.navigate([], {
       relativeTo: this.route,
@@ -35,10 +34,11 @@ export class LoginPageComponent implements OnInit {
     });
   }
 
+  // Method to switch to Sign In, merge the query params
   switchToSignIn(): void {
     this.router.navigate([], {
       relativeTo: this.route,
-      queryParams: { signup: null }, // Clear the signup query param
+      queryParams: { signup: null },
       queryParamsHandling: 'merge',
     });
   }

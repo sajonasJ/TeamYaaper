@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { WelcomeComponent } from './welcome.component';
-import { NO_ERRORS_SCHEMA } from '@angular/core';  // Used to ignore <app-header> and <app-footer> since they are external components
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('WelcomeComponent', () => {
   let component: WelcomeComponent;
@@ -9,12 +9,12 @@ describe('WelcomeComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [WelcomeComponent],
-      schemas: [NO_ERRORS_SCHEMA]  // Ignore child components like <app-header> and <app-footer>
+      schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
 
     fixture = TestBed.createComponent(WelcomeComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();  // Trigger lifecycle methods and rendering
+    fixture.detectChanges();
   });
 
   // Test component creation
@@ -40,7 +40,7 @@ describe('WelcomeComponent', () => {
   it('should render all quotes', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     const quotes = compiled.querySelectorAll('.quote-card');
-    expect(quotes.length).toBe(5);  // Expect 5 quotes
+    expect(quotes.length).toBe(5);
 
     expect(quotes[0].textContent).toContain('"The art of winning a game lies in collaboration."');
     expect(quotes[1].textContent).toContain('"Great games happen when gamers connect."');

@@ -232,7 +232,7 @@ describe('SettingsComponent', () => {
 
   // Test deleteGroup
   it('should delete group successfully', () => {
-    spyOn(window, 'confirm').and.returnValue(true); // Mock the confirm dialog
+    spyOn(window, 'confirm').and.returnValue(true);
     mockGroupService.deleteGroup.and.returnValue(of({}));
     component.selectedGroup = {
       _id: '1',

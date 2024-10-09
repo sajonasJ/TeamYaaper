@@ -15,7 +15,6 @@ module.exports = function (db, app) {
         return res.status(404).send({ message: "Group not found" });
       }
 
-      // Remove the admin from the group
       await groupsCollection.updateOne(
         { _id: new ObjectId(groupId) },
         { $pull: { admins: username } }

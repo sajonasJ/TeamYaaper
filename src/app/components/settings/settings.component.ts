@@ -52,6 +52,7 @@ export class SettingsComponent implements OnInit, OnChanges {
     }
   }
 
+  // Load group data from the backend
   loadGroupData(): void {
     if (!this.selectedGroup || !this.selectedGroup._id) {
       this.toastr.error('Group data is missing', 'Error');
@@ -72,6 +73,7 @@ export class SettingsComponent implements OnInit, OnChanges {
     );
   }
 
+  // Load join requests for the selected group
   loadJoinRequests(): void {
     if (this.selectedGroup && this.selectedGroup._id) {
       this.joinRequestService.getJoinRequests(this.selectedGroup._id).subscribe(
@@ -167,6 +169,7 @@ export class SettingsComponent implements OnInit, OnChanges {
     );
   }
 
+  // Load all users from the backend
   loadAllUsers(): void {
     this.userService.getUsers().subscribe(
       (users) => {
@@ -179,6 +182,7 @@ export class SettingsComponent implements OnInit, OnChanges {
     );
   }
 
+  // Map user details to the group's admins and members
   mapUserDetailsToGroup(): void {
     if (this.selectedGroup && this.allUsers.length > 0) {
       console.log('Mapping users for selected group:', this.selectedGroup);
@@ -203,36 +207,6 @@ export class SettingsComponent implements OnInit, OnChanges {
     }
   }
 
-  // // Add a user to the group by username
-  // addUserToGroup(): void {
-  //   if (!this.selectedGroup || !this.selectedGroup._id) {
-  //     this.toastr.error('No group selected.', 'Error');
-  //     return;
-  //   }
-
-  //   const newUserUsername = this.userInputs['group-' + this.selectedGroup._id];
-  //   if (!newUserUsername) {
-  //     this.toastr.error('Please enter a username.', 'Error');
-  //     return;
-  //   }
-
-  //   const userExists = this.allUsers.some(
-  //     (user) => user.username === newUserUsername
-  //   );
-  //   if (!userExists) {
-  //     this.toastr.error('User does not exist.', 'Error');
-  //     return;
-  //   }
-
-  //   if (!this.selectedGroup.users.includes(newUserUsername)) {
-  //     this.selectedGroup.users.push(newUserUsername); // Add by username
-  //     this.updateGroupDB(this.selectedGroup);
-  //     this.userInputs['group-' + this.selectedGroup._id] = ''; // Clear input after adding user
-  //   } else {
-  //     this.toastr.error('User already in group.', 'Error');
-  //   }
-  // }
-
  // Remove a user from the group by username
  removeMember(member: User): void {
   if (!this.selectedGroup || !member.username) {
@@ -241,17 +215,12 @@ export class SettingsComponent implements OnInit, OnChanges {
   }
 
   const memberUsername: string = member.username;
-
-  // Remove user from users list
   this.selectedGroup.users = this.utilsService.removeUserFromList(this.selectedGroup.users, memberUsername);
-
-  // Remove user from admins list (since a user might also be an admin)
   this.selectedGroup.admins = this.utilsService.removeUserFromList(this.selectedGroup.admins, memberUsername);
-
-  // Update the group data in the backend
   this.updateGroupDB(this.selectedGroup);
 }
 
+// deleteGroup
   deleteGroup(): void {
     if (this.selectedGroup && this.selectedGroup._id) {
       const confirmDelete = confirm(
@@ -274,6 +243,7 @@ export class SettingsComponent implements OnInit, OnChanges {
     }
   }
 
+  //deleteChannel
   deleteChannel(channel: any): void {
     if (!this.selectedGroup) return;
 
@@ -288,6 +258,7 @@ export class SettingsComponent implements OnInit, OnChanges {
     this.updateGroupDB(this.selectedGroup);
   }
 
+  //updateGroup database
   updateGroupDB(group: Group): void {
     this.groupService.updateGroup(group).subscribe(
       () => {
@@ -300,6 +271,7 @@ export class SettingsComponent implements OnInit, OnChanges {
     );
   }
 
+  //closeSettings component
   closeSettings(): void {
     this.close.emit();
   }

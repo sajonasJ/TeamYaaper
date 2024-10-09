@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ModalComponent } from './modal.component';
-import { By } from '@angular/platform-browser'; // To find elements in the template
+import { By } from '@angular/platform-browser';
 
 describe('ModalComponent', () => {
   let component: ModalComponent;
@@ -13,7 +13,7 @@ describe('ModalComponent', () => {
 
     fixture = TestBed.createComponent(ModalComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges(); // Trigger initial data binding
+    fixture.detectChanges();
   });
 
   // Test if the component is created successfully
@@ -27,7 +27,7 @@ describe('ModalComponent', () => {
     component.title = 'Test Modal';
     component.modalId = 'testModal';
 
-    fixture.detectChanges(); // Apply the input changes
+    fixture.detectChanges();
 
     // Check if the title and modalId are rendered correctly in the template
     const titleElement = fixture.debugElement.query(
@@ -38,24 +38,24 @@ describe('ModalComponent', () => {
 
   // Test @Output save event emitter
   it('should emit save event when onSave is called', () => {
-    spyOn(component.save, 'emit'); // Spy on the save event emitter
+    spyOn(component.save, 'emit');
 
     // Call the onSave method
     component.onSave();
 
-    expect(component.save.emit).toHaveBeenCalled(); // Ensure the event was emitted
+    expect(component.save.emit).toHaveBeenCalled();
   });
 
   // Test button click triggers save event
   it('should emit save event when save button is clicked', () => {
-    spyOn(component.save, 'emit'); // Spy on the save event emitter
+    spyOn(component.save, 'emit');
 
     // Assuming there's a save button in the modal template with class 'save-btn'
     const saveButton = fixture.debugElement.query(
       By.css('.save-btn')
     ).nativeElement;
-    saveButton.click(); // Simulate a click event
+    saveButton.click();
 
-    expect(component.save.emit).toHaveBeenCalled(); // Ensure the event was emitted
+    expect(component.save.emit).toHaveBeenCalled();
   });
 });

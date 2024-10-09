@@ -42,7 +42,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (this.groupSubscription) {
       this.groupSubscription.unsubscribe();
     }
-
     this.groupSubscription = this.groupService.getGroupById(groupId).subscribe(
       (group: Group) => {
         this.selectedGroup = group;

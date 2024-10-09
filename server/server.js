@@ -41,23 +41,19 @@ app.use((req, res, next) => {
 // Start the server
 async function startServer() {
   try {
-    db = await main(); // Connect to MongoDB and assign the database object to `db`
+    db = await main();
     console.log("Connected successfully to MongoDB from server.js");
 
-    //Add Routes
-    // require("./newroutes/add/addAdminGroup")(db, app);
     require("./newroutes/add/addChannel")(db, app);
     require("./newroutes/add/addChat")(db, app);
     require("./newroutes/add/addGroup")(db, app);
     require("./newroutes/add/addJoinRequest")(db, app);
     require("./newroutes/add/addSuperUser")(db, app);
     require("./newroutes/add/addUser")(db, app);
-    // require("./newroutes/add/addUserGroup")(db, app);
     const addImageRoutes = require("./newroutes/add/addImage")(db);
     app.use("/api", addImageRoutes);
 
     //Delete Routes
-    // require("./newroutes/delete/deleteAdminGroup")(db, app);
     require("./newroutes/delete/deleteChannel")(db, app);
     require("./newroutes/delete/deleteChat")(db, app);
     require("./newroutes/delete/deleteGroup")(db, app);
@@ -82,13 +78,12 @@ async function startServer() {
     require("./newroutes/update/updateUser")(db, app);
 
     // setup socket
-    sockets.connect(io, PORT, db); 
+    sockets.connect(io, PORT, db);
   } catch (error) {
     console.error("Failed to start server:", error);
   }
 }
 
-// Gracefully handle shutdown
 process.on("SIGINT", async () => {
   console.log("Shutting down server...");
   if (db) {

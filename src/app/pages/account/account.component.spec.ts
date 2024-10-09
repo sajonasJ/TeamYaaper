@@ -18,19 +18,26 @@ describe('AccountComponent', () => {
 
   beforeEach(async () => {
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
-    mockAuthService = jasmine.createSpyObj('AuthService', ['isLoggedIn', 'logout']);
-    mockUserService = jasmine.createSpyObj('UserService', ['uploadProfilePicture', 'updateUser', 'deleteUser']);
+    mockAuthService = jasmine.createSpyObj('AuthService', [
+      'isLoggedIn',
+      'logout',
+    ]);
+    mockUserService = jasmine.createSpyObj('UserService', [
+      'uploadProfilePicture',
+      'updateUser',
+      'deleteUser',
+    ]);
     mockToastr = jasmine.createSpyObj('ToastrService', ['success', 'error']);
 
     await TestBed.configureTestingModule({
       declarations: [AccountComponent],
-      imports: [FormsModule],  // For handling form inputs
+      imports: [FormsModule], // For handling form inputs
       providers: [
         { provide: Router, useValue: mockRouter },
         { provide: AuthService, useValue: mockAuthService },
         { provide: UserService, useValue: mockUserService },
-        { provide: ToastrService, useValue: mockToastr }
-      ]
+        { provide: ToastrService, useValue: mockToastr },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(AccountComponent);
@@ -49,7 +56,7 @@ describe('AccountComponent', () => {
     mockAuthService.isLoggedIn = of(true);
 
     component.ngOnInit();
-    
+
     expect(component.loadData).toHaveBeenCalled();
   });
 
@@ -98,14 +105,20 @@ describe('AccountComponent', () => {
     const file = new File([''], 'profile-picture.png');
     component.selectedFile = file;
     component.id = '123';
-    
+
     const mockResponse = { ok: true, imageUrl: 'image-url' };
     mockUserService.uploadProfilePicture.and.returnValue(of(mockResponse));
 
     component.uploadProfilePicture();
 
-    expect(mockUserService.uploadProfilePicture).toHaveBeenCalledWith(file, '123');
-    expect(mockToastr.success).toHaveBeenCalledWith('Profile picture updated successfully!', 'Success');
+    expect(mockUserService.uploadProfilePicture).toHaveBeenCalledWith(
+      file,
+      '123'
+    );
+    expect(mockToastr.success).toHaveBeenCalledWith(
+      'Profile picture updated successfully!',
+      'Success'
+    );
     expect(sessionStorage.getItem('profilePicture')).toBe('image-url');
   });
 
@@ -113,12 +126,17 @@ describe('AccountComponent', () => {
   it('should show error when uploading profile picture fails', () => {
     component.selectedFile = new File([''], 'profile-picture.png');
     component.id = '123';
-    
-    mockUserService.uploadProfilePicture.and.returnValue(throwError('Failed to upload'));
+
+    mockUserService.uploadProfilePicture.and.returnValue(
+      throwError('Failed to upload')
+    );
 
     component.uploadProfilePicture();
 
-    expect(mockToastr.error).toHaveBeenCalledWith('Failed to upload profile picture. Please try again.', 'Error');
+    expect(mockToastr.error).toHaveBeenCalledWith(
+      'Failed to upload profile picture. Please try again.',
+      'Error'
+    );
   });
 
   // Test onSave method (successful user update)
@@ -138,7 +156,7 @@ describe('AccountComponent', () => {
       lastname: 'User',
       email: 'test@example.com',
       roles: ['user'],
-      groups: ['group1']
+      groups: ['group1'],
     };
 
     mockUserService.updateUser.and.returnValue(of({ ok: true }));
@@ -146,7 +164,10 @@ describe('AccountComponent', () => {
     component.onSave();
 
     expect(mockUserService.updateUser).toHaveBeenCalledWith(updatedUser);
-    expect(mockToastr.success).toHaveBeenCalledWith('User data updated successfully!', 'Success');
+    expect(mockToastr.success).toHaveBeenCalledWith(
+      'User data updated successfully!',
+      'Success'
+    );
     expect(component.isEditMode).toBeFalse();
   });
 
@@ -156,7 +177,10 @@ describe('AccountComponent', () => {
 
     component.onSave();
 
-    expect(mockToastr.error).toHaveBeenCalledWith('Failed to update user data. Please try again.', 'Error');
+    expect(mockToastr.error).toHaveBeenCalledWith(
+      'Failed to update user data. Please try again.',
+      'Error'
+    );
   });
 
   // Test onDelete method (successful deletion)
@@ -169,7 +193,10 @@ describe('AccountComponent', () => {
     component.onDelete();
 
     expect(mockUserService.deleteUser).toHaveBeenCalledWith('testUser');
-    expect(mockToastr.success).toHaveBeenCalledWith('Account deleted successfully.', 'Success');
+    expect(mockToastr.success).toHaveBeenCalledWith(
+      'Account deleted successfully.',
+      'Success'
+    );
     expect(mockAuthService.logout).toHaveBeenCalled();
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/login']);
   });
@@ -180,7 +207,10 @@ describe('AccountComponent', () => {
 
     component.onDelete();
 
-    expect(mockToastr.error).toHaveBeenCalledWith('Failed to delete account. Please try again.', 'Error');
+    expect(mockToastr.error).toHaveBeenCalledWith(
+      'Failed to delete account. Please try again.',
+      'Error'
+    );
   });
 
   // Test onUpdate method (switch to edit mode)

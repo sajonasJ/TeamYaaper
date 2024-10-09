@@ -29,15 +29,15 @@ export interface Group {
 
 export interface User {
   _id?: string;
-  id?: string; 
+  id?: string;
   username: string;
   firstname: string;
   lastname: string;
   email: string;
   roles: string[];
   groups: string[];
-  joinRequests?: string[]; 
-  profilePictureUrl?: String, 
+  joinRequests?: string[];
+  profilePictureUrl?: String;
 }
 
 export interface JoinRequest {

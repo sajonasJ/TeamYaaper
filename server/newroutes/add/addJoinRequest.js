@@ -11,7 +11,6 @@ module.exports = function (db, app) {
     try {
       const joinRequestsCollection = db.collection("joinRequests");
 
-      // Check if there's already a pending request
       const existingRequest = await joinRequestsCollection.findOne({
         groupId,
         username,
@@ -25,7 +24,7 @@ module.exports = function (db, app) {
         });
       }
 
-      // Insert a new join request
+
       const result = await joinRequestsCollection.insertOne({
         groupId,
         username,

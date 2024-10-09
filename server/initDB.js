@@ -3,7 +3,6 @@
 const { MongoClient, ObjectId } = require("mongodb");
 const bcrypt = require("bcrypt");
 
-// Replace this with your MongoDB URI
 const uri = "mongodb://localhost:27017";
 const dbName = "teamYaaper";
 
@@ -11,7 +10,6 @@ async function main() {
   const client = new MongoClient(uri);
 
   try {
-    // Connect to the MongoDB server
     await client.connect();
     console.log("Connected successfully to MongoDB");
 
@@ -28,17 +26,16 @@ async function main() {
       }
     }
 
-    // 1. Users Collection with Hashed Passwords
     const users = [
       {
-        _id: new ObjectId(), // Create ObjectId for each user
+        _id: new ObjectId(),
         username: "user1",
-        password: "1234", // Plain text password to be hashed
+        password: "1234",
         firstname: "Jonas123",
         lastname: "Sajonas",
         email: "sajonasj@example.com",
         roles: ["super"],
-        groupMemberships: [], // Will be updated later
+        groupMemberships: [],
       },
       {
         _id: new ObjectId(),
@@ -72,7 +69,6 @@ async function main() {
       },
     ];
 
-    // Hash the passwords before inserting them
     const saltRounds = 10;
     const hashedUsers = await Promise.all(
       users.map(async (user) => {
@@ -80,24 +76,21 @@ async function main() {
         return {
           ...user,
           passwordHash: hashedPassword,
-          password: undefined, // Remove the plaintext password from the final object
+          password: undefined,
         };
       })
     );
 
-    // Insert hashed users into the collection
     await db.collection("users").insertMany(hashedUsers);
     console.log("Users collection initialized with hashed passwords");
 
-    // Prepare user IDs for later use
     const user1Id = users[0]._id;
     const user2Id = users[2]._id;
     const user3Id = users[3]._id;
 
-    // 2. Groups Collection
     const groups = [
       {
-        _id: new ObjectId(), // Create ObjectId for each group
+        _id: new ObjectId(),
         name: "The Only Group One",
         description: "A group for general discussions and announcements.",
         ownerId: user1Id,
@@ -130,23 +123,20 @@ async function main() {
     await db.collection("groups").insertMany(groups);
     console.log("Groups collection initialized");
 
-    // Prepare group IDs for later use
     const group1Id = groups[0]._id;
 
-    // 3. Update Group Memberships for Users
     await db.collection("users").updateOne(
       { _id: user1Id },
-      { $set: { groupMemberships: [group1Id] } } // Add user1 to group1
+      { $set: { groupMemberships: [group1Id] } }
     );
 
     await db.collection("users").updateOne(
       { _id: user2Id },
-      { $set: { groupMemberships: [group1Id] } } // Add user2 to group1
+      { $set: { groupMemberships: [group1Id] } }
     );
 
     console.log("Updated user group memberships");
 
-    // 4. Channels Collection
     await db.collection("channels").insertMany([
       {
         groupId: group1Id,
@@ -164,7 +154,6 @@ async function main() {
 
     console.log("Channels collection initialized");
 
-    // 5. Messages Collection
     await db.collection("messages").insertMany([
       {
         channelId: groups[0].channels[0].channelId,
@@ -182,7 +171,6 @@ async function main() {
 
     console.log("Messages collection initialized");
 
-    // 6. Join Requests Collection
     await db.collection("joinRequests").insertMany([
       {
         groupId: group1Id,

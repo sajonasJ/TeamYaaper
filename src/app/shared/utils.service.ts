@@ -26,7 +26,6 @@ export class UtilsService {
     return group.admins.includes(username);
   }
 
-
   // Utility function to map user/admin IDs in the groups to their corresponding usernames
   mapUserDetailsToGroups(groups: Group[], users: User[]): Group[] {
     if (groups.length && users.length) {
@@ -63,7 +62,11 @@ export class UtilsService {
     }
   }
 
-  addUserToGroup(group: Group, username: string, userRole: 'user' | 'admin'): Group {
+  addUserToGroup(
+    group: Group,
+    username: string,
+    userRole: 'user' | 'admin'
+  ): Group {
     if (userRole === 'admin' && !group.admins.includes(username)) {
       group.admins.push(username);
     }
@@ -72,7 +75,6 @@ export class UtilsService {
     }
     return group;
   }
-  
 
   removeUserFromList(list: string[], username: string): string[] {
     return list.filter((user) => user !== username);

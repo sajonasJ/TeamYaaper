@@ -20,7 +20,7 @@ export class SideNavComponent implements OnInit {
   constructor(
     private groupService: GroupService,
     private toastr: ToastrService,
-    private utilsService: UtilsService 
+    private utilsService: UtilsService
   ) {}
 
   ngOnInit(): void {
@@ -45,14 +45,14 @@ export class SideNavComponent implements OnInit {
     this.groupSelected.emit(group);
   }
 
-
+  // saveGroup method to save a new group
   saveGroup(): void {
     if (this.newGroupName && this.newGroupDescription) {
       const newGroup: Group = {
         name: this.newGroupName,
         description: this.newGroupDescription,
         admins: [this.currentUser!],
-        users: [this.currentUser!], 
+        users: [this.currentUser!],
         channels: [],
       };
       console.log('New group:', newGroup);

@@ -12,18 +12,27 @@ export class JoinRequestService {
 
   // Get pending join requests for a specific group
   getJoinRequests(groupId: string): Observable<JoinRequest[]> {
-    return this.http.get<JoinRequest[]>(`${BACKEND_URL}/groups/${groupId}/joinRequests`);
+    return this.http.get<JoinRequest[]>(
+      `${BACKEND_URL}/groups/${groupId}/joinRequests`
+    );
   }
 
   // Add a new join request
   addJoinRequest(groupId: string, username: string): Observable<any> {
-    return this.http.post(`${BACKEND_URL}/addJoinRequest`, { groupId, username });
+    return this.http.post(`${BACKEND_URL}/addJoinRequest`, {
+      groupId,
+      username,
+    });
   }
 
-// Update a join request (for approving or rejecting)
-updateJoinRequest(requestId: string, status: 'approved' | 'rejected'): Observable<any> {
-  return this.http.post(`${BACKEND_URL}/updateJoinRequest`, { requestId, status });
-}
-
-
+  // Update a join request (for approving or rejecting)
+  updateJoinRequest(
+    requestId: string,
+    status: 'approved' | 'rejected'
+  ): Observable<any> {
+    return this.http.post(`${BACKEND_URL}/updateJoinRequest`, {
+      requestId,
+      status,
+    });
+  }
 }

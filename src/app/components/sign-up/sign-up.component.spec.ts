@@ -3,7 +3,7 @@ import { SignUpComponent } from './sign-up.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from '../../services/user.service';
-import { FormsModule } from '@angular/forms';  // For handling template-driven forms
+import { FormsModule } from '@angular/forms'; // For handling template-driven forms
 import { of, throwError } from 'rxjs';
 
 describe('SignUpComponent', () => {
@@ -20,23 +20,23 @@ describe('SignUpComponent', () => {
     mockUserService = jasmine.createSpyObj('UserService', ['addUser']);
 
     mockActivatedRoute = {
-      queryParams: of({ signup: 'true' })  // Simulating a query param
+      queryParams: of({ signup: 'true' }), // Simulating a query param
     };
 
     await TestBed.configureTestingModule({
       declarations: [SignUpComponent],
-      imports: [FormsModule],  // For ngModel and form handling
+      imports: [FormsModule], // For ngModel and form handling
       providers: [
         { provide: Router, useValue: mockRouter },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: ToastrService, useValue: mockToastr },
-        { provide: UserService, useValue: mockUserService }
-      ]
+        { provide: UserService, useValue: mockUserService },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(SignUpComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();  // Trigger ngOnInit and form bindings
+    fixture.detectChanges(); // Trigger ngOnInit and form bindings
   });
 
   // Test component creation
@@ -81,7 +81,7 @@ describe('SignUpComponent', () => {
     // Mock successful user registration
     mockUserService.addUser.and.returnValue(of({}));
 
-    const mockForm = { valid: true, value: {} };  // Simulating a valid form
+    const mockForm = { valid: true, value: {} }; // Simulating a valid form
     component.onSubmit(mockForm);
 
     expect(mockUserService.addUser).toHaveBeenCalledWith({
@@ -91,7 +91,10 @@ describe('SignUpComponent', () => {
       lastname: 'User',
       email: 'test@example.com',
     });
-    expect(mockToastr.success).toHaveBeenCalledWith('User added successfully!', 'Success');
+    expect(mockToastr.success).toHaveBeenCalledWith(
+      'User added successfully!',
+      'Success'
+    );
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/login']);
   });
 
@@ -104,7 +107,10 @@ describe('SignUpComponent', () => {
     const mockForm = { valid: true, value: {} };
     component.onSubmit(mockForm);
 
-    expect(mockToastr.error).toHaveBeenCalledWith('Passwords do not match', 'Error');
+    expect(mockToastr.error).toHaveBeenCalledWith(
+      'Passwords do not match',
+      'Error'
+    );
   });
 
   // Test form submission (form is invalid)
@@ -112,7 +118,10 @@ describe('SignUpComponent', () => {
     const mockForm = { valid: false, value: {} };
     component.onSubmit(mockForm);
 
-    expect(mockToastr.error).toHaveBeenCalledWith('Please fill in all fields correctly.', 'Error');
+    expect(mockToastr.error).toHaveBeenCalledWith(
+      'Please fill in all fields correctly.',
+      'Error'
+    );
   });
 
   // Test form submission (user already exists - conflict error)
@@ -129,7 +138,10 @@ describe('SignUpComponent', () => {
     const mockForm = { valid: true, value: {} };
     component.onSubmit(mockForm);
 
-    expect(mockToastr.error).toHaveBeenCalledWith('User already exists', 'Conflict');
+    expect(mockToastr.error).toHaveBeenCalledWith(
+      'User already exists',
+      'Conflict'
+    );
   });
 
   // Test form submission (general server error)
@@ -144,6 +156,9 @@ describe('SignUpComponent', () => {
     const mockForm = { valid: true, value: {} };
     component.onSubmit(mockForm);
 
-    expect(mockToastr.error).toHaveBeenCalledWith('Failed to add user. Please try again.', 'Error');
+    expect(mockToastr.error).toHaveBeenCalledWith(
+      'Failed to add user. Please try again.',
+      'Error'
+    );
   });
 });

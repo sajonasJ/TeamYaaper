@@ -9,7 +9,7 @@ import * as bootstrap from 'bootstrap';
 @Component({
   selector: 'app-account',
   templateUrl: './account.component.html',
-  styleUrls: ['./account.component.css'], // Fixed typo: styleUrl -> styleUrls
+  styleUrls: ['./account.component.css'],
 })
 export class AccountComponent implements OnInit {
   id: string = '';
@@ -19,11 +19,10 @@ export class AccountComponent implements OnInit {
   lastname: string = '';
   email: string = '';
   roles: string[] = [];
-  groups: string[] = []; 
+  groups: string[] = [];
   isEditMode: boolean = false;
   profilePictureUrl: string | ArrayBuffer | null = '';
   selectedFile: File | null = null;
-
 
   constructor(
     private router: Router,
@@ -51,16 +50,16 @@ export class AccountComponent implements OnInit {
     this.lastname = sessionStorage.getItem('lastname') || '';
     this.email = sessionStorage.getItem('email') || '';
     this.roles = JSON.parse(sessionStorage.getItem('roles') || '[]');
-    this.groups = JSON.parse(sessionStorage.getItem('groups') || '[]'); // Load groups from session storage
+    this.groups = JSON.parse(sessionStorage.getItem('groups') || '[]');
     this.profilePictureUrl = sessionStorage.getItem('profilePicture');
-
   }
 
+// image upload logic
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       this.selectedFile = input.files[0];
-      
+
       // Show a preview of the selected file
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -72,23 +71,29 @@ export class AccountComponent implements OnInit {
 
   uploadProfilePicture(): void {
     if (this.selectedFile && this.id) {
-        this.userService.uploadProfilePicture(this.selectedFile, this.id).subscribe(
-            (response) => {
-                if (response.ok) {
-                    this.toastr.success('Profile picture updated successfully!', 'Success');
-                    sessionStorage.setItem('profilePicture', response.imageUrl);
-                } else {
-                    this.toastr.error('Failed to update profile picture.', 'Error');
-                }
-            },
-            (error) => {
-                this.toastr.error('Failed to upload profile picture. Please try again.', 'Error');
+      this.userService
+        .uploadProfilePicture(this.selectedFile, this.id)
+        .subscribe(
+          (response) => {
+            if (response.ok) {
+              this.toastr.success(
+                'Profile picture updated successfully!',
+                'Success'
+              );
+              sessionStorage.setItem('profilePicture', response.imageUrl);
+            } else {
+              this.toastr.error('Failed to update profile picture.', 'Error');
             }
+          },
+          (error) => {
+            this.toastr.error(
+              'Failed to upload profile picture. Please try again.',
+              'Error'
+            );
+          }
         );
     }
-}
-
-
+  }
 
   // Join first and last name
   get fullName(): string {
@@ -101,10 +106,7 @@ export class AccountComponent implements OnInit {
   }
 
   // Save user data
-
   onSave(): void {
-
-    // Prepare updated user data
     const updatedUser: User = {
       _id: this.id,
       username: this.username,
@@ -113,12 +115,11 @@ export class AccountComponent implements OnInit {
       email: this.email,
       roles: this.roles,
       groups: this.groups,
-
     };
 
     this.userService.updateUser(updatedUser).subscribe(
       (response) => {
-        if (response.ok) { 
+        if (response.ok) {
           this.toastr.success('User data updated successfully!', 'Success');
           this.isEditMode = false;
           this.updateSessionStorage(updatedUser);
@@ -141,8 +142,7 @@ export class AccountComponent implements OnInit {
     this.isEditMode = false;
   }
 
-
-
+  // Update session storage with updated user data
   updateSessionStorage(updatedUser: User): void {
     sessionStorage.setItem('id', updatedUser._id ?? '');
     sessionStorage.setItem('username', updatedUser.username);
@@ -150,15 +150,16 @@ export class AccountComponent implements OnInit {
     sessionStorage.setItem('lastname', updatedUser.lastname);
     sessionStorage.setItem('email', updatedUser.email);
     sessionStorage.setItem('roles', JSON.stringify(updatedUser.roles));
-    sessionStorage.setItem('groups', JSON.stringify(updatedUser.groups)); 
+    sessionStorage.setItem('groups', JSON.stringify(updatedUser.groups));
   }
 
   // Display groups by object keys
   objectKeys(obj: any): string[] {
     return Object.keys(obj);
   }
-   // Show the delete confirmation modal
-   showDeleteConfirmationModal(): void {
+
+  // Show the delete confirmation modal
+  showDeleteConfirmationModal(): void {
     const modalElement = document.getElementById('confirmDeleteModal');
     if (modalElement) {
       const confirmDeleteModal = new bootstrap.Modal(modalElement);
@@ -166,22 +167,25 @@ export class AccountComponent implements OnInit {
     }
   }
 
-    // Trigger the delete confirmation modal for a user
-    confirmDeleteUser(): void {
-      this.showDeleteConfirmationModal();
-    }
-  
+  // Trigger the delete confirmation modal for a user
+  confirmDeleteUser(): void {
+    this.showDeleteConfirmationModal();
+  }
+
   // Delete user account
   onDelete(): void {
     if (this.id) {
       this.userService.deleteUser(this.username).subscribe(
         () => {
           this.toastr.success('Account deleted successfully.', 'Success');
-          this.authservice.logout(); // Log out the user after deleting the account
+          this.authservice.logout();
           this.router.navigate(['/login']);
         },
         (error) => {
-          this.toastr.error('Failed to delete account. Please try again.', 'Error');
+          this.toastr.error(
+            'Failed to delete account. Please try again.',
+            'Error'
+          );
         }
       );
     } else {
