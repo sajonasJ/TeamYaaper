@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt");
 module.exports = function (db, app) {
   app.post("/addUser", async (req, res) => {
     console.log("Received POST request to add user");
-    
+
     // Check if request body is present
     if (!req.body) {
       console.error("No request body provided");
@@ -12,7 +12,13 @@ module.exports = function (db, app) {
     }
 
     const { username, password, firstname, lastname, email } = req.body;
-    console.log("Request data:", { username, password, firstname, lastname, email });
+    console.log("Request data:", {
+      username,
+      password,
+      firstname,
+      lastname,
+      email,
+    });
 
     try {
       const usersCollection = db.collection("users");
@@ -36,11 +42,11 @@ module.exports = function (db, app) {
       const newUser = {
         username: username,
         passwordHash: passwordHash,
-        roles: [], // Initially no roles assigned
-        groupMemberships: [], // Initially no groups assigned
-        ...(firstname && { firstname }), // Adds 'firstname' if provided
-        ...(lastname && { lastname }), // Adds 'lastname' if provided
-        ...(email && { email }), // Adds 'email' if provided
+        roles: [],
+        groupMemberships: [],
+        ...(firstname && { firstname }),
+        ...(lastname && { lastname }),
+        ...(email && { email }),
       };
       console.log("New user object prepared:", newUser);
 

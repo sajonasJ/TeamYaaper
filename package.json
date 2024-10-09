@@ -1,12 +1,15 @@
 {
   "name": "team-yaaper",
   "version": "0.0.0",
+  "type":"module",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "mocha ./test/test.js",
+    "unitTest": "ng test",
+    "integrationTest": "mocha ./integrationTest/test.js"
   },
   "private": true,
   "dependencies": {
@@ -41,13 +44,18 @@
     "@angular-devkit/build-angular": "^18.2.2",
     "@angular/cli": "^18.2.2",
     "@angular/compiler-cli": "^18.2.2",
+    "@types/chai": "^5.0.0",
     "@types/jasmine": "~5.1.0",
+    "@types/mocha": "^10.0.9",
+    "chai": "^5.1.1",
     "jasmine-core": "~5.1.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "mocha": "^10.7.3",
+    "supertest": "^7.0.0",
     "typescript": "~5.5.2"
   }
 }

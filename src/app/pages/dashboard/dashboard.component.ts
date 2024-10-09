@@ -19,6 +19,9 @@ export class DashboardComponent implements OnInit {
   newUserForGroup: string = '';
   newUsername: string = '';
   newPassword: string = '';
+  newFirstname: string = '';
+  newLastname: string = '';
+  newEmail: string = '';
   newGroupName: string = '';
   newGroupDescription: string = '';
   currentUser: string | null = null;
@@ -80,6 +83,9 @@ export class DashboardComponent implements OnInit {
       const newUser = {
         username: this.newUsername,
         password: this.newPassword,
+        firstname: this.newFirstname,
+        lastname: this.newLastname,
+        email: this.newEmail,
       };
   
       this.userService.addUser(newUser).subscribe(
@@ -88,6 +94,9 @@ export class DashboardComponent implements OnInit {
           this.loadUsers();
           this.newUsername = '';
           this.newPassword = '';
+          this.newFirstname = '';
+          this.newLastname = '';
+          this.newEmail = '';
         },
         (error) => {
           if (error.status === 409) {

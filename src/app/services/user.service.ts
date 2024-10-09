@@ -18,7 +18,14 @@ export class UserService {
   }
 
   // Add a new user to the backend
-  addUser(newUser: { username: string; password: string }): Observable<any> {
+  addUser(newUser: { 
+    username: string; 
+    password: string
+    firstname: string;
+    lastname: string;
+    email: string;
+
+   }): Observable<any> {
     return this.httpClient.post(`${BACKEND_URL}/addUser`, newUser, httpOptions);
   }
 
@@ -62,15 +69,15 @@ export class UserService {
       user,
       httpOptions
     );
-
-    
   }
 
   // Upload profile picture method
   uploadProfilePicture(file: File, userId: string): Observable<any> {
     const formData = new FormData();
     formData.append('profilePicture', file);
-    return this.httpClient.post(`${BACKEND_URL}/api/uploadProfilePicture/${userId}`, formData);
-
+    return this.httpClient.post(
+      `${BACKEND_URL}/api/uploadProfilePicture/${userId}`,
+      formData
+    );
   }
 }
